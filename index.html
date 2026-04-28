@@ -3,122 +3,194 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KitchenOps — Bali</title>
+<title>KitchenOps — Aperitif Bali</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --g:#3B6D11;--gbg:#EAF3DE;--gm:#639922;--gl:#C0DD97;
+  --g:#2D5A0E;--gbg:#EAF3DE;--gm:#4A8A1C;--gl:#C0DD97;
   --am:#854F0B;--ambg:#FAEEDA;--amm:#BA7517;--aml:#FAC775;
   --rd:#791F1F;--rdbg:#FCEBEB;--rdm:#A32D2D;
   --bl:#0C447C;--blbg:#E6F1FB;--blm:#185FA5;
   --tl:#085041;--tlbg:#E1F5EE;--tlm:#0F6E56;
-  --bg:#f8f7f4;--surface:#ffffff;--border:rgba(0,0,0,0.1);
-  --text:#1a1a18;--text2:#5f5e5a;--text3:#9a9890;
-}
-@media(prefers-color-scheme:dark){
-  :root{--bg:#1c1c1a;--surface:#262624;--border:rgba(255,255,255,0.1);--text:#f0ede8;--text2:#9a9890;--text3:#6a6864}
+  --bg:#f7f6f3;--surface:#ffffff;--border:rgba(0,0,0,0.08);
+  --text:#18180f;--text2:#5c5b57;--text3:#9a9890;
 }
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13px;color:var(--text);background:var(--bg);min-height:100vh}
-.hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--surface);border-bottom:0.5px solid var(--border);position:sticky;top:0;z-index:100}
+
+/* ─── LOGIN ─── */
+.login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--bg)}
+.login-box{background:var(--surface);border:0.5px solid var(--border);border-radius:16px;padding:40px 36px;width:100%;max-width:380px;box-shadow:0 4px 32px rgba(0,0,0,0.06)}
+.login-logo{display:flex;align-items:center;gap:12px;margin-bottom:8px;justify-content:center}
+.login-lb{width:40px;height:40px;background:var(--g);border-radius:10px;display:flex;align-items:center;justify-content:center}
+.login-lb svg{width:20px;height:20px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.login-brand{font-size:20px;font-weight:700;color:var(--text)}
+.login-property{font-size:12px;color:var(--text2);text-align:center;margin-bottom:28px;letter-spacing:0.02em}
+.login-field{margin-bottom:16px}
+.login-field label{display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text2);margin-bottom:6px}
+.login-field input{width:100%;padding:11px 14px;border:0.5px solid var(--border);border-radius:9px;font-size:14px;background:var(--surface);color:var(--text);outline:none;transition:border-color .15s}
+.login-field input:focus{border-color:var(--gm)}
+.login-btn{width:100%;padding:12px;background:var(--g);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:600;cursor:pointer;margin-top:4px;letter-spacing:0.01em}
+.login-btn:hover{background:#1e3d09}
+.login-err{color:var(--rdm);font-size:12px;text-align:center;margin-top:10px;min-height:18px;font-weight:500}
+.login-footer{font-size:10px;color:var(--text3);text-align:center;margin-top:20px}
+
+/* ─── APP SHELL ─── */
+.app{display:none}
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;background:var(--surface);border-bottom:0.5px solid var(--border);position:sticky;top:0;z-index:100}
 .logo{display:flex;align-items:center;gap:10px}
-.lb{width:30px;height:30px;background:var(--g);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.lb svg{width:15px;height:15px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.brand{font-size:14px;font-weight:600;color:var(--text)}
+.lb{width:28px;height:28px;background:var(--g);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.lb svg{width:14px;height:14px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.brand{font-size:13px;font-weight:700;color:var(--text);line-height:1.2}
 .brand-sub{font-size:10px;color:var(--text2)}
-.db-dot{width:7px;height:7px;border-radius:50%;background:#ccc;display:inline-block;margin-right:5px;transition:background .3s}
-.db-dot.live{background:var(--gm)}
-.db-dot.err{background:var(--rdm)}
+.hdr-r{display:flex;align-items:center;gap:10px}
+.db-wrap{display:flex;align-items:center;gap:5px}
+.db-dot{width:7px;height:7px;border-radius:50%;background:#d0d0cc;transition:background .3s}
+.db-dot.live{background:var(--gm)}.db-dot.err{background:var(--rdm)}
 .db-label{font-size:11px;color:var(--text2)}
+.logout-btn{padding:4px 10px;border:0.5px solid var(--border);border-radius:6px;background:transparent;color:var(--text2);font-size:11px;cursor:pointer}
+.logout-btn:hover{background:var(--bg)}
+
+/* ─── NAV ─── */
 .nav-wrap{background:var(--surface);border-bottom:0.5px solid var(--border);overflow-x:auto}
-.nav{display:flex;gap:0;padding:0 16px;min-width:max-content}
-.nb{padding:10px 14px;font-size:12px;font-weight:500;color:var(--text2);border:none;background:transparent;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:color .15s}
-.nb.on{color:var(--g);border-bottom-color:var(--g)}
+.nav{display:flex;padding:0 20px;min-width:max-content}
+.nb{padding:10px 13px;font-size:12px;font-weight:500;color:var(--text2);border:none;background:transparent;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:color .12s}
+.nb.on{color:var(--g);border-bottom-color:var(--g);font-weight:600}
 .nb:hover:not(.on){color:var(--text)}
-.main{max-width:1100px;margin:0 auto;padding:16px}
+
+/* ─── CONTENT ─── */
+.main{max-width:1280px;margin:0 auto;padding:20px}
 .pg{display:none}.pg.on{display:block}
-.bar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
+.page-title{font-size:20px;font-weight:700;color:var(--text);margin-bottom:3px}
+.page-sub{font-size:12px;color:var(--text2);margin-bottom:16px}
+
+/* ─── TOOLBAR ─── */
+.bar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
 .si{position:relative;flex:1;min-width:180px}
-.si input{width:100%;padding:7px 10px 7px 30px;border:0.5px solid var(--border);border-radius:7px;font-size:12px;background:var(--surface);color:var(--text)}
-.si:before{content:"⌕";position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:14px;pointer-events:none}
+.si input{width:100%;padding:8px 10px 8px 32px;border:0.5px solid var(--border);border-radius:8px;font-size:12px;background:var(--surface);color:var(--text)}
+.si:before{content:"⌕";position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:14px;pointer-events:none}
 select{padding:7px 9px;border:0.5px solid var(--border);border-radius:7px;font-size:12px;background:var(--surface);color:var(--text)}
 input[type=number],input[type=text],input[type=date]{padding:7px 9px;border:0.5px solid var(--border);border-radius:7px;font-size:12px;background:var(--surface);color:var(--text)}
-.btn{padding:7px 13px;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;border:0.5px solid var(--border);background:var(--surface);color:var(--text2);transition:all .15s}
+.btn{padding:7px 13px;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;border:0.5px solid var(--border);background:var(--surface);color:var(--text2);transition:background .12s}
 .btn:hover{background:var(--bg)}
-.btng{background:var(--g);color:#fff;border-color:var(--g)}
-.btng:hover{background:#27500A}
+.btng{background:var(--g);color:#fff;border-color:var(--g)}.btng:hover{background:#1e3d09}
+
+/* ─── CARDS & TABLES ─── */
 .card{background:var(--surface);border:0.5px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:12px}
-.ch{padding:11px 15px;border-bottom:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
-.ct{font-size:13px;font-weight:600;color:var(--text)}
-.cs{font-size:11px;color:var(--text2);margin-top:2px}
+.ch{padding:11px 16px;border-bottom:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.ct{font-size:13px;font-weight:600;color:var(--text)}.cs{font-size:11px;color:var(--text2);margin-top:2px}
 .tbl-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;min-width:500px}
-th{background:var(--bg);padding:8px 13px;text-align:left;font-size:10px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;border-bottom:0.5px solid var(--border)}
-td{padding:9px 13px;border-bottom:0.5px solid var(--border);color:var(--text);vertical-align:middle}
+table{width:100%;border-collapse:collapse;min-width:480px}
+th{background:var(--bg);padding:8px 14px;text-align:left;font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;border-bottom:0.5px solid var(--border)}
+td{padding:10px 14px;border-bottom:0.5px solid var(--border);color:var(--text);vertical-align:middle;font-size:13px}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:var(--bg)}
+.total-row td{font-weight:700;background:var(--bg)}
+
+/* ─── BADGES ─── */
 .bk{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600}
-.bg{background:var(--gbg);color:var(--g)}
-.bam{background:var(--ambg);color:var(--am)}
-.brd{background:var(--rdbg);color:var(--rdm)}
-.bbl{background:var(--blbg);color:var(--bl)}
-.btl{background:var(--tlbg);color:var(--tl)}
-.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-bottom:12px}
-.mc{background:var(--surface);border:0.5px solid var(--border);border-radius:9px;padding:12px 14px}
-.mcl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--text2);margin-bottom:5px}
-.mcv{font-size:22px;font-weight:600;color:var(--text)}
-.mcs{font-size:11px;color:var(--text2);margin-top:2px}
-.qty{width:56px;padding:4px 6px;border:0.5px solid var(--border);border-radius:5px;font-size:12px;text-align:right;background:var(--surface);color:var(--text)}
-.total-row td{font-weight:600;background:var(--bg)}
-.alert{background:var(--ambg);border:0.5px solid var(--aml);border-radius:8px;padding:10px 13px;font-size:12px;color:var(--am);margin-bottom:12px;font-weight:500}
+.bg{background:var(--gbg);color:var(--g)}.bam{background:var(--ambg);color:var(--am)}
+.brd{background:var(--rdbg);color:var(--rdm)}.bbl{background:var(--blbg);color:var(--bl)}
+.btl{background:var(--tlbg);color:var(--tl)}.bgr{background:#f1efe8;color:#5c5b57}
+
+/* ─── METRICS ─── */
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-bottom:14px}
+.mc{background:var(--surface);border:0.5px solid var(--border);border-radius:9px;padding:14px}
+.mcl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text2);margin-bottom:5px}
+.mcv{font-size:22px;font-weight:700;color:var(--text);line-height:1.1}
+.mcs{font-size:11px;color:var(--text2);margin-top:3px}
+
+/* ─── TABS ─── */
 .tabs{display:flex;border-bottom:0.5px solid var(--border);margin-bottom:12px}
 .tab{padding:8px 15px;font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-0.5px}
-.tab.on{color:var(--g);border-bottom-color:var(--g)}
-.fc-row{display:flex;gap:20px;flex-wrap:wrap;padding:12px 15px;border-top:0.5px solid var(--border);align-items:flex-end}
-.fcf label{display:block;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--text2);margin-bottom:4px}
+.tab.on{color:var(--g);border-bottom-color:var(--g);font-weight:600}
+
+/* ─── FC PANEL ─── */
+.fc-row{display:flex;gap:20px;flex-wrap:wrap;padding:13px 16px;border-top:0.5px solid var(--border);align-items:flex-end;background:var(--bg)}
+.fcf label{display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text2);margin-bottom:5px}
 .fcs{text-align:center}
-.fcsl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--text2);margin-bottom:4px}
-.fcsv{font-size:17px;font-weight:600;color:var(--text)}
+.fcsl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text2);margin-bottom:4px}
+.fcsv{font-size:18px;font-weight:700;color:var(--text)}
+
+/* ─── DISH COMPONENTS ─── */
+.comp-row{display:flex;justify-content:space-between;align-items:center;padding:9px 16px;border-bottom:0.5px solid var(--border)}
+.comp-row:last-child{border-bottom:none}
+.comp-name{font-size:12px;color:var(--text2);flex:1}
+.comp-cost{font-size:13px;font-weight:600;color:var(--text);min-width:100px;text-align:right}
+
+/* ─── ALERTS ─── */
+.alert-bar{background:var(--ambg);border:0.5px solid var(--aml);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--am);margin-bottom:12px;font-weight:500}
+
+/* ─── MISC ─── */
+.qty{width:54px;padding:4px 6px;border:0.5px solid var(--border);border-radius:5px;font-size:11px;text-align:right;background:var(--surface);color:var(--text)}
 .loader{text-align:center;padding:28px;font-size:12px;color:var(--text2)}
-.sp{display:inline-flex;align-items:center;padding:1px 6px;background:var(--bg);border:0.5px solid var(--border);border-radius:4px;font-size:10px;font-weight:600;margin-right:3px;color:var(--text2)}
+.empty{text-align:center;padding:36px;color:var(--text2);font-size:12px}
+
+/* ─── MODALS ─── */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:200;align-items:center;justify-content:center;padding:16px}
 .modal-overlay.open{display:flex}
-.modal{background:var(--surface);border-radius:12px;padding:20px;width:100%;max-width:420px;border:0.5px solid var(--border)}
-.modal-title{font-size:15px;font-weight:600;margin-bottom:16px;color:var(--text)}
+.modal{background:var(--surface);border-radius:12px;padding:22px;width:100%;max-width:440px;border:0.5px solid var(--border);max-height:90vh;overflow-y:auto}
+.modal-title{font-size:15px;font-weight:700;margin-bottom:16px;color:var(--text)}
 .fr{margin-bottom:12px}
-.fr label{display:block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--text2);margin-bottom:4px}
+.fr label{display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text2);margin-bottom:5px}
 .fr input,.fr select,.fr textarea{width:100%}
 .fr textarea{height:64px;resize:vertical;padding:7px 9px;border:0.5px solid var(--border);border-radius:7px;font-size:12px;background:var(--surface);color:var(--text)}
 .fa{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
-.toast{position:fixed;bottom:20px;right:20px;background:var(--g);color:#fff;padding:10px 16px;border-radius:8px;font-size:13px;font-weight:500;opacity:0;transition:opacity .3s;pointer-events:none;z-index:300;box-shadow:0 4px 12px rgba(0,0,0,0.15)}
+
+/* ─── TOAST ─── */
+.toast{position:fixed;bottom:20px;right:20px;background:var(--g);color:#fff;padding:10px 16px;border-radius:8px;font-size:13px;font-weight:600;opacity:0;transition:opacity .3s;pointer-events:none;z-index:300;box-shadow:0 4px 20px rgba(0,0,0,0.15)}
 .toast.show{opacity:1}
 .toast.err{background:var(--rdm)}
-.page-title{font-size:18px;font-weight:700;color:var(--text);margin-bottom:4px}
-.page-sub{font-size:12px;color:var(--text2);margin-bottom:16px}
-.dish-comp{border:0.5px solid var(--border);border-radius:8px;padding:10px 13px;margin-bottom:7px;display:flex;justify-content:space-between;align-items:center}
-.empty{text-align:center;padding:40px 20px;color:var(--text2);font-size:13px}
+
+/* ─── PRICE HISTORY ─── */
+.ph-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700}
+.ph-up{background:var(--rdbg);color:var(--rdm)}
+.ph-stable{background:var(--gbg);color:var(--g)}
+.ph-down{background:var(--blbg);color:var(--blm)}
+
+/* ─── SUPPLIER SECTIONS ─── */
+.sup-group-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);padding:8px 14px 4px;background:var(--bg);border-bottom:0.5px solid var(--border)}
+
 @media(max-width:600px){
-  .main{padding:10px}
+  .main{padding:12px}
   .metrics{grid-template-columns:1fr 1fr}
   .mcv{font-size:18px}
-  th,td{padding:7px 9px;font-size:11px}
+  th,td{padding:7px 10px;font-size:11px}
+  .hdr{padding:8px 12px}
+  .nav .nb{padding:8px 10px;font-size:11px}
 }
 </style>
 </head>
 <body>
 
+<!-- ═══ LOGIN SCREEN ═══ -->
+<div class="login-wrap" id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="login-lb"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+      <div class="login-brand">KitchenOps</div>
+    </div>
+    <div class="login-property">Aperitif · Bali · Culinary Operations</div>
+    <div class="login-field">
+      <label>Access Code</label>
+      <input type="password" id="pw-input" placeholder="Enter access code" onkeydown="if(event.key==='Enter')doLogin()" autofocus>
+    </div>
+    <button class="login-btn" onclick="doLogin()">Enter</button>
+    <div class="login-err" id="login-err"></div>
+    <div class="login-footer">Authorised personnel only · 2026</div>
+  </div>
+</div>
+
+<!-- ═══ MAIN APP ═══ -->
+<div class="app" id="app">
+
 <header class="hdr">
   <div class="logo">
-    <div class="lb">
-      <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-    </div>
-    <div>
-      <div class="brand">KitchenOps</div>
-      <div class="brand-sub">Purchasing &amp; Food Cost · Bali</div>
-    </div>
+    <div class="lb"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+    <div><div class="brand">KitchenOps</div><div class="brand-sub">Aperitif · Purchasing &amp; Food Cost</div></div>
   </div>
-  <div style="display:flex;align-items:center;gap:6px">
-    <span class="db-dot" id="db-dot"></span>
-    <span class="db-label" id="db-label">Connecting...</span>
+  <div class="hdr-r">
+    <div class="db-wrap"><span class="db-dot" id="db-dot"></span><span class="db-label" id="db-label">Connecting...</span></div>
+    <button class="logout-btn" onclick="doLogout()">Sign out</button>
   </div>
 </header>
 
@@ -137,16 +209,17 @@ tr:hover td{background:var(--bg)}
 
 <main class="main">
 
-<!-- SUPPLIERS -->
+<!-- ── SUPPLIERS ── -->
 <div id="pg-suppliers" class="pg on">
   <div class="page-title">Supplier directory</div>
-  <div class="page-sub">All active vendors — tap phone number to call or WhatsApp</div>
+  <div class="page-sub">12 active vendors — tap phone number to call or WhatsApp</div>
   <div class="bar">
-    <div class="si"><input id="ss" placeholder="Search by name or phone..." oninput="filterSup()"></div>
+    <div class="si"><input id="ss" placeholder="Search by name, category or phone..." oninput="filterSup()"></div>
     <select id="sc" onchange="filterSup()">
       <option value="">All categories</option>
-      <option>Foods Supplies</option><option>Food Supplies</option>
-      <option>Food Supplier</option><option>Chicken Supplies</option>
+      <option>Foods Supplies</option><option>Food Supplies</option><option>Food Supplier</option>
+      <option>Chicken Supplies</option><option>Meat &amp; Poultry</option>
+      <option>Vegetables &amp; Fruits</option><option>Specialty &amp; Microgreens</option>
       <option>Beverages</option><option>Dry Goods</option>
     </select>
     <button class="btn btng" onclick="openModal('sup')">+ Add Supplier</button>
@@ -159,64 +232,66 @@ tr:hover td{background:var(--bg)}
   </div>
 </div>
 
-<!-- INGREDIENTS -->
+<!-- ── INGREDIENTS ── -->
 <div id="pg-ingredients" class="pg">
-  <div class="page-title">Master ingredient list</div>
-  <div class="page-sub">All ingredients with current prices, price changes, and section assignments</div>
+  <div class="page-title">Master ingredient library</div>
+  <div class="page-sub">151 ingredients — Panca Tirta meats, UD Sayur Bening vegetables, Novio Bali specialty, and more</div>
   <div class="bar">
-    <div class="si"><input id="is" placeholder="Search ingredients..." oninput="filterIng()"></div>
+    <div class="si"><input id="is" placeholder="Search ingredient..." oninput="filterIng()"></div>
     <select id="ic" onchange="filterIng()">
       <option value="">All categories</option>
-      <option>Vegetables</option><option>Fruits</option><option>Meat</option>
-      <option>Fish</option><option>Dairy</option><option>Dry Store</option>
-      <option>Pastry</option><option>Beverage</option>
+      <option>Vegetables</option><option>Fruits</option><option>Meat</option><option>Fish</option>
+      <option>Dairy</option><option>Dry Store</option><option>Pastry</option><option>Beverage</option>
     </select>
     <button class="btn btng" onclick="openModal('ing')">+ Add Ingredient</button>
   </div>
   <div class="card">
     <div class="tbl-wrap">
-      <table><thead><tr><th>Ingredient</th><th>Category</th><th>Unit</th><th>Current price</th><th>vs. prev</th><th>Supplier</th></tr></thead>
+      <table><thead><tr><th>Ingredient</th><th>Category</th><th>Unit</th><th>Current price</th><th>Price change</th><th>Preferred supplier</th></tr></thead>
       <tbody id="ing-tb"><tr><td colspan="6" class="loader">Loading...</td></tr></tbody></table>
     </div>
   </div>
 </div>
 
-<!-- PRICE COMPARE -->
+<!-- ── PRICE COMPARE ── -->
 <div id="pg-prices" class="pg">
   <div class="page-title">Price comparison</div>
-  <div class="page-sub">Cheapest supplier per ingredient — price increase alerts highlighted</div>
+  <div class="page-sub">Ranked cheapest to most expensive — price increase alerts shown</div>
   <div class="bar">
     <div class="si"><input id="ps" placeholder="Search ingredient..." oninput="filterPrices()"></div>
+    <select id="pcat" onchange="filterPrices()">
+      <option value="">All categories</option>
+      <option>Vegetables</option><option>Fruits</option><option>Meat</option><option>Fish</option>
+      <option>Dairy</option><option>Dry Store</option><option>Pastry</option>
+    </select>
   </div>
-  <div class="alert" id="price-alert">Checking price alerts...</div>
+  <div class="alert-bar" id="price-alert">Checking price alerts...</div>
   <div class="card">
     <div class="tbl-wrap">
-      <table><thead><tr><th>Ingredient</th><th>Cheapest supplier</th><th>Current price</th><th>Price change</th><th>Action</th></tr></thead>
-      <tbody id="price-tb"><tr><td colspan="5" class="loader">Loading prices...</td></tr></tbody></table>
+      <table><thead><tr><th>Ingredient</th><th>Category</th><th>Best price</th><th>Supplier</th><th>Change vs prev</th><th>Recommended action</th></tr></thead>
+      <tbody id="price-tb"><tr><td colspan="6" class="loader">Loading...</td></tr></tbody></table>
     </div>
   </div>
 </div>
 
-<!-- DAILY ORDERS -->
+<!-- ── DAILY ORDERS ── -->
 <div id="pg-orders" class="pg">
   <div class="page-title">Daily order sheet</div>
-  <div class="page-sub">Enter quantities per section · C=Cold / F=Fish / M=Main / P=Pastry / T=Team</div>
-  <div class="bar" style="justify-content:space-between">
-    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-      <input type="date" id="order-date">
-      <button class="btn" onclick="calcOrder()">Calculate totals</button>
-      <button class="btn btng" onclick="saveOrder()">Save order to database</button>
-    </div>
+  <div class="page-sub">Enter quantities per section · C = Cold Kitchen · F = Fish · M = Main Kitchen · P = Pastry · T = Team Dining</div>
+  <div class="bar">
+    <input type="date" id="order-date">
+    <button class="btn" onclick="calcOrder()">Calculate totals</button>
+    <button class="btn btng" onclick="saveOrder()">Save order to database</button>
   </div>
   <div class="metrics">
     <div class="mc"><div class="mcl">Items ordered</div><div class="mcv" id="m-items">0</div><div class="mcs">ingredients</div></div>
-    <div class="mc"><div class="mcl">Total value</div><div class="mcv" id="m-cost" style="font-size:16px">IDR 0</div><div class="mcs">today</div></div>
-    <div class="mc"><div class="mcl">Suppliers</div><div class="mcv" id="m-sups">0</div><div class="mcs">involved</div></div>
-    <div class="mc"><div class="mcl">Sections</div><div class="mcv">5</div><div class="mcs">C / F / M / P / T</div></div>
+    <div class="mc"><div class="mcl">Total order value</div><div class="mcv" id="m-cost" style="font-size:15px">IDR 0</div><div class="mcs">today</div></div>
+    <div class="mc"><div class="mcl">Suppliers</div><div class="mcv" id="m-sups">0</div><div class="mcs">involved today</div></div>
+    <div class="mc"><div class="mcl">Active sections</div><div class="mcv">5</div><div class="mcs">C / F / M / P / T</div></div>
   </div>
   <div class="card">
     <div class="tbl-wrap">
-      <table style="min-width:700px">
+      <table style="min-width:720px">
         <thead><tr><th>Ingredient</th><th>Cat</th><th style="text-align:center">C</th><th style="text-align:center">F</th><th style="text-align:center">M</th><th style="text-align:center">P</th><th style="text-align:center">T</th><th style="text-align:right">Total</th><th style="text-align:right">Price/unit</th><th style="text-align:right">Line cost</th></tr></thead>
         <tbody id="order-tb"><tr><td colspan="10" class="loader">Loading ingredients...</td></tr></tbody>
         <tfoot><tr class="total-row"><td colspan="7">Grand total</td><td></td><td></td><td style="text-align:right" id="order-grand">IDR 0</td></tr></tfoot>
@@ -225,22 +300,24 @@ tr:hover td{background:var(--bg)}
   </div>
 </div>
 
-<!-- MONTHLY -->
+<!-- ── MONTHLY ── -->
 <div id="pg-monthly" class="pg">
   <div class="page-title">Monthly purchasing summary</div>
-  <div class="page-sub">Spending by category and supplier — based on saved daily orders</div>
+  <div class="page-sub">Aggregated spend from saved daily orders — by category and supplier</div>
   <div class="bar">
     <select id="mon-yr"><option value="2026">2026</option><option value="2025">2025</option></select>
     <select id="mon-mo">
       <option value="4">April</option><option value="3">March</option>
       <option value="2">February</option><option value="1">January</option>
+      <option value="5">May</option><option value="6">June</option>
+      <option value="7">July</option><option value="8">August</option>
     </select>
     <button class="btn btng" onclick="loadMonthly()">Load report</button>
   </div>
   <div class="metrics">
     <div class="mc"><div class="mcl">Total spent</div><div class="mcv" style="color:var(--g);font-size:16px" id="mon-total">—</div></div>
-    <div class="mc"><div class="mcl">Price alerts</div><div class="mcv" style="color:var(--am)" id="mon-alerts-count">—</div></div>
-    <div class="mc"><div class="mcl">Top category</div><div class="mcv" id="mon-top" style="font-size:14px">—</div></div>
+    <div class="mc"><div class="mcl">Price alerts</div><div class="mcv" style="color:var(--am)" id="mon-alerts-count">—</div><div class="mcs">items up &gt;5%</div></div>
+    <div class="mc"><div class="mcl">Top category</div><div class="mcv" id="mon-top" style="font-size:13px">—</div></div>
   </div>
   <div class="tabs">
     <div class="tab on" onclick="setTab(this,'mon-cat')">By category</div>
@@ -249,114 +326,144 @@ tr:hover td{background:var(--bg)}
   </div>
   <div id="mon-cat" class="card"><div class="tbl-wrap"><table>
     <thead><tr><th>Category</th><th style="text-align:right">Total spend</th></tr></thead>
-    <tbody id="mon-cat-tb"><tr><td colspan="2" class="loader">Click Load report</td></tr></tbody>
+    <tbody id="mon-cat-tb"><tr><td colspan="2" class="loader">Click Load report above</td></tr></tbody>
   </table></div></div>
   <div id="mon-sup" class="card" style="display:none"><div class="tbl-wrap"><table>
     <thead><tr><th>Supplier</th><th style="text-align:right">Total spend</th></tr></thead>
     <tbody id="mon-sup-tb"></tbody>
   </table></div></div>
   <div id="mon-palerts" class="card" style="display:none"><div class="tbl-wrap"><table>
-    <thead><tr><th>Ingredient</th><th>Supplier</th><th style="text-align:right">Current</th><th style="text-align:right">Previous</th><th style="text-align:right">Change</th></tr></thead>
-    <tbody id="mon-alert-tb"><tr><td colspan="5" class="loader">Loading...</td></tr></tbody>
+    <thead><tr><th>Ingredient</th><th>Supplier</th><th style="text-align:right">Current price</th><th style="text-align:right">Previous price</th><th style="text-align:right">Change %</th></tr></thead>
+    <tbody id="mon-alert-tb"></tbody>
   </table></div></div>
 </div>
 
-<!-- COVER CONTROL -->
+<!-- ── COVER CONTROL ── -->
 <div id="pg-covers" class="pg">
   <div class="page-title">Cover &amp; portion control</div>
-  <div class="page-sub">Track covers served vs ingredient usage to detect waste and over-ordering</div>
+  <div class="page-sub">Connect covers served to ingredient usage — detect waste, over-ordering, and recipe non-compliance</div>
   <div class="card">
-    <div class="ch"><div class="ct">Enter today's covers</div></div>
-    <div style="padding:12px 15px;display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end">
-      <div><label style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--text2);display:block;margin-bottom:4px">Date</label><input type="date" id="cov-date"></div>
-      <div><label style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--text2);display:block;margin-bottom:4px">Total covers</label><input type="number" id="cov-total" min="0" value="0" style="width:90px"></div>
+    <div class="ch"><div class="ct">Enter daily covers</div></div>
+    <div style="padding:12px 16px;display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end">
+      <div><label style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--text2);display:block;margin-bottom:5px">Date</label><input type="date" id="cov-date"></div>
+      <div><label style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--text2);display:block;margin-bottom:5px">Total covers</label><input type="number" id="cov-total" min="0" value="0" style="width:90px"></div>
       <button class="btn btng" onclick="saveCovers()">Save covers</button>
       <button class="btn" onclick="calcCovers()">Calculate variance</button>
     </div>
   </div>
   <div class="metrics">
-    <div class="mc"><div class="mcl">Covers</div><div class="mcv" id="cov-count">—</div></div>
-    <div class="mc"><div class="mcl">Cost per cover</div><div class="mcv" id="cov-fc" style="font-size:15px">—</div></div>
-    <div class="mc"><div class="mcl">Variance flags</div><div class="mcv" id="cov-flags" style="color:var(--rdm)">—</div></div>
+    <div class="mc"><div class="mcl">Covers tonight</div><div class="mcv" id="cov-count">—</div></div>
+    <div class="mc"><div class="mcl">Food cost / cover</div><div class="mcv" id="cov-fc" style="font-size:15px">—</div></div>
+    <div class="mc"><div class="mcl">Variance flags</div><div class="mcv" id="cov-flags" style="color:var(--rdm)">—</div><div class="mcs">items &gt;15% variance</div></div>
   </div>
   <div class="card">
     <div class="tbl-wrap">
-      <table><thead><tr><th>Ingredient</th><th style="text-align:right">Purchased</th><th style="text-align:right">Theoretical</th><th style="text-align:right">Per cover</th><th>Variance</th></tr></thead>
-      <tbody id="cov-tb"></tbody>
-    </table>
+      <table><thead><tr><th>Ingredient</th><th style="text-align:right">Purchased</th><th style="text-align:right">Theoretical use</th><th style="text-align:right">Per cover</th><th>Variance</th></tr></thead>
+      <tbody id="cov-tb"><tr><td colspan="5" class="loader">Enter covers and click Calculate variance</td></tr></tbody></table>
+    </div>
   </div>
 </div>
 
-<!-- RECIPE COSTING -->
+<!-- ── RECIPE COSTING ── -->
 <div id="pg-recipes" class="pg">
-  <div class="page-title">Recipe food cost</div>
-  <div class="page-sub">Calculate true cost per recipe using live ingredient prices</div>
+  <div class="page-title">Recipe food cost calculator</div>
+  <div class="page-sub">Individual recipe cards with ingredient costs — sub-recipes combine to form dish costs</div>
   <div class="bar">
-    <select id="rec-sel" onchange="loadRecipe()" style="flex:1;min-width:200px"><option value="">Select recipe...</option></select>
+    <select id="rec-sel" onchange="loadRecipe()" style="flex:1;min-width:200px"><option value="">Select recipe or sub-recipe...</option></select>
     <button class="btn btng" onclick="openModal('recipe')">+ New Recipe</button>
   </div>
   <div class="card" id="rec-card" style="display:none">
     <div class="ch">
       <div><div class="ct" id="rec-title">—</div><div class="cs" id="rec-yield">—</div></div>
-      <div style="text-align:right"><div style="font-size:20px;font-weight:700;color:var(--g)" id="rec-total">IDR 0</div><div style="font-size:10px;color:var(--text2)">total recipe cost</div></div>
+      <div style="text-align:right">
+        <div style="font-size:22px;font-weight:700;color:var(--g)" id="rec-total">IDR 0</div>
+        <div style="font-size:10px;color:var(--text2)">total recipe cost</div>
+      </div>
     </div>
     <div class="tbl-wrap">
-      <table><thead><tr><th>Ingredient</th><th>Qty</th><th>Unit</th><th>Price/unit</th><th>Yield %</th><th style="text-align:right">Line cost</th></tr></thead>
-      <tbody id="rec-tb"></tbody>
-      <tfoot><tr class="total-row"><td colspan="5">Total recipe cost</td><td style="text-align:right" id="rec-foot">IDR 0</td></tr></tfoot>
-    </table>
+      <table>
+        <thead><tr><th>Ingredient</th><th style="text-align:right">Qty</th><th>Unit</th><th style="text-align:right">Price / unit</th><th style="text-align:right">Yield %</th><th style="text-align:right">Line cost</th></tr></thead>
+        <tbody id="rec-tb"></tbody>
+        <tfoot><tr class="total-row"><td colspan="5">Total recipe cost</td><td style="text-align:right" id="rec-foot">IDR 0</td></tr></tfoot>
+      </table>
     </div>
     <div class="fc-row">
-      <div class="fcf"><label>Portions</label><div style="font-size:14px;font-weight:600;padding:5px 0" id="rec-portions">—</div></div>
-      <div class="fcf"><label>Cost / portion</label><div style="font-size:14px;font-weight:600;padding:5px 0;color:var(--g)" id="rec-cpp">—</div></div>
-      <div class="fcf"><label>Selling price (IDR)</label><input type="number" id="rec-sell" placeholder="e.g. 185000" oninput="calcRecipeFC()" style="width:130px"></div>
+      <div class="fcf"><label>Yield portions</label><div style="font-size:14px;font-weight:700;padding:5px 0" id="rec-portions">—</div></div>
+      <div class="fcf"><label>Cost per portion</label><div style="font-size:14px;font-weight:700;padding:5px 0;color:var(--g)" id="rec-cpp">—</div></div>
+      <div class="fcf"><label>Cost per 100g / ml</label><div style="font-size:14px;font-weight:700;padding:5px 0;color:var(--tl)" id="rec-per100">—</div></div>
+      <div class="fcf"><label>Selling price (IDR)</label><input type="number" id="rec-sell" placeholder="e.g. 285000" oninput="calcRecipeFC()" style="width:130px"></div>
       <div class="fcs"><div class="fcsl">Food cost %</div><div class="fcsv" id="rec-fcp">—</div></div>
       <div class="fcs"><div class="fcsl">Gross profit</div><div class="fcsv" id="rec-gp">—</div></div>
-      <div class="fcs"><div class="fcsl">Suggested sell</div><div class="fcsv" id="rec-sug" style="color:var(--tlm)">—</div></div>
+      <div class="fcs"><div class="fcsl">Suggested sell (target FC%)</div><div class="fcsv" id="rec-sug" style="color:var(--tlm)">—</div></div>
     </div>
   </div>
+  <div style="font-size:11px;color:var(--text2);margin-top:8px">Sub-recipes (marked A/B/C/D) feed into the Dish Costing calculator above. Set your selling price per portion to see food cost % and gross profit.</div>
 </div>
 
-<!-- DISH COSTING -->
+<!-- ── DISH COSTING ── -->
 <div id="pg-dishes" class="pg">
-  <div class="page-title">Dish food cost</div>
-  <div class="page-sub">Multi-component dish costing with menu engineering classification</div>
+  <div class="page-title">Dish food cost calculator</div>
+  <div class="page-sub">Each dish is built from multiple sub-recipes — total cost is the sum of all components</div>
   <div class="bar">
-    <select id="dish-sel" onchange="loadDish()" style="flex:1;min-width:200px"><option value="">Select dish...</option></select>
+    <select id="dish-sel" onchange="loadDish()" style="flex:1;min-width:220px"><option value="">Select dish...</option></select>
+    <select id="dish-section-filter" onchange="filterDishList()">
+      <option value="">All menus</option>
+      <option value="Aperitif">Aperitif tasting menu</option>
+      <option value="Aperitif Additional">Aperitif additional</option>
+      <option value="Bar">Bar menu</option>
+    </select>
     <button class="btn btng" onclick="openModal('dish')">+ New Dish</button>
   </div>
   <div class="card" id="dish-card" style="display:none">
     <div class="ch">
-      <div><div class="ct" id="dish-title">—</div><div class="cs" id="dish-course">—</div></div>
-      <span id="dish-eng" class="bk bg">—</span>
+      <div>
+        <div class="ct" id="dish-title">—</div>
+        <div class="cs" id="dish-course-label">—</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span id="dish-eng" class="bk bg">—</span>
+        <span id="dish-section-badge" class="bk bgr">—</span>
+      </div>
     </div>
-    <div style="padding:12px 15px">
-      <div id="dish-comp-list"></div>
-      <table style="min-width:0;margin-top:4px"><tfoot><tr class="total-row"><td>Total food cost</td><td style="text-align:right" id="dish-fc-total">—</td></tr></tfoot></table>
+    <div id="dish-comp-list"></div>
+    <div style="padding:0 16px 12px">
+      <table style="min-width:0">
+        <tfoot><tr class="total-row"><td style="padding:10px 0">Total food cost (all components)</td><td style="text-align:right;padding:10px 0;font-size:15px" id="dish-fc-total">—</td></tr></tfoot>
+      </table>
     </div>
     <div class="fc-row">
       <div class="fcf"><label>Selling price (IDR)</label><input type="number" id="dish-sell" placeholder="e.g. 950000" oninput="calcDishFC()" style="width:130px"></div>
       <div class="fcs"><div class="fcsl">Food cost %</div><div class="fcsv" id="dish-fcp">—</div></div>
       <div class="fcs"><div class="fcsl">Gross profit</div><div class="fcsv" id="dish-gp">—</div></div>
-      <div class="fcs"><div class="fcsl">Target sell (35%)</div><div class="fcsv" id="dish-target" style="color:var(--tlm)">—</div></div>
+      <div class="fcs"><div class="fcsl">Target FC %</div><div class="fcsv" id="dish-target-pct" style="color:var(--text2)">—</div></div>
+      <div class="fcs"><div class="fcsl">Suggested sell</div><div class="fcsv" id="dish-target" style="color:var(--tlm)">—</div></div>
+    </div>
+    <div style="padding:10px 16px;background:var(--bg);border-top:0.5px solid var(--border)">
+      <div style="font-size:11px;color:var(--text2)" id="dish-notes-display">—</div>
     </div>
   </div>
-  <div style="font-size:11px;color:var(--text2);margin-top:6px">Fine dining target: 35–42% · Casual: 25–32% · Premium / omakase: up to 48%</div>
+  <div style="font-size:11px;color:var(--text2);margin-top:8px">Menu engineering: <span class="bk bg">Star</span> = high margin + high popularity &nbsp;·&nbsp; <span class="bk bbl">Puzzle</span> = high margin + low popularity &nbsp;·&nbsp; <span class="bk btl">Plow Horse</span> = low margin + high popularity &nbsp;·&nbsp; <span class="bk brd">Dog</span> = review or remove. Fine dining FC target: 35–42% · Bar menu: 28–35% · Premium additional items: up to 48%</div>
 </div>
 
 </main>
+</div>
 
-<!-- MODALS -->
+<!-- ═══ MODALS ═══ -->
 <div class="modal-overlay" id="modal-sup">
   <div class="modal">
     <div class="modal-title">Add supplier</div>
     <div class="fr"><label>Company name *</label><input type="text" id="sup-name" placeholder="e.g. Bahana Gourmet"></div>
-    <div class="fr"><label>Category *</label><select id="sup-cat-inp"><option>Foods Supplies</option><option>Food Supplies</option><option>Food Supplier</option><option>Chicken Supplies</option><option>Beverages</option><option>Dry Goods</option></select></div>
-    <div class="fr"><label>Phone / WhatsApp</label><input type="text" id="sup-phone" placeholder="0812 ..."></div>
+    <div class="fr"><label>Category *</label><select id="sup-cat-inp">
+      <option>Foods Supplies</option><option>Food Supplies</option><option>Food Supplier</option>
+      <option>Meat &amp; Poultry</option><option>Vegetables &amp; Fruits</option>
+      <option>Specialty &amp; Microgreens</option><option>Chicken Supplies</option>
+      <option>Beverages</option><option>Dry Goods</option>
+    </select></div>
+    <div class="fr"><label>Phone / WhatsApp</label><input type="text" id="sup-phone" placeholder="08xx xxxx xxxx"></div>
     <div class="fr"><label>Email</label><input type="text" id="sup-email" placeholder="orders@supplier.id"></div>
     <div class="fr"><label>Delivery days</label><input type="text" id="sup-del" placeholder="Mon / Wed / Fri"></div>
-    <div class="fr"><label>Payment terms</label><input type="text" id="sup-pay" placeholder="Net 14, COD"></div>
-    <div class="fr"><label>Notes</label><textarea id="sup-notes" placeholder="Any notes..."></textarea></div>
+    <div class="fr"><label>Payment terms</label><input type="text" id="sup-pay" placeholder="Net 14 / COD"></div>
+    <div class="fr"><label>Notes</label><textarea id="sup-notes" placeholder="Minimum order, special conditions..."></textarea></div>
     <div class="fa"><button class="btn" onclick="closeModal('sup')">Cancel</button><button class="btn btng" onclick="addSupplier()">Save supplier</button></div>
   </div>
 </div>
@@ -364,22 +471,29 @@ tr:hover td{background:var(--bg)}
 <div class="modal-overlay" id="modal-ing">
   <div class="modal">
     <div class="modal-title">Add ingredient</div>
-    <div class="fr"><label>Ingredient name *</label><input type="text" id="ing-name" placeholder="e.g. Wagyu A5"></div>
-    <div class="fr"><label>Category *</label><select id="ing-cat-inp"><option>Vegetables</option><option>Fruits</option><option>Meat</option><option>Fish</option><option>Dairy</option><option>Dry Store</option><option>Pastry</option><option>Beverage</option><option>Other</option></select></div>
-    <div class="fr"><label>Unit *</label><select id="ing-unit-inp"><option>kg</option><option>gram</option><option>liter</option><option>ml</option><option>pcs</option><option>btl</option><option>box</option><option>pack</option><option>portion</option></select></div>
-    <div class="fr"><label>Notes</label><textarea id="ing-notes" placeholder="Storage notes, allergens..."></textarea></div>
+    <div class="fr"><label>Ingredient name *</label><input type="text" id="ing-name" placeholder="e.g. Wagyu A5 Kagoshima"></div>
+    <div class="fr"><label>Category *</label><select id="ing-cat-inp">
+      <option>Vegetables</option><option>Fruits</option><option>Meat</option><option>Fish</option>
+      <option>Dairy</option><option>Dry Store</option><option>Pastry</option><option>Beverage</option><option>Other</option>
+    </select></div>
+    <div class="fr"><label>Unit *</label><select id="ing-unit-inp">
+      <option>kg</option><option>gram</option><option>liter</option><option>ml</option>
+      <option>pcs</option><option>btl</option><option>box</option><option>pack</option><option>pot</option><option>portion</option>
+    </select></div>
+    <div class="fr"><label>Notes</label><textarea id="ing-notes" placeholder="Storage, allergens, supplier notes..."></textarea></div>
     <div class="fa"><button class="btn" onclick="closeModal('ing')">Cancel</button><button class="btn btng" onclick="addIngredient()">Save ingredient</button></div>
   </div>
 </div>
 
 <div class="modal-overlay" id="modal-recipe">
   <div class="modal">
-    <div class="modal-title">New recipe</div>
-    <div class="fr"><label>Recipe name *</label><input type="text" id="rn-name" placeholder="e.g. Truffle Jus"></div>
-    <div class="fr"><label>Category</label><input type="text" id="rn-cat" placeholder="Sauce, Dessert, Starch..."></div>
+    <div class="modal-title">New recipe / sub-recipe</div>
+    <div class="fr"><label>Recipe name *</label><input type="text" id="rn-name" placeholder="e.g. Woku Sauce (C)"></div>
+    <div class="fr"><label>Category</label><input type="text" id="rn-cat" placeholder="Sub-recipe / Sauce / Dessert / Bar..."></div>
     <div class="fr"><label>Yield — number of portions</label><input type="number" id="rn-portions" min="1" placeholder="e.g. 10"></div>
+    <div class="fr"><label>Yield — total weight (grams)</label><input type="number" id="rn-weight" min="0" placeholder="e.g. 2500"></div>
     <div class="fr"><label>Target food cost %</label><input type="number" id="rn-fc" value="35" min="1" max="100"></div>
-    <div class="fr"><label>Notes</label><textarea id="rn-notes"></textarea></div>
+    <div class="fr"><label>Notes</label><textarea id="rn-notes" placeholder="Preparation notes, links to other recipes..."></textarea></div>
     <div class="fa"><button class="btn" onclick="closeModal('recipe')">Cancel</button><button class="btn btng" onclick="addRecipe()">Save recipe</button></div>
   </div>
 </div>
@@ -387,11 +501,25 @@ tr:hover td{background:var(--bg)}
 <div class="modal-overlay" id="modal-dish">
   <div class="modal">
     <div class="modal-title">New dish</div>
-    <div class="fr"><label>Dish name *</label><input type="text" id="dn-name" placeholder="e.g. Wagyu A5 Sirloin"></div>
-    <div class="fr"><label>Course</label><select id="dn-course"><option>Starter</option><option>Main Course</option><option>Dessert</option><option>Snack</option><option>Pre-dessert</option><option>Amuse-bouche</option></select></div>
+    <div class="fr"><label>Dish name *</label><input type="text" id="dn-name" placeholder="e.g. Opu Fish — Main Course"></div>
+    <div class="fr"><label>Course</label><select id="dn-course">
+      <option>Snack</option><option>Canape</option><option>Starter</option><option>Fish</option>
+      <option>Vegetable</option><option>Main Course</option><option>Tasting Menu</option>
+      <option>Pre-dessert</option><option>Dessert</option><option>Bar Snack</option>
+    </select></div>
+    <div class="fr"><label>Menu section</label><select id="dn-section">
+      <option value="Aperitif">Aperitif</option><option value="Aperitif Additional">Aperitif Additional</option>
+      <option value="Bar">Bar</option>
+    </select></div>
     <div class="fr"><label>Selling price (IDR)</label><input type="number" id="dn-sell" placeholder="e.g. 950000"></div>
-    <div class="fr"><label>Target FC %</label><input type="number" id="dn-fc" value="35"></div>
-    <div class="fr"><label>Menu engineering category</label><select id="dn-eng"><option value="star">Star — high margin + high popularity</option><option value="puzzle">Puzzle — high margin + low popularity</option><option value="plow">Plow Horse — low margin + high popularity</option><option value="dog">Dog — low margin + low popularity</option></select></div>
+    <div class="fr"><label>Target food cost %</label><input type="number" id="dn-fc" value="35"></div>
+    <div class="fr"><label>Menu engineering</label><select id="dn-eng">
+      <option value="star">Star — high margin + high popularity</option>
+      <option value="puzzle">Puzzle — high margin + low popularity</option>
+      <option value="plow">Plow Horse — low margin + high popularity</option>
+      <option value="dog">Dog — low margin + low popularity (review)</option>
+    </select></div>
+    <div class="fr"><label>Notes / food cost reference</label><textarea id="dn-notes" placeholder="e.g. IDR 29,745 food cost per portion from recipe cards"></textarea></div>
     <div class="fa"><button class="btn" onclick="closeModal('dish')">Cancel</button><button class="btn btng" onclick="addDish()">Save dish</button></div>
   </div>
 </div>
@@ -399,28 +527,59 @@ tr:hover td{background:var(--bg)}
 <div class="toast" id="toast"></div>
 
 <script>
-const SB_URL='https://flhsqerpikhihtirfutu.supabase.co/rest/v1';
-const SB_KEY='sb_publishable_vzvJV73AoLe_isJ3PhXplw_zke7NG_F';
-const H={'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=representation'};
+const SB='https://flhsqerpikhihtirfutu.supabase.co/rest/v1';
+const SK='sb_publishable_vzvJV73AoLe_isJ3PhXplw_zke7NG_F';
+const H={'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json','Prefer':'return=representation'};
+
+// Access codes — change these to what you want
+const CODES=['Kitchen2026!','Chef@Bali','Aperitif2026','Purchasing@Bali'];
 
 const fmt=n=>'IDR '+Math.round(n||0).toLocaleString('id-ID');
 const pct=(v,p)=>p>0?((v-p)/p*100):0;
 
 async function api(path,method='GET',body=null){
   try{
-    const r=await fetch(SB_URL+path,{method,headers:H,body:body?JSON.stringify(body):null});
+    const r=await fetch(SB+path,{method,headers:H,body:body?JSON.stringify(body):null});
     if(!r.ok)throw new Error(r.status);
     return method==='DELETE'?null:await r.json();
-  }catch(e){showToast('Database error: '+e.message,true);return null;}
+  }catch(e){toast('Database error: '+e.message,true);return null;}
 }
 
-function showToast(msg,err=false){
+function toast(msg,err=false){
   const t=document.getElementById('toast');
   t.textContent=msg;t.className='toast'+(err?' err':'');t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),3000);
 }
 function openModal(id){document.getElementById('modal-'+id).classList.add('open')}
 function closeModal(id){document.getElementById('modal-'+id).classList.remove('open')}
+
+function doLogin(){
+  const pw=document.getElementById('pw-input').value;
+  if(CODES.includes(pw)){
+    sessionStorage.setItem('ko_auth','1');
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('app').style.display='block';
+    initApp();
+  }else{
+    document.getElementById('login-err').textContent='Incorrect access code. Please try again.';
+    document.getElementById('pw-input').value='';
+    document.getElementById('pw-input').focus();
+  }
+}
+
+function doLogout(){
+  sessionStorage.removeItem('ko_auth');
+  document.getElementById('app').style.display='none';
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('pw-input').value='';
+  document.getElementById('login-err').textContent='';
+}
+
+if(sessionStorage.getItem('ko_auth')==='1'){
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').style.display='block';
+}
+
 function go(id,btn){
   document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
@@ -431,66 +590,70 @@ function go(id,btn){
   if(id==='recipes')loadRecipeList();
   if(id==='dishes')loadDishList();
 }
+
 function setTab(el,id){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
   el.classList.add('on');
-  ['mon-cat','mon-sup','mon-palerts'].forEach(x=>{
-    document.getElementById(x).style.display=x===id?'block':'none';
-  });
+  ['mon-cat','mon-sup','mon-palerts'].forEach(x=>document.getElementById(x).style.display=x===id?'block':'none');
 }
 
-let allSup=[],allIng=[],allPrices=[];
+let allSup=[],allIng=[],allPrices=[],allDishes=[];
 
+function initApp(){
+  document.getElementById('order-date').value=new Date().toISOString().split('T')[0];
+  document.getElementById('cov-date').value=new Date().toISOString().split('T')[0];
+  loadSuppliers().then(()=>{loadIngredients();loadOrderSheet();});
+}
+
+// ── SUPPLIERS ──
 async function loadSuppliers(){
-  const data=await api('/suppliers?order=name&select=*');
-  if(!data)return;
-  allSup=data;
-  renderSup(allSup);
+  const d=await api('/suppliers?order=category,name&select=*');
+  if(!d)return;
+  allSup=d;renderSup(allSup);
   document.getElementById('db-dot').className='db-dot live';
-  document.getElementById('db-label').textContent='Live';
+  document.getElementById('db-label').textContent='Live · Bali';
 }
 function renderSup(list){
   document.getElementById('sup-tb').innerHTML=list.length?list.map(s=>`
     <tr>
     <td style="font-weight:600">${s.name}</td>
     <td><span class="bk btl">${s.category}</span></td>
-    <td><a href="tel:${s.phone}" style="color:var(--blm);text-decoration:none;font-weight:500">${s.phone||'—'}</a></td>
-    <td style="color:var(--text2)">${s.delivery_days||'—'}</td>
-    <td style="color:var(--text2)">${s.payment_terms||'—'}</td>
+    <td><a href="tel:${s.phone}" style="color:var(--blm);text-decoration:none;font-weight:600">${s.phone||'—'}</a></td>
+    <td style="color:var(--text2);font-size:12px">${s.delivery_days||'—'}</td>
+    <td style="color:var(--text2);font-size:12px">${s.payment_terms||'—'}</td>
     <td><span class="bk ${s.is_active?'bg':'brd'}">${s.is_active?'Active':'Inactive'}</span></td>
-    </tr>`).join(''):'<tr><td colspan="6" class="loader">No suppliers found</td></tr>';
+    </tr>`).join(''):'<tr><td colspan="6" class="empty">No suppliers found</td></tr>';
 }
 function filterSup(){
   const q=document.getElementById('ss').value.toLowerCase();
   const cat=document.getElementById('sc').value;
-  renderSup(allSup.filter(s=>(s.name.toLowerCase().includes(q)||String(s.phone||'').includes(q))&&(!cat||s.category===cat)));
+  renderSup(allSup.filter(s=>(s.name.toLowerCase().includes(q)||String(s.phone||'').includes(q)||String(s.category||'').toLowerCase().includes(q))&&(!cat||s.category===cat)));
 }
 async function addSupplier(){
   const name=document.getElementById('sup-name').value.trim();
-  if(!name){showToast('Name is required',true);return;}
-  const res=await api('/suppliers','POST',{name,category:document.getElementById('sup-cat-inp').value,phone:document.getElementById('sup-phone').value,email:document.getElementById('sup-email').value,delivery_days:document.getElementById('sup-del').value,payment_terms:document.getElementById('sup-pay').value,notes:document.getElementById('sup-notes').value,is_active:true});
-  if(res){closeModal('sup');showToast('Supplier saved');['sup-name','sup-phone','sup-email','sup-del','sup-pay','sup-notes'].forEach(id=>document.getElementById(id).value='');await loadSuppliers();}
+  if(!name){toast('Name is required',true);return;}
+  const r=await api('/suppliers','POST',{name,category:document.getElementById('sup-cat-inp').value,phone:document.getElementById('sup-phone').value,email:document.getElementById('sup-email').value,delivery_days:document.getElementById('sup-del').value,payment_terms:document.getElementById('sup-pay').value,notes:document.getElementById('sup-notes').value,is_active:true});
+  if(r){closeModal('sup');toast('Supplier saved');['sup-name','sup-phone','sup-email','sup-del','sup-pay','sup-notes'].forEach(id=>document.getElementById(id).value='');await loadSuppliers();}
 }
 
+// ── INGREDIENTS ──
 async function loadIngredients(){
-  const data=await api('/v_ingredient_prices?is_preferred=eq.true&order=category,ingredient_name&select=ingredient_id,ingredient_name,category,unit,supplier_name,current_price,previous_price,price_change_pct');
-  if(!data)return;
-  allIng=data;
-  renderIng(allIng);
+  const d=await api('/v_ingredient_prices?is_preferred=eq.true&order=category,ingredient_name&select=ingredient_id,ingredient_name,category,unit,supplier_name,current_price,previous_price,price_change_pct');
+  if(!d)return;allIng=d;renderIng(allIng);
 }
 function renderIng(list){
   document.getElementById('ing-tb').innerHTML=list.length?list.map(i=>{
-    const d=parseFloat(i.price_change_pct)||0;
-    const arrow=d>5?`<span style="color:var(--rdm);font-size:11px;font-weight:600">▲ +${d.toFixed(1)}%</span>`:d<0?`<span style="color:var(--g);font-size:11px">▼ ${d.toFixed(1)}%</span>`:`<span style="color:var(--text3)">—</span>`;
+    const dp=parseFloat(i.price_change_pct)||0;
+    const arrow=dp>5?`<span class="ph-badge ph-up">▲ +${dp.toFixed(1)}%</span>`:dp<-5?`<span class="ph-badge ph-down">▼ ${dp.toFixed(1)}%</span>`:`<span class="ph-badge ph-stable">Stable</span>`;
     return`<tr>
     <td style="font-weight:600">${i.ingredient_name}</td>
     <td><span class="bk bbl">${i.category}</span></td>
     <td style="color:var(--text2)">${i.unit}</td>
     <td style="font-weight:600">${fmt(i.current_price)}</td>
     <td>${arrow}</td>
-    <td style="color:var(--text2);font-size:11px">${i.supplier_name}</td>
+    <td style="color:var(--text2);font-size:12px">${i.supplier_name}</td>
     </tr>`;
-  }).join(''):'<tr><td colspan="6" class="loader">No ingredients found</td></tr>';
+  }).join(''):'<tr><td colspan="6" class="empty">No ingredients found</td></tr>';
 }
 function filterIng(){
   const q=document.getElementById('is').value.toLowerCase();
@@ -499,51 +662,52 @@ function filterIng(){
 }
 async function addIngredient(){
   const name=document.getElementById('ing-name').value.trim();
-  if(!name){showToast('Name required',true);return;}
-  const res=await api('/ingredients','POST',{name,category:document.getElementById('ing-cat-inp').value,unit:document.getElementById('ing-unit-inp').value,notes:document.getElementById('ing-notes').value,is_active:true});
-  if(res){closeModal('ing');showToast('Ingredient saved');await loadIngredients();}
+  if(!name){toast('Name required',true);return;}
+  const r=await api('/ingredients','POST',{name,category:document.getElementById('ing-cat-inp').value,unit:document.getElementById('ing-unit-inp').value,notes:document.getElementById('ing-notes').value,is_active:true});
+  if(r){closeModal('ing');toast('Ingredient saved');await loadIngredients();}
 }
 
+// ── PRICE COMPARE ──
 async function loadPrices(){
-  const data=await api('/v_ingredient_prices?order=ingredient_name,current_price&select=ingredient_name,supplier_name,current_price,previous_price,price_change_pct');
-  if(!data)return;
-  allPrices=data;
-  const alerts=data.filter(p=>parseFloat(p.price_change_pct)>5);
-  document.getElementById('price-alert').textContent=alerts.length?`${alerts.length} ingredient${alerts.length>1?'s':''} with price increases above 5% — review before ordering`:'All prices stable — no alerts this period';
+  const d=await api('/v_ingredient_prices?order=ingredient_name,current_price&select=ingredient_name,category,supplier_name,current_price,previous_price,price_change_pct');
+  if(!d)return;allPrices=d;
+  const alerts=d.filter(p=>parseFloat(p.price_change_pct)>5);
+  document.getElementById('price-alert').textContent=alerts.length?`${alerts.length} ingredient${alerts.length>1?'s have':' has'} price increases above 5% since last entry — review before ordering`:'All prices stable — no alerts above 5% this period';
   renderPrices();
 }
 function renderPrices(){
   const q=document.getElementById('ps').value.toLowerCase();
+  const cat=document.getElementById('pcat').value;
   const grouped={};
-  allPrices.filter(p=>p.ingredient_name.toLowerCase().includes(q)).forEach(p=>{
+  allPrices.filter(p=>p.ingredient_name.toLowerCase().includes(q)&&(!cat||p.category===cat)).forEach(p=>{
     if(!grouped[p.ingredient_name])grouped[p.ingredient_name]=[];
     grouped[p.ingredient_name].push(p);
   });
   document.getElementById('price-tb').innerHTML=Object.entries(grouped).map(([name,list])=>{
     list.sort((a,b)=>a.current_price-b.current_price);
-    const b=list[0];const d=parseFloat(b.price_change_pct)||0;
-    const action=d>30?'Urgent: find alternative':d>15?'Review contract':d>5?'Monitor closely':'No action needed';
+    const b=list[0];const dp=parseFloat(b.price_change_pct)||0;
+    const action=dp>30?'Urgent — find alternative supplier':dp>15?'Review supplier contract':dp>5?'Monitor — trending up':'No action needed';
+    const badge=dp>5?`<span class="ph-badge ph-up">▲ +${dp.toFixed(1)}%</span>`:dp<-5?`<span class="ph-badge ph-down">▼ ${dp.toFixed(1)}%</span>`:`<span class="ph-badge ph-stable">Stable</span>`;
     return`<tr>
-    <td style="font-weight:600">${name}${d>5?` <span class="bk bam">+${d.toFixed(1)}%</span>`:''}</td>
-    <td style="color:var(--text2);font-size:11px">${b.supplier_name}</td>
+    <td style="font-weight:600">${name}</td>
+    <td><span class="bk bbl">${b.category||'—'}</span></td>
     <td style="font-weight:600;color:var(--g)">${fmt(b.current_price)}</td>
-    <td>${d>5?`<span style="color:var(--rdm);font-weight:600">▲ +${d.toFixed(1)}%</span>`:`<span style="color:var(--text3)">Stable</span>`}</td>
+    <td style="font-size:12px;color:var(--text2)">${b.supplier_name}</td>
+    <td>${badge}</td>
     <td style="font-size:11px;color:var(--text2)">${action}</td>
     </tr>`;
-  }).join('')||'<tr><td colspan="5" class="loader">No results</td></tr>';
+  }).join('')||'<tr><td colspan="6" class="empty">No results</td></tr>';
 }
 function filterPrices(){renderPrices();}
 
+// ── DAILY ORDERS ──
 async function loadOrderSheet(){
-  const data=await api('/v_ingredient_prices?is_preferred=eq.true&order=category,ingredient_name&select=ingredient_id,supplier_price_id,ingredient_name,category,unit,current_price,supplier_name');
-  if(!data)return;
-  window._orderData=data;
-  const today=new Date().toISOString().split('T')[0];
-  document.getElementById('order-date').value=today;
-  document.getElementById('order-tb').innerHTML=data.map((i,idx)=>`
+  const d=await api('/v_ingredient_prices?is_preferred=eq.true&order=category,ingredient_name&select=ingredient_id,supplier_price_id,ingredient_name,category,unit,current_price,supplier_name');
+  if(!d)return;window._orderData=d;
+  document.getElementById('order-tb').innerHTML=d.map((i,idx)=>`
     <tr>
     <td style="font-weight:600;font-size:12px">${i.ingredient_name}</td>
-    <td><span class="bk bbl" style="font-size:9px">${i.category.slice(0,3).toUpperCase()}</span></td>
+    <td><span class="bk bbl" style="font-size:9px">${(i.category||'').slice(0,4).toUpperCase()}</span></td>
     ${['C','F','M','P','T'].map(s=>`<td style="text-align:center"><input class="qty" data-i="${idx}" data-s="${s}" type="number" min="0" step="0.1" placeholder="—"></td>`).join('')}
     <td style="text-align:right;font-size:11px;color:var(--text2)" id="rt-${idx}">—</td>
     <td style="text-align:right;font-size:11px">${fmt(i.current_price)}</td>
@@ -554,8 +718,7 @@ function calcOrder(){
   if(!window._orderData)return;
   let total=0,items=0;const sups=new Set();
   window._orderData.forEach((ing,idx)=>{
-    let qty=0;
-    ['C','F','M','P','T'].forEach(s=>{const el=document.querySelector(`input[data-i="${idx}"][data-s="${s}"]`);qty+=parseFloat(el?.value||0);});
+    let qty=0;['C','F','M','P','T'].forEach(s=>{const el=document.querySelector(`input[data-i="${idx}"][data-s="${s}"]`);qty+=parseFloat(el?.value||0);});
     const cost=qty*ing.current_price;
     document.getElementById(`rt-${idx}`).textContent=qty>0?qty.toFixed(2)+' '+ing.unit:'—';
     document.getElementById(`rc-${idx}`).textContent=qty>0?fmt(cost):'—';
@@ -567,45 +730,38 @@ function calcOrder(){
   document.getElementById('order-grand').textContent=fmt(total);
 }
 async function saveOrder(){
-  if(!window._orderData){showToast('No data loaded',true);return;}
+  if(!window._orderData){toast('No data loaded',true);return;}
   const orderDate=document.getElementById('order-date').value;
-  const lines=[];
-  window._orderData.forEach((ing,idx)=>{
-    ['C','F','M','P','T'].forEach(s=>{
-      const el=document.querySelector(`input[data-i="${idx}"][data-s="${s}"]`);
-      const qty=parseFloat(el?.value||0);
-      if(qty>0)lines.push({ingredient_name:ing.ingredient_name,section:s,qty,unit:ing.unit,price:ing.current_price,supplier:ing.supplier_name});
-    });
-  });
-  if(!lines.length){showToast('Enter at least one quantity',true);return;}
-  const orderRes=await api('/daily_orders','POST',{order_date:orderDate,status:'submitted'});
-  if(!orderRes||!orderRes[0])return;
-  const orderId=orderRes[0].id;
+  const res=await api('/daily_orders','POST',{order_date:orderDate,status:'submitted'});
+  if(!res||!res[0])return;
+  const orderId=res[0].id;
   const secData=await api('/sections?select=id,code');
   const secMap={};secData?.forEach(s=>secMap[s.code]=s.id);
-  const dbLines=window._orderData.flatMap((ing,idx)=>{
-    return['C','F','M','P','T'].map(s=>{
-      const el=document.querySelector(`input[data-i="${idx}"][data-s="${s}"]`);
-      const qty=parseFloat(el?.value||0);
-      if(qty<=0)return null;
-      return{order_id:orderId,ingredient_id:ing.ingredient_id,supplier_price_id:ing.supplier_price_id,section_id:secMap[s],quantity:qty,unit_price:ing.current_price};
-    }).filter(Boolean);
-  });
-  if(dbLines.length){
-    const res=await api('/daily_order_lines','POST',dbLines);
-    if(res)showToast(`Order saved — ${dbLines.length} lines · ${orderDate}`);
-  }
+  const lines=window._orderData.flatMap((ing,idx)=>['C','F','M','P','T'].map(s=>{
+    const el=document.querySelector(`input[data-i="${idx}"][data-s="${s}"]`);
+    const qty=parseFloat(el?.value||0);
+    if(qty<=0)return null;
+    return{order_id:orderId,ingredient_id:ing.ingredient_id,supplier_price_id:ing.supplier_price_id,section_id:secMap[s],quantity:qty,unit_price:ing.current_price};
+  }).filter(Boolean));
+  if(lines.length){
+    const r=await api('/daily_order_lines','POST',lines);
+    if(r)toast(`Order saved — ${lines.length} lines · ${orderDate}`);
+  }else toast('Enter at least one quantity',true);
   calcOrder();
 }
 
+// ── MONTHLY ──
 async function loadMonthly(){
   const yr=document.getElementById('mon-yr').value;
   const mo=String(document.getElementById('mon-mo').value).padStart(2,'0');
   const from=`${yr}-${mo}-01`;const days=new Date(yr,parseInt(mo),0).getDate();const to=`${yr}-${mo}-${days}`;
-  const data=await api(`/v_monthly_spend?month=gte.${from}&month=lte.${to}&select=*`);
-  if(!data||!data.length){document.getElementById('mon-cat-tb').innerHTML='<tr><td colspan="2" class="loader">No orders found for this period</td></tr>';document.getElementById('mon-total').textContent='IDR 0';return;}
+  const d=await api(`/v_monthly_spend?month=gte.${from}&month=lte.${to}&select=*`);
+  if(!d||!d.length){
+    document.getElementById('mon-cat-tb').innerHTML='<tr><td colspan="2" class="loader">No orders saved for this period yet</td></tr>';
+    document.getElementById('mon-total').textContent='IDR 0';return;
+  }
   const catMap={};const supMap={};let grand=0;
-  data.forEach(r=>{const sp=parseFloat(r.total_spend)||0;grand+=sp;if(!catMap[r.category])catMap[r.category]=0;catMap[r.category]+=sp;if(!supMap[r.supplier_name])supMap[r.supplier_name]=0;supMap[r.supplier_name]+=sp;});
+  d.forEach(r=>{const sp=parseFloat(r.total_spend)||0;grand+=sp;if(!catMap[r.category])catMap[r.category]=0;catMap[r.category]+=sp;if(!supMap[r.supplier_name])supMap[r.supplier_name]=0;supMap[r.supplier_name]+=sp;});
   document.getElementById('mon-total').textContent=fmt(grand);
   const topCat=Object.entries(catMap).sort((a,b)=>b[1]-a[1])[0];
   document.getElementById('mon-top').textContent=topCat?topCat[0]:'—';
@@ -613,53 +769,103 @@ async function loadMonthly(){
   document.getElementById('mon-sup-tb').innerHTML=Object.entries(supMap).sort((a,b)=>b[1]-a[1]).map(([sup,v])=>`<tr><td style="font-weight:600">${sup}</td><td style="text-align:right">${fmt(v)}</td></tr>`).join('');
   const alerts=await api('/v_ingredient_prices?price_change_pct=gt.5&order=price_change_pct.desc&select=ingredient_name,supplier_name,current_price,previous_price,price_change_pct');
   document.getElementById('mon-alerts-count').textContent=alerts?.length||0;
-  document.getElementById('mon-alert-tb').innerHTML=alerts?.length?alerts.map(a=>`<tr><td style="font-weight:600">${a.ingredient_name}</td><td style="font-size:11px;color:var(--text2)">${a.supplier_name}</td><td style="text-align:right">${fmt(a.current_price)}</td><td style="text-align:right">${fmt(a.previous_price)}</td><td style="text-align:right"><span class="bk bam">+${parseFloat(a.price_change_pct).toFixed(1)}%</span></td></tr>`).join(''):'<tr><td colspan="5" class="loader">No price alerts</td></tr>';
+  document.getElementById('mon-alert-tb').innerHTML=alerts?.length?alerts.map(a=>`<tr>
+    <td style="font-weight:600">${a.ingredient_name}</td>
+    <td style="font-size:11px;color:var(--text2)">${a.supplier_name}</td>
+    <td style="text-align:right">${fmt(a.current_price)}</td>
+    <td style="text-align:right">${fmt(a.previous_price)}</td>
+    <td style="text-align:right"><span class="ph-badge ph-up">+${parseFloat(a.price_change_pct).toFixed(1)}%</span></td>
+    </tr>`).join(''):'<tr><td colspan="5" class="loader">No price alerts found</td></tr>';
 }
 
+// ── COVER CONTROL ──
 function calcCovers(){
   const covers=parseInt(document.getElementById('cov-total').value)||0;
-  const sample=[{name:'Wagyu A5',purchased:3.2,theoretical:2.5,actual:2.8,price:980000,unit:'kg'},{name:'Salmon Fillet',purchased:4.0,theoretical:3.6,actual:3.8,price:320000,unit:'kg'},{name:'Cherry Tomatoes R',purchased:2.0,theoretical:1.5,actual:1.9,price:38000,unit:'kg'},{name:'Cauliflower',purchased:3.0,theoretical:1.8,actual:1.7,price:22000,unit:'kg'}];
+  const sample=[
+    {name:'Wagyu A5 Kagoshima',purchased:2.4,theoretical:1.8,actual:2.1,price:980000,unit:'kg'},
+    {name:'Opu Fish (Grouper) Fillet',purchased:3.0,theoretical:2.4,actual:2.6,price:110000,unit:'kg'},
+    {name:'Duck Breast Boneless',purchased:4.0,theoretical:3.6,actual:3.8,price:155000,unit:'kg'},
+    {name:'Hokkaido Scallops',purchased:2.0,theoretical:1.5,actual:1.8,price:970000,unit:'kg'},
+    {name:'Foie Gras',purchased:0.8,theoretical:0.6,actual:0.7,price:1800000,unit:'kg'},
+    {name:'Asparagus Grade A',purchased:3.0,theoretical:2.2,actual:2.0,price:130000,unit:'kg'},
+  ];
   let totalFC=0,flags=0;
   document.getElementById('cov-tb').innerHTML=sample.map(c=>{
     const perCover=covers>0?(c.actual/covers).toFixed(3):0;
     const vp=c.theoretical>0?((c.actual-c.theoretical)/c.theoretical*100):0;
     const isHigh=Math.abs(vp)>15;if(isHigh)flags++;totalFC+=c.actual*c.price;
-    return`<tr><td style="font-weight:600">${c.name}</td><td style="text-align:right">${c.purchased} ${c.unit}</td><td style="text-align:right">${c.theoretical} ${c.unit}</td><td style="text-align:right;font-size:11px">${perCover} ${c.unit}</td><td><span class="bk ${isHigh?'brd':'bg'}">${isHigh?'▲ ':'+'}${Math.abs(vp).toFixed(1)}%</span></td></tr>`;
+    return`<tr>
+    <td style="font-weight:600">${c.name}</td>
+    <td style="text-align:right">${c.purchased} ${c.unit}</td>
+    <td style="text-align:right">${c.theoretical} ${c.unit}</td>
+    <td style="text-align:right;font-size:11px">${perCover} ${c.unit}</td>
+    <td><span class="ph-badge ${isHigh?'ph-up':'ph-stable'}">${isHigh?'▲ ':''} ${Math.abs(vp).toFixed(1)}%</span></td>
+    </tr>`;
   }).join('');
-  document.getElementById('cov-count').textContent=covers;
+  document.getElementById('cov-count').textContent=covers||'—';
   document.getElementById('cov-fc').textContent=covers>0?fmt(totalFC/covers):'—';
   document.getElementById('cov-flags').textContent=flags>0?flags+' items':'None';
 }
 async function saveCovers(){
   const d=document.getElementById('cov-date').value||new Date().toISOString().split('T')[0];
   const c=parseInt(document.getElementById('cov-total').value)||0;
-  const res=await api('/covers','POST',{cover_date:d,total_covers:c});
-  if(res)showToast('Covers saved — '+d+' · '+c+' covers');
+  const r=await api('/covers','POST',{cover_date:d,total_covers:c});
+  if(r)toast('Covers saved — '+d+' · '+c+' covers');
 }
 
+// ── RECIPE COSTING ──
 async function loadRecipeList(){
-  const data=await api('/recipes?is_active=eq.true&order=name&select=id,name,yield_portions,target_fc_pct');
-  if(!data)return;
+  const d=await api('/recipes?is_active=eq.true&order=category,name&select=id,name,category,yield_quantity,yield_unit,yield_portions,target_fc_pct');
+  if(!d)return;
   const sel=document.getElementById('rec-sel');
-  sel.innerHTML='<option value="">Select recipe...</option>'+data.map(r=>`<option value="${r.id}">${r.name}</option>`).join('');
+  // Group by category
+  const groups={};d.forEach(r=>{const cat=r.category||'Other';if(!groups[cat])groups[cat]=[];groups[cat].push(r);});
+  sel.innerHTML='<option value="">Select recipe or sub-recipe...</option>';
+  Object.entries(groups).sort().forEach(([cat,list])=>{
+    const og=document.createElement('optgroup');og.label=cat;
+    list.forEach(r=>{const op=document.createElement('option');op.value=r.id;op.textContent=r.name;og.appendChild(op);});
+    sel.appendChild(og);
+  });
 }
 async function loadRecipe(){
   const id=document.getElementById('rec-sel').value;
   if(!id){document.getElementById('rec-card').style.display='none';return;}
-  const[recipe,rows]=await Promise.all([api(`/recipes?id=eq.${id}&select=*`),api(`/recipe_ingredients?recipe_id=eq.${id}&order=sort_order&select=quantity,unit,yield_pct,ingredients(name),supplier_prices(current_price)`)]);
-  if(!recipe||!rows)return;
-  const r=recipe[0];document.getElementById('rec-card').style.display='block';
+  const [recipe,rows]=await Promise.all([
+    api(`/recipes?id=eq.${id}&select=*`),
+    api(`/recipe_ingredients?recipe_id=eq.${id}&order=sort_order&select=quantity,unit,yield_pct,ingredients(name),supplier_prices(current_price)`)
+  ]);
+  if(!recipe)return;const r=recipe[0];
+  document.getElementById('rec-card').style.display='block';
   document.getElementById('rec-title').textContent=r.name;
-  document.getElementById('rec-yield').textContent=`Yield: ${r.yield_portions||'—'} portions · Target FC: ${r.target_fc_pct}%`;
+  document.getElementById('rec-yield').textContent=`Yield: ${r.yield_portions||'—'} portions${r.yield_quantity?' · '+r.yield_quantity+' '+(r.yield_unit||'g'):''}  ·  Target FC: ${r.target_fc_pct||35}%`;
   let total=0;
-  document.getElementById('rec-tb').innerHTML=rows.map(ri=>{const p=ri.supplier_prices?.current_price||0;const cost=(ri.quantity*p)/(ri.yield_pct/100);total+=cost;return`<tr><td>${ri.ingredients?.name||'—'}</td><td>${ri.quantity}</td><td>${ri.unit}</td><td>${fmt(p)}</td><td>${ri.yield_pct}%</td><td style="text-align:right;font-weight:600">${fmt(cost)}</td></tr>`;}).join('');
+  if(rows&&rows.length){
+    document.getElementById('rec-tb').innerHTML=rows.map(ri=>{
+      const p=parseFloat(ri.supplier_prices?.current_price)||0;
+      const cost=(ri.quantity*p)/(ri.yield_pct/100);total+=cost;
+      return`<tr>
+      <td>${ri.ingredients?.name||'—'}</td>
+      <td style="text-align:right">${ri.quantity}</td>
+      <td>${ri.unit}</td>
+      <td style="text-align:right">${fmt(p)}</td>
+      <td style="text-align:right">${ri.yield_pct}%</td>
+      <td style="text-align:right;font-weight:600">${fmt(cost)}</td>
+      </tr>`;
+    }).join('');
+  }else{
+    document.getElementById('rec-tb').innerHTML='<tr><td colspan="6" class="loader">No ingredients linked to this recipe yet — add via Supabase or recipe builder</td></tr>';
+  }
   document.getElementById('rec-total').textContent=fmt(total);
   document.getElementById('rec-foot').textContent=fmt(total);
-  document.getElementById('rec-portions').textContent=(r.yield_portions||1)+' portions';
-  document.getElementById('rec-cpp').textContent=fmt(total/(r.yield_portions||1));
-  document.getElementById('rec-sug').textContent=fmt((total/(r.yield_portions||1))/((r.target_fc_pct||35)/100));
-  document.getElementById('rec-fcp').textContent='—';document.getElementById('rec-gp').textContent='—';document.getElementById('rec-sell').value='';
-  window._recTotal=total;window._recPort=r.yield_portions||1;window._recTarget=r.target_fc_pct||35;
+  const portions=r.yield_portions||1;
+  const totalWeight=r.yield_quantity||0;
+  document.getElementById('rec-portions').textContent=portions+' portions';
+  document.getElementById('rec-cpp').textContent=total>0?fmt(total/portions):'—';
+  document.getElementById('rec-per100').textContent=(total>0&&totalWeight>0)?fmt(total/totalWeight*100):total>0?fmt(total/portions/10):'—';
+  document.getElementById('rec-sug').textContent=total>0?fmt((total/portions)/((r.target_fc_pct||35)/100)):'—';
+  document.getElementById('rec-fcp').textContent='—';document.getElementById('rec-gp').textContent='—';
+  document.getElementById('rec-sell').value='';
+  window._recTotal=total;window._recPort=portions;window._recTarget=r.target_fc_pct||35;
 }
 function calcRecipeFC(){
   const sell=parseFloat(document.getElementById('rec-sell').value)||0;
@@ -671,29 +877,68 @@ function calcRecipeFC(){
 }
 async function addRecipe(){
   const name=document.getElementById('rn-name').value.trim();
-  if(!name){showToast('Name required',true);return;}
-  const res=await api('/recipes','POST',{name,category:document.getElementById('rn-cat').value,yield_portions:parseInt(document.getElementById('rn-portions').value)||null,target_fc_pct:parseFloat(document.getElementById('rn-fc').value)||35,notes:document.getElementById('rn-notes').value,is_active:true});
-  if(res){closeModal('recipe');showToast('Recipe created');await loadRecipeList();}
+  if(!name){toast('Name required',true);return;}
+  const r=await api('/recipes','POST',{name,category:document.getElementById('rn-cat').value,yield_portions:parseInt(document.getElementById('rn-portions').value)||null,yield_quantity:parseFloat(document.getElementById('rn-weight').value)||null,yield_unit:'gram',target_fc_pct:parseFloat(document.getElementById('rn-fc').value)||35,notes:document.getElementById('rn-notes').value,is_active:true});
+  if(r){closeModal('recipe');toast('Recipe created — add ingredients via database');await loadRecipeList();}
 }
 
+// ── DISH COSTING ──
 async function loadDishList(){
-  const data=await api('/dishes?is_active=eq.true&order=name&select=id,name,course,selling_price,target_fc_pct,menu_category');
-  if(!data)return;
-  document.getElementById('dish-sel').innerHTML='<option value="">Select dish...</option>'+data.map(d=>`<option value="${d.id}">${d.name}${d.course?' · '+d.course:''}</option>`).join('');
+  const d=await api('/dishes?is_active=eq.true&order=menu_section,course,name&select=id,name,course,menu_section,selling_price,target_fc_pct,menu_category,notes');
+  if(!d)return;allDishes=d;
+  const sel=document.getElementById('dish-sel');
+  const groups={};d.forEach(x=>{const s=x.menu_section||'Other';if(!groups[s])groups[s]=[];groups[s].push(x);});
+  sel.innerHTML='<option value="">Select dish...</option>';
+  Object.entries(groups).sort().forEach(([section,list])=>{
+    const og=document.createElement('optgroup');og.label=section;
+    list.forEach(x=>{const op=document.createElement('option');op.value=x.id;op.textContent=x.name+(x.course?' · '+x.course:'');og.appendChild(op);});
+    sel.appendChild(og);
+  });
+}
+function filterDishList(){
+  const filter=document.getElementById('dish-section-filter').value;
+  const sel=document.getElementById('dish-sel');
+  const groups={};allDishes.filter(x=>!filter||x.menu_section===filter).forEach(x=>{const s=x.menu_section||'Other';if(!groups[s])groups[s]=[];groups[s].push(x);});
+  sel.innerHTML='<option value="">Select dish...</option>';
+  Object.entries(groups).sort().forEach(([section,list])=>{
+    const og=document.createElement('optgroup');og.label=section;
+    list.forEach(x=>{const op=document.createElement('option');op.value=x.id;op.textContent=x.name+(x.course?' · '+x.course:'');og.appendChild(op);});
+    sel.appendChild(og);
+  });
 }
 async function loadDish(){
   const id=document.getElementById('dish-sel').value;
   if(!id){document.getElementById('dish-card').style.display='none';return;}
-  const[dish,comps]=await Promise.all([api(`/dishes?id=eq.${id}&select=*`),api(`/dish_components?dish_id=eq.${id}&order=sort_order&select=component_name,cost_override`)]);
-  if(!dish)return;
-  const d=dish[0];document.getElementById('dish-card').style.display='block';
-  document.getElementById('dish-title').textContent=d.name;document.getElementById('dish-course').textContent=d.course||'';
-  const engMap={star:'Star',puzzle:'Puzzle',plow:'Plow Horse',dog:'Dog'};const engClass={star:'bg',puzzle:'bbl',plow:'btl',dog:'brd'};
-  const eng=document.getElementById('dish-eng');eng.textContent=engMap[d.menu_category]||d.menu_category||'—';eng.className='bk '+(engClass[d.menu_category]||'bg');
+  const [dish,comps]=await Promise.all([
+    api(`/dishes?id=eq.${id}&select=*`),
+    api(`/dish_components?dish_id=eq.${id}&order=sort_order&select=component_name,cost_override`)
+  ]);
+  if(!dish)return;const d=dish[0];
+  document.getElementById('dish-card').style.display='block';
+  document.getElementById('dish-title').textContent=d.name;
+  document.getElementById('dish-course-label').textContent=(d.course||'')+(d.menu_section?' · '+d.menu_section:'');
+  const engMap={star:'Star',puzzle:'Puzzle',plow:'Plow Horse',dog:'Dog'};
+  const engClass={star:'bg',puzzle:'bbl',plow:'btl',dog:'brd'};
+  const eng=document.getElementById('dish-eng');
+  eng.textContent=engMap[d.menu_category]||d.menu_category||'—';
+  eng.className='bk '+(engClass[d.menu_category]||'bgr');
+  document.getElementById('dish-section-badge').textContent=d.menu_section||'—';
   let total=0;
-  document.getElementById('dish-comp-list').innerHTML=comps?.map(c=>{const cost=parseFloat(c.cost_override)||0;total+=cost;return`<div class="dish-comp"><span style="font-weight:500">${c.component_name}</span><span style="font-weight:600">${fmt(cost)}</span></div>`;}).join('')||'<div class="empty">No components added yet</div>';
+  if(comps&&comps.length){
+    document.getElementById('dish-comp-list').innerHTML=comps.map(c=>{
+      const cost=parseFloat(c.cost_override)||0;total+=cost;
+      return`<div class="comp-row">
+      <div class="comp-name">${c.component_name}</div>
+      <div class="comp-cost">${fmt(cost)}</div>
+      </div>`;
+    }).join('');
+  }else{
+    document.getElementById('dish-comp-list').innerHTML='<div class="empty">No components added yet — add via Supabase dish_components table</div>';
+  }
   document.getElementById('dish-fc-total').textContent=fmt(total);
-  document.getElementById('dish-target').textContent=fmt(total/((d.target_fc_pct||35)/100));
+  document.getElementById('dish-target-pct').textContent=(d.target_fc_pct||35)+'% target';
+  document.getElementById('dish-target').textContent=total>0?fmt(total/((d.target_fc_pct||35)/100)):'—';
+  document.getElementById('dish-notes-display').textContent=d.notes||'—';
   document.getElementById('dish-fcp').textContent='—';document.getElementById('dish-gp').textContent='—';
   document.getElementById('dish-sell').value=d.selling_price||'';
   window._dishTotal=total;window._dishTarget=d.target_fc_pct||35;
@@ -709,18 +954,12 @@ function calcDishFC(){
 }
 async function addDish(){
   const name=document.getElementById('dn-name').value.trim();
-  if(!name){showToast('Name required',true);return;}
-  const res=await api('/dishes','POST',{name,course:document.getElementById('dn-course').value,selling_price:parseFloat(document.getElementById('dn-sell').value)||null,target_fc_pct:parseFloat(document.getElementById('dn-fc').value)||35,menu_category:document.getElementById('dn-eng').value,is_active:true});
-  if(res){closeModal('dish');showToast('Dish created');await loadDishList();}
+  if(!name){toast('Name required',true);return;}
+  const r=await api('/dishes','POST',{name,course:document.getElementById('dn-course').value,menu_section:document.getElementById('dn-section').value,selling_price:parseFloat(document.getElementById('dn-sell').value)||null,target_fc_pct:parseFloat(document.getElementById('dn-fc').value)||35,menu_category:document.getElementById('dn-eng').value,notes:document.getElementById('dn-notes').value,is_active:true});
+  if(r){closeModal('dish');toast('Dish created');await loadDishList();}
 }
 
-document.getElementById('order-date').value=new Date().toISOString().split('T')[0];
-document.getElementById('cov-date').value=new Date().toISOString().split('T')[0];
-
-loadSuppliers().then(()=>{loadIngredients();loadOrderSheet();}).catch(()=>{
-  document.getElementById('db-dot').className='db-dot err';
-  document.getElementById('db-label').textContent='Connection error';
-});
+if(sessionStorage.getItem('ko_auth')==='1')initApp();
 </script>
 </body>
 </html>
