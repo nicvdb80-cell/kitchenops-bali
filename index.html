@@ -131,12 +131,20 @@ tr:hover td{background:var(--bg)}
 .parse-name{flex:1;font-weight:500}
 .parse-price{font-weight:700;min-width:120px}
 
-/* PRICELIST SPECIFIC */
-.pl-supplier-card{background:var(--surface);border:0.5px solid var(--border);border-radius:10px;padding:16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
-.pl-supplier-card:hover{border-color:var(--gm)}
-.pl-supplier-card.active{border-color:var(--g);background:var(--gbg)}
-.pl-items-table{font-size:12px}
-.pl-items-table td{padding:7px 12px}
+/* SUPPLIER PRICE MASTER */
+.spm-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:14px}
+.spm-card{background:var(--surface);border:0.5px solid var(--border);border-radius:9px;padding:12px 14px;cursor:pointer;transition:border-color .15s}
+.spm-card:hover{border-color:var(--gm)}
+.spm-card.active{border-color:var(--g);background:var(--gbg)}
+.spm-card-name{font-size:11px;font-weight:700;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.spm-card-count{font-size:18px;font-weight:700;color:var(--g)}
+.spm-card-sub{font-size:10px;color:var(--text2)}
+.pagination{display:flex;gap:6px;align-items:center;justify-content:center;padding:12px;flex-wrap:wrap}
+.page-btn{padding:4px 10px;border:0.5px solid var(--border);border-radius:5px;font-size:11px;cursor:pointer;background:var(--surface)}
+.page-btn.active{background:var(--g);color:#fff;border-color:var(--g)}
+.page-btn:hover:not(.active){background:var(--bg)}
+
+/* UPLOAD HISTORY */
 .upload-history-row{display:flex;align-items:center;gap:12px;padding:10px 14px;border-bottom:0.5px solid var(--border);font-size:12px}
 .upload-history-row:last-child{border-bottom:none}
 
@@ -153,7 +161,7 @@ tr:hover td{background:var(--bg)}
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:200;align-items:center;justify-content:center;padding:16px}
 .modal-overlay.open{display:flex}
 .modal{background:var(--surface);border-radius:12px;padding:22px;width:100%;max-width:480px;border:0.5px solid var(--border);max-height:90vh;overflow-y:auto}
-.modal-lg{max-width:760px}
+.modal-lg{max-width:900px}
 .modal-title{font-size:15px;font-weight:700;margin-bottom:16px}
 .fr{margin-bottom:12px}
 .fr label{display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text2);margin-bottom:5px}
@@ -165,6 +173,10 @@ tr:hover td{background:var(--bg)}
 .toast{position:fixed;bottom:20px;right:20px;background:var(--g);color:#fff;padding:10px 16px;border-radius:8px;font-size:13px;font-weight:600;opacity:0;transition:opacity .3s;pointer-events:none;z-index:300;box-shadow:0 4px 20px rgba(0,0,0,0.15)}
 .toast.show{opacity:1}
 .toast.err{background:var(--rdm)}
+
+/* LOADING SPINNER */
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--gm);border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
 
 /* PRINT */
 @media print {
@@ -224,14 +236,15 @@ tr:hover td{background:var(--bg)}
 <div class="nav-wrap">
   <nav class="nav">
     <button class="nb on" onclick="go('suppliers',this)">Suppliers</button>
-    <button class="nb" onclick="go('pricelists',this)">Supplier Pricelists</button>
+    <button class="nb" onclick="go('pricelists',this)">Pricelists</button>
+    <button class="nb" onclick="go('spm',this)">Price Master</button>
     <button class="nb" onclick="go('ingredients',this)">Ingredients</button>
     <button class="nb" onclick="go('prices',this)">Price Compare</button>
     <button class="nb" onclick="go('orders',this)">Daily Orders</button>
     <button class="nb" onclick="go('monthly',this)">Monthly</button>
     <button class="nb" onclick="go('recipes',this)">Recipe Costing</button>
     <button class="nb" onclick="go('dishes',this)">Dish Costing</button>
-    <button class="nb" onclick="go('printcenter',this)">🖨 Print Center</button>
+    <button class="nb" onclick="go('printcenter',this)">🖨 Print</button>
   </nav>
 </div>
 
@@ -263,19 +276,15 @@ tr:hover td{background:var(--bg)}
 <!-- SUPPLIER PRICELISTS -->
 <div id="pg-pricelists" class="pg">
   <div class="page-title">Supplier pricelists</div>
-  <div class="page-sub">Upload, manage and approve supplier price lists — prices flow automatically into recipe food costs</div>
-
+  <div class="page-sub">Upload and manage supplier price lists — prices flow into recipe food costs</div>
   <div class="tabs">
     <div class="tab on" onclick="setPlTab(this,'pl-upload')">Upload new pricelist</div>
     <div class="tab" onclick="setPlTab(this,'pl-history')">Upload history</div>
-    <div class="tab" onclick="setPlTab(this,'pl-browse')">Browse by supplier</div>
   </div>
-
-  <!-- UPLOAD TAB -->
   <div id="pl-upload">
     <div class="upload-panel">
       <h3>Upload supplier price list</h3>
-      <p>Upload Excel, CSV, or paste text directly. The system reads the file, matches products to your ingredient library, and shows a preview before saving. Only Admin/Chef can approve price updates.</p>
+      <p>Upload Excel, CSV, or paste text. The system matches products to your ingredient library and shows a preview before saving.</p>
       <div class="bar" style="margin-bottom:10px">
         <select id="pl-sup-sel" style="flex:1;min-width:200px"><option value="">Select supplier for this upload...</option></select>
       </div>
@@ -287,15 +296,13 @@ tr:hover td{background:var(--bg)}
       </div>
       <div style="margin-top:12px">
         <div style="font-size:11px;color:var(--text2);margin-bottom:6px;font-weight:600">Or paste price list text:</div>
-        <textarea id="paste-input" style="width:100%;height:120px;padding:10px;border:0.5px solid var(--border);border-radius:8px;font-size:12px;font-family:monospace;background:var(--surface);color:var(--text);resize:vertical" placeholder="Paste price list here — one item per line&#10;Example: Salmon Fillet Fresh 320,000/kg&#10;Duck Breast 155000&#10;Asparagus Grade A - 130k/kg"></textarea>
+        <textarea id="paste-input" style="width:100%;height:120px;padding:10px;border:0.5px solid var(--border);border-radius:8px;font-size:12px;font-family:monospace;background:var(--surface);color:var(--text);resize:vertical" placeholder="Paste price list here — one item per line&#10;Example: Salmon Fillet Fresh 320,000/kg"></textarea>
         <div style="display:flex;gap:8px;margin-top:8px">
           <button class="btn btng" onclick="parsePasteInput()">Parse &amp; Preview</button>
           <button class="btn" onclick="clearParse()">Clear</button>
         </div>
       </div>
     </div>
-
-    <!-- PREVIEW PANEL -->
     <div id="parse-results" style="display:none">
       <div class="card">
         <div class="ch">
@@ -309,31 +316,48 @@ tr:hover td{background:var(--bg)}
       </div>
     </div>
   </div>
-
-  <!-- HISTORY TAB -->
   <div id="pl-history" style="display:none">
     <div class="card">
       <div class="ch"><div class="ct">Upload history</div></div>
-      <div id="pl-history-list" class="loader">Loading history...</div>
+      <div id="pl-history-list" class="loader">Loading...</div>
     </div>
   </div>
+</div>
 
-  <!-- BROWSE TAB -->
-  <div id="pl-browse" style="display:none">
-    <div class="bar">
-      <div class="si"><input id="pl-search" placeholder="Search products across all supplier lists..." oninput="searchPricelists()"></div>
-      <select id="pl-cat-filter" onchange="searchPricelists()">
-        <option value="">All categories</option>
-        <option>Meat</option><option>Fish</option><option>Dairy</option>
-        <option>Vegetables</option><option>Dry Store</option><option>Pastry</option>
-      </select>
+<!-- SUPPLIER PRICE MASTER -->
+<div id="pg-spm" class="pg">
+  <div class="page-title">Supplier Price Master</div>
+  <div class="page-sub">April 2026 master pricelist — 3,591 lines across 8 suppliers</div>
+  <div class="metrics spm-stats" id="spm-supplier-cards">
+    <div class="loader">Loading suppliers...</div>
+  </div>
+  <div class="bar">
+    <div class="si"><input id="spm-search" placeholder="Search product name..." oninput="spmSearch()"></div>
+    <select id="spm-sup-filter" onchange="spmSearch()"><option value="">All suppliers</option></select>
+    <select id="spm-cat-filter" onchange="spmSearch()"><option value="">All categories</option></select>
+    <select id="spm-status-filter" onchange="spmSearch()">
+      <option value="">All items</option>
+      <option value="active">Active only</option>
+      <option value="zero_price_review">Zero price review</option>
+    </select>
+    <button class="btn" onclick="exportSpmCSV()">⬇ Export CSV</button>
+  </div>
+  <div class="card">
+    <div class="ch">
+      <div><div class="ct" id="spm-result-title">All items</div><div class="cs" id="spm-result-sub">Loading...</div></div>
     </div>
-    <div id="pl-browse-results">
-      <div class="card"><div class="tbl-wrap">
-        <table><thead><tr><th>Ingredient</th><th>Category</th><th>Supplier</th><th style="text-align:right">Price</th><th>Unit</th><th>vs. prev</th><th>Last updated</th><th>Action</th></tr></thead>
-        <tbody id="pl-browse-tb"><tr><td colspan="8" class="loader">Search for an ingredient above</td></tr></tbody></table>
-      </div></div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th>Product</th><th>Category</th><th>Brand/Grade</th>
+          <th>Pack size</th><th>Unit</th>
+          <th style="text-align:right">Price (IDR)</th>
+          <th>Supplier</th><th>Status</th>
+        </tr></thead>
+        <tbody id="spm-tb"><tr><td colspan="8" class="loader">Loading price master...</td></tr></tbody>
+      </table>
     </div>
+    <div class="pagination" id="spm-pagination"></div>
   </div>
 </div>
 
@@ -370,7 +394,7 @@ tr:hover td{background:var(--bg)}
       <option>Vegetables</option><option>Fruits</option><option>Meat</option><option>Fish</option>
       <option>Dairy</option><option>Dry Store</option><option>Pastry</option>
     </select>
-    <button class="btn no-print" onclick="printPage('prices')">🖨 Print price comparison</button>
+    <button class="btn no-print" onclick="printPage('prices')">🖨 Print</button>
   </div>
   <div class="alert-bar" id="price-alert">Checking price alerts...</div>
   <div class="card"><div class="tbl-wrap">
@@ -387,7 +411,7 @@ tr:hover td{background:var(--bg)}
     <input type="date" id="order-date">
     <button class="btn" onclick="calcOrder()">Calculate totals</button>
     <button class="btn btng" onclick="saveOrder()">Save order</button>
-    <button class="btn" onclick="printPage('orders')">🖨 Print order sheet</button>
+    <button class="btn" onclick="printPage('orders')">🖨 Print</button>
   </div>
   <div class="metrics no-print">
     <div class="mc"><div class="mcl">Items ordered</div><div class="mcv" id="m-items">0</div></div>
@@ -411,11 +435,12 @@ tr:hover td{background:var(--bg)}
   <div class="bar no-print">
     <select id="mon-yr"><option value="2026">2026</option><option value="2025">2025</option></select>
     <select id="mon-mo">
-      <option value="4">April</option><option value="3">March</option><option value="2">February</option><option value="1">January</option>
-      <option value="5">May</option><option value="6">June</option><option value="7">July</option><option value="8">August</option>
+      <option value="5">May</option><option value="4">April</option><option value="3">March</option>
+      <option value="2">February</option><option value="1">January</option>
+      <option value="6">June</option><option value="7">July</option><option value="8">August</option>
     </select>
     <button class="btn btng" onclick="loadMonthly()">Load report</button>
-    <button class="btn" onclick="printPage('monthly')">🖨 Print report</button>
+    <button class="btn" onclick="printPage('monthly')">🖨 Print</button>
   </div>
   <div class="metrics">
     <div class="mc"><div class="mcl">Total spent</div><div class="mcv" style="color:var(--g);font-size:16px" id="mon-total">—</div></div>
@@ -448,7 +473,7 @@ tr:hover td{background:var(--bg)}
   <div class="bar no-print">
     <select id="rec-sel" onchange="loadRecipe()" style="flex:1;min-width:200px"><option value="">Select recipe...</option></select>
     <button class="btn btng" onclick="openModal('recipe')">+ New Recipe</button>
-    <button class="btn" onclick="printPage('recipes')">🖨 Print recipe card</button>
+    <button class="btn" onclick="printPage('recipes')">🖨 Print</button>
   </div>
   <div class="card" id="rec-card" style="display:none">
     <div class="ch">
@@ -484,7 +509,7 @@ tr:hover td{background:var(--bg)}
       <option value="Bar">Bar menu</option>
     </select>
     <button class="btn btng" onclick="openModal('dish')">+ New Dish</button>
-    <button class="btn" onclick="printPage('dishes')">🖨 Print dish cost</button>
+    <button class="btn" onclick="printPage('dishes')">🖨 Print</button>
   </div>
   <div class="card" id="dish-card" style="display:none">
     <div class="ch">
@@ -506,8 +531,10 @@ tr:hover td{background:var(--bg)}
     </div>
   </div>
   <div style="font-size:11px;color:var(--text2);margin-top:8px">
-    <span class="bk bg">Star</span> high margin + high popularity &nbsp;·&nbsp; <span class="bk bbl">Puzzle</span> high margin + low popularity &nbsp;·&nbsp; <span class="bk btl">Plow Horse</span> low margin + high popularity &nbsp;·&nbsp; <span class="bk brd">Dog</span> review or remove<br>
-    Fine dining: 35–42% FC · Bar: 28–35% · Premium additional: up to 48%
+    <span class="bk bg">Star</span> high margin + high popularity &nbsp;·&nbsp;
+    <span class="bk bbl">Puzzle</span> high margin + low popularity &nbsp;·&nbsp;
+    <span class="bk btl">Plow Horse</span> low margin + high popularity &nbsp;·&nbsp;
+    <span class="bk brd">Dog</span> review or remove
   </div>
 </div>
 
@@ -516,63 +543,59 @@ tr:hover td{background:var(--bg)}
   <div class="page-title">Print Center</div>
   <div class="page-sub">Print or export any document in a clean professional format</div>
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px">
-    <div class="card" style="padding:20px;cursor:pointer" onclick="printPage('suppliers')">
+    <div class="card" style="padding:20px">
       <div style="font-size:24px;margin-bottom:8px">📋</div>
       <div style="font-weight:600;margin-bottom:4px">Supplier Contact Sheet</div>
       <div style="font-size:11px;color:var(--text2)">All suppliers with contact details, delivery days, payment terms</div>
       <div style="margin-top:12px;display:flex;gap:6px">
-        <button class="btn btng" style="font-size:11px" onclick="event.stopPropagation();printPage('suppliers')">Print</button>
-        <button class="btn" style="font-size:11px" onclick="event.stopPropagation();exportCSV('suppliers')">Export CSV</button>
+        <button class="btn btng" style="font-size:11px" onclick="printPage('suppliers')">Print</button>
+        <button class="btn" style="font-size:11px" onclick="exportCSV('suppliers')">Export CSV</button>
       </div>
     </div>
-    <div class="card" style="padding:20px;cursor:pointer" onclick="printPage('ingredients')">
+    <div class="card" style="padding:20px">
       <div style="font-size:24px;margin-bottom:8px">🥬</div>
       <div style="font-weight:600;margin-bottom:4px">Ingredient Price List</div>
       <div style="font-size:11px;color:var(--text2)">All ingredients with current prices, suppliers, categories</div>
       <div style="margin-top:12px;display:flex;gap:6px">
-        <button class="btn btng" style="font-size:11px" onclick="event.stopPropagation();printPage('ingredients')">Print</button>
-        <button class="btn" style="font-size:11px" onclick="event.stopPropagation();exportCSV('ingredients')">Export CSV</button>
+        <button class="btn btng" style="font-size:11px" onclick="printPage('ingredients')">Print</button>
+        <button class="btn" style="font-size:11px" onclick="exportCSV('ingredients')">Export CSV</button>
       </div>
     </div>
-    <div class="card" style="padding:20px;cursor:pointer" onclick="printPage('prices')">
+    <div class="card" style="padding:20px">
       <div style="font-size:24px;margin-bottom:8px">📊</div>
       <div style="font-weight:600;margin-bottom:4px">Price Comparison Report</div>
       <div style="font-size:11px;color:var(--text2)">Cheapest supplier per ingredient — price change alerts</div>
-      <div style="margin-top:12px;display:flex;gap:6px">
-        <button class="btn btng" style="font-size:11px" onclick="event.stopPropagation();printPage('prices')">Print</button>
-      </div>
+      <div style="margin-top:12px"><button class="btn btng" style="font-size:11px" onclick="printPage('prices')">Print</button></div>
     </div>
-    <div class="card" style="padding:20px;cursor:pointer" onclick="go('orders',document.querySelector('.nb:nth-child(5)'));printPage('orders')">
+    <div class="card" style="padding:20px">
+      <div style="font-size:24px;margin-bottom:8px">📦</div>
+      <div style="font-weight:600;margin-bottom:4px">Supplier Price Master</div>
+      <div style="font-size:11px;color:var(--text2)">Full April 2026 pricelist — 3,591 lines across all 8 suppliers</div>
+      <div style="margin-top:12px"><button class="btn btng" style="font-size:11px" onclick="exportSpmCSV()">Export CSV</button></div>
+    </div>
+    <div class="card" style="padding:20px">
       <div style="font-size:24px;margin-bottom:8px">📝</div>
       <div style="font-weight:600;margin-bottom:4px">Daily Order Sheet</div>
       <div style="font-size:11px;color:var(--text2)">Today's order broken down by section and supplier</div>
-      <div style="margin-top:12px;display:flex;gap:6px">
-        <button class="btn btng" style="font-size:11px" onclick="event.stopPropagation();printPage('orders')">Print</button>
-      </div>
+      <div style="margin-top:12px"><button class="btn btng" style="font-size:11px" onclick="printPage('orders')">Print</button></div>
     </div>
     <div class="card" style="padding:20px">
       <div style="font-size:24px;margin-bottom:8px">🍽</div>
       <div style="font-weight:600;margin-bottom:4px">Recipe Food Cost Card</div>
       <div style="font-size:11px;color:var(--text2)">Select recipe first in Recipe Costing tab, then print</div>
-      <div style="margin-top:12px;display:flex;gap:6px">
-        <button class="btn btng" style="font-size:11px" onclick="go('recipes',document.querySelectorAll('.nb')[7])">Go to Recipe →</button>
-      </div>
+      <div style="margin-top:12px"><button class="btn btng" style="font-size:11px" onclick="go('recipes',document.querySelectorAll('.nb')[7])">Go to Recipe →</button></div>
     </div>
     <div class="card" style="padding:20px">
       <div style="font-size:24px;margin-bottom:8px">🍖</div>
       <div style="font-weight:600;margin-bottom:4px">Dish Food Cost Sheet</div>
       <div style="font-size:11px;color:var(--text2)">Select dish first in Dish Costing tab, then print</div>
-      <div style="margin-top:12px;display:flex;gap:6px">
-        <button class="btn btng" style="font-size:11px" onclick="go('dishes',document.querySelectorAll('.nb')[8])">Go to Dish →</button>
-      </div>
+      <div style="margin-top:12px"><button class="btn btng" style="font-size:11px" onclick="go('dishes',document.querySelectorAll('.nb')[8])">Go to Dish →</button></div>
     </div>
     <div class="card" style="padding:20px">
       <div style="font-size:24px;margin-bottom:8px">📅</div>
       <div style="font-weight:600;margin-bottom:4px">Monthly Purchasing Summary</div>
       <div style="font-size:11px;color:var(--text2)">Load a month first, then print the full summary</div>
-      <div style="margin-top:12px;display:flex;gap:6px">
-        <button class="btn btng" style="font-size:11px" onclick="go('monthly',document.querySelectorAll('.nb')[5])">Go to Monthly →</button>
-      </div>
+      <div style="margin-top:12px"><button class="btn btng" style="font-size:11px" onclick="go('monthly',document.querySelectorAll('.nb')[6])">Go to Monthly →</button></div>
     </div>
   </div>
 </div>
@@ -655,7 +678,6 @@ tr:hover td{background:var(--bg)}
   </div>
 </div>
 
-<!-- PRICE UPDATE MODAL -->
 <div class="modal-overlay" id="modal-price">
   <div class="modal">
     <div class="modal-title">Update price</div>
@@ -665,7 +687,7 @@ tr:hover td{background:var(--bg)}
     </div>
     <div class="fr"><label>Current price</label><div style="font-size:18px;font-weight:700;color:var(--text2);padding:6px 0" id="pu-current">—</div></div>
     <div class="fr"><label>New price (IDR per <span id="pu-unit">kg</span>) *</label><input type="number" id="pu-new" placeholder="Enter new price" min="0"></div>
-    <div style="font-size:11px;color:var(--text2);margin-bottom:12px">Previous price saved automatically. All recipe costs recalculate instantly.</div>
+    <div style="font-size:11px;color:var(--text2);margin-bottom:12px">All recipe costs recalculate instantly on save.</div>
     <div class="fa">
       <button class="btn" onclick="closeModal('price')">Cancel</button>
       <button class="btn btng" onclick="savePrice()">Save new price</button>
@@ -682,6 +704,7 @@ const SK='sb_publishable_vzvJV73AoLe_isJ3PhXplw_zke7NG_F';
 const H={'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json','Prefer':'return=representation'};
 const CODES=['Kitchen2026!','Chef@Bali','Aperitif2026','Purchasing@Bali'];
 const fmt=n=>'IDR '+Math.round(n||0).toLocaleString('id-ID');
+const fmtShort=n=>{if(!n)return'—';if(n>=1000000)return'IDR '+(n/1000000).toFixed(1)+'M';if(n>=1000)return'IDR '+(n/1000).toFixed(0)+'K';return fmt(n);};
 
 async function api(path,method='GET',body=null){
   try{
@@ -735,6 +758,7 @@ function go(id,btn){
   if(id==='recipes')loadRecipeList();
   if(id==='dishes')loadDishList();
   if(id==='pricelists'){loadSupplierSelect();loadPlHistory();}
+  if(id==='spm')initSpm();
 }
 function setTab(el,id){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
@@ -744,9 +768,8 @@ function setTab(el,id){
 function setPlTab(el,id){
   el.closest('.tabs').querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
   el.classList.add('on');
-  ['pl-upload','pl-history','pl-browse'].forEach(x=>document.getElementById(x).style.display=x===id?'block':'none');
+  ['pl-upload','pl-history'].forEach(x=>document.getElementById(x).style.display=x===id?'block':'none');
   if(id==='pl-history')loadPlHistory();
-  if(id==='pl-browse')searchPricelists();
 }
 
 // ── INIT ──
@@ -838,7 +861,7 @@ async function savePrice(){
   const cur=await api(`/supplier_prices?id=eq.${_priceEditSpId}&select=current_price`);
   const prevPrice=parseFloat(cur?.[0]?.current_price)||0;
   const r=await api(`/supplier_prices?id=eq.${_priceEditSpId}`,'PATCH',{current_price:newPrice,previous_price:prevPrice,last_updated:new Date().toISOString()});
-  if(r!==null){closeModal('price');toast('Price updated — recipe costs recalculated');await loadIngredients();if(allPrices.length)await loadPrices();}
+  if(r!==null){closeModal('price');toast('Price updated');await loadIngredients();if(allPrices.length)await loadPrices();}
 }
 
 // ── PRICE COMPARE ──
@@ -871,6 +894,167 @@ function renderPrices(){
 }
 function filterPrices(){renderPrices();}
 
+// ── SUPPLIER PRICE MASTER ──
+let spmData=[];
+let spmFiltered=[];
+let spmPage=1;
+const SPM_PAGE_SIZE=100;
+let spmInitDone=false;
+
+async function initSpm(){
+  if(spmInitDone)return;
+  spmInitDone=true;
+
+  // Load supplier summary cards
+  const stats=await api('/supplier_price_master?select=supplier,price_status&order=supplier');
+  if(!stats)return;
+
+  // Build supplier counts
+  const supCounts={};
+  const catSet=new Set();
+  stats.forEach(r=>{
+    supCounts[r.supplier]=(supCounts[r.supplier]||0)+1;
+  });
+
+  // Render supplier cards
+  const cardsEl=document.getElementById('spm-supplier-cards');
+  const total=stats.length;
+  cardsEl.innerHTML=`
+    <div class="spm-card active" onclick="spmFilterSupplier('')" id="spm-all-card">
+      <div class="spm-card-name">All Suppliers</div>
+      <div class="spm-card-count">${total.toLocaleString()}</div>
+      <div class="spm-card-sub">items</div>
+    </div>
+    ${Object.entries(supCounts).sort((a,b)=>b[1]-a[1]).map(([sup,cnt])=>`
+      <div class="spm-card" onclick="spmFilterSupplier('${sup.replace(/'/g,"\\'")}',this)">
+        <div class="spm-card-name" title="${sup}">${sup.replace('PT Finefood Indonesia - ','FF ').replace('PT Finefood Indonesia','FF Indonesia').replace('PT Masuya Graha Trikencana','Masuya').replace('PT Diamond Indonesia','Diamond').replace('Global Seafood & Meat','Global Seafood').replace('UD Sayur Bening','Sayur Bening')}</div>
+        <div class="spm-card-count">${cnt.toLocaleString()}</div>
+        <div class="spm-card-sub">items</div>
+      </div>`).join('')}`;
+
+  // Populate supplier filter dropdown
+  const supSel=document.getElementById('spm-sup-filter');
+  supSel.innerHTML='<option value="">All suppliers</option>'+
+    Object.keys(supCounts).sort().map(s=>`<option value="${s}">${s}</option>`).join('');
+
+  // Load all data (paginated from DB, 500 at a time)
+  await loadSpmData();
+}
+
+async function loadSpmData(){
+  document.getElementById('spm-tb').innerHTML='<tr><td colspan="8" class="loader"><span class="spinner"></span>Loading 3,591 prices...</td></tr>';
+  // Load in chunks of 1000
+  let all=[];
+  const chunkSize=1000;
+  for(let offset=0;offset<4000;offset+=chunkSize){
+    const d=await api(`/supplier_price_master?order=supplier,ingredient_name_clean&limit=${chunkSize}&offset=${offset}&select=ingredient_name_clean,supplier_product_name,category,brand_grade,packing_size,order_unit,unit_price_idr,supplier,price_status`);
+    if(!d||d.length===0)break;
+    all=all.concat(d);
+    if(d.length<chunkSize)break;
+  }
+  spmData=all;
+
+  // Populate category filter
+  const cats=[...new Set(all.map(r=>r.category).filter(Boolean))].sort();
+  const catSel=document.getElementById('spm-cat-filter');
+  catSel.innerHTML='<option value="">All categories</option>'+cats.map(c=>`<option value="${c}">${c}</option>`).join('');
+
+  spmFiltered=spmData;
+  spmPage=1;
+  renderSpmTable();
+  document.getElementById('spm-result-sub').textContent=`${spmData.length.toLocaleString()} items · April 2026`;
+}
+
+function spmFilterSupplier(sup,el){
+  // Update card highlight
+  document.querySelectorAll('.spm-card').forEach(c=>c.classList.remove('active'));
+  if(el)el.classList.add('active');
+  else document.getElementById('spm-all-card')?.classList.add('active');
+  document.getElementById('spm-sup-filter').value=sup;
+  spmSearch();
+}
+
+function spmSearch(){
+  const q=document.getElementById('spm-search').value.toLowerCase().trim();
+  const sup=document.getElementById('spm-sup-filter').value;
+  const cat=document.getElementById('spm-cat-filter').value;
+  const status=document.getElementById('spm-status-filter').value;
+
+  spmFiltered=spmData.filter(r=>{
+    if(sup&&r.supplier!==sup)return false;
+    if(cat&&r.category!==cat)return false;
+    if(status&&r.price_status!==status)return false;
+    if(q&&!r.ingredient_name_clean.toLowerCase().includes(q)&&!(r.supplier_product_name||'').toLowerCase().includes(q)&&!(r.brand_grade||'').toLowerCase().includes(q))return false;
+    return true;
+  });
+
+  spmPage=1;
+  renderSpmTable();
+  const title=sup?sup:(q?`Results for "${q}"`:'All items');
+  document.getElementById('spm-result-title').textContent=title;
+  document.getElementById('spm-result-sub').textContent=`${spmFiltered.length.toLocaleString()} items`;
+}
+
+function renderSpmTable(){
+  const start=(spmPage-1)*SPM_PAGE_SIZE;
+  const page=spmFiltered.slice(start,start+SPM_PAGE_SIZE);
+
+  if(!page.length){
+    document.getElementById('spm-tb').innerHTML='<tr><td colspan="8" class="empty">No items found</td></tr>';
+    document.getElementById('spm-pagination').innerHTML='';
+    return;
+  }
+
+  document.getElementById('spm-tb').innerHTML=page.map(r=>`
+    <tr>
+    <td style="font-weight:600;max-width:220px">${r.ingredient_name_clean}</td>
+    <td style="font-size:11px;color:var(--text2);max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.category||'—'}</td>
+    <td style="font-size:11px;color:var(--text2)">${r.brand_grade||'—'}</td>
+    <td style="font-size:11px;color:var(--text2)">${r.packing_size||'—'}</td>
+    <td style="font-size:11px;color:var(--text2)">${r.order_unit||'—'}</td>
+    <td style="text-align:right;font-weight:700;color:${r.price_status==='zero_price_review'?'var(--rdm)':'var(--text)'}">${r.unit_price_idr>0?fmt(r.unit_price_idr):'TBC'}</td>
+    <td style="font-size:11px;color:var(--text2)">${r.supplier.replace('PT Finefood Indonesia - ','FF ').replace('PT Finefood Indonesia','FF Indo').replace('PT Masuya Graha Trikencana','Masuya').replace('PT Diamond Indonesia','Diamond')}</td>
+    <td>${r.price_status==='zero_price_review'?'<span class="bk bam">Review</span>':'<span class="bk bg">Active</span>'}</td>
+    </tr>`).join('');
+
+  // Pagination
+  const totalPages=Math.ceil(spmFiltered.length/SPM_PAGE_SIZE);
+  if(totalPages<=1){document.getElementById('spm-pagination').innerHTML='';return;}
+
+  let pages=[];
+  pages.push(1);
+  if(spmPage>3)pages.push('...');
+  for(let i=Math.max(2,spmPage-1);i<=Math.min(totalPages-1,spmPage+1);i++)pages.push(i);
+  if(spmPage<totalPages-2)pages.push('...');
+  if(totalPages>1)pages.push(totalPages);
+
+  document.getElementById('spm-pagination').innerHTML=
+    `<button class="page-btn" onclick="spmGoPage(${spmPage-1})" ${spmPage===1?'disabled':''}>← Prev</button>`+
+    pages.map(p=>p==='...'?`<span style="padding:4px 6px;color:var(--text3)">…</span>`:`<button class="page-btn ${p===spmPage?'active':''}" onclick="spmGoPage(${p})">${p}</button>`).join('')+
+    `<button class="page-btn" onclick="spmGoPage(${spmPage+1})" ${spmPage===totalPages?'disabled':''}>Next →</button>`;
+}
+
+function spmGoPage(p){
+  const totalPages=Math.ceil(spmFiltered.length/SPM_PAGE_SIZE);
+  if(p<1||p>totalPages)return;
+  spmPage=p;
+  renderSpmTable();
+  document.querySelector('.tbl-wrap')?.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function exportSpmCSV(){
+  if(!spmData.length){toast('Load Price Master first',true);return;}
+  const src=spmFiltered.length&&spmFiltered.length<spmData.length?spmFiltered:spmData;
+  const headers=['Product','Category','Brand/Grade','Pack Size','Order Unit','Price IDR','Supplier','Status'];
+  const rows=src.map(r=>[r.ingredient_name_clean,r.category||'',r.brand_grade||'',r.packing_size||'',r.order_unit||'',r.unit_price_idr,r.supplier,r.price_status]);
+  const csv=[headers,...rows].map(r=>r.map(v=>`"${String(v||'').replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.download=`price_master_april2026_${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();
+  toast(`Exported ${src.length.toLocaleString()} rows`);
+}
+
 // ── PRICELIST MANAGEMENT ──
 let parsedItems=[];
 
@@ -887,7 +1071,6 @@ function processFile(file){
     const reader=new FileReader();
     reader.onload=e=>{
       const wb=XLSX.read(e.target.result,{type:'array'});
-      // Try all sheets
       let allLines=[];
       wb.SheetNames.forEach(sn=>{
         const ws=wb.Sheets[sn];
@@ -915,7 +1098,6 @@ function parseLines(lines,source){
   lines.forEach(raw=>{
     const line=String(raw).replace(/\t/g,' ').trim();
     if(!line||line.length<3)return;
-    // Find price — numbers 1000+ with optional K/k suffix
     const priceMatch=line.match(/[\d]{1,3}(?:[.,][\d]{3})*(?:[.,][\d]+)?(?:\s*[Kk])?/g);
     let price=null;
     if(priceMatch){
@@ -927,11 +1109,9 @@ function parseLines(lines,source){
       }
     }
     if(!price)return;
-    // Extract name
     let name=line
       .replace(/[\d]{1,3}(?:[.,][\d]{3})*(?:[.,][\d]+)?\s*[Kk]?(?:\/(?:kg|KG|liter|pcs|pack|btl|box|gr|gram|ml|pc|pck|lt))?/g,'')
       .replace(/[-–\/|:;]/g,' ').replace(/\s+/g,' ')
-      .replace(/\b(fresh|frozen|local|import|whole|fillet|boneless|sliced|halal|chilled|frz)\b/gi,'$1')
       .trim();
     if(name.length<2||seen.has(name.toLowerCase()))return;
     seen.add(name.toLowerCase());
@@ -959,13 +1139,13 @@ function matchIngredient(name){
 
 function renderParseResults(source){
   const matched=parsedItems.filter(x=>x.match).length;
-  document.getElementById('parse-summary').textContent=`${matched} of ${parsedItems.length} items matched from ${source} — uncheck any you want to skip`;
+  document.getElementById('parse-summary').textContent=`${matched} of ${parsedItems.length} items matched from ${source}`;
   document.getElementById('parse-results').style.display='block';
   document.getElementById('parse-list').innerHTML=parsedItems.map((item,idx)=>{
     if(item.match){
       const old=parseFloat(item.match.current_price)||0;
       const diff=old>0?((item.price-old)/old*100):0;
-      const diffBadge=Math.abs(diff)>0.5?`<span class="ph-badge ${diff>0?'ph-up':'ph-down'}" style="margin-left:6px">${diff>0?'▲':' ▼'} ${Math.abs(diff).toFixed(1)}%</span>`:'';
+      const diffBadge=Math.abs(diff)>0.5?`<span class="ph-badge ${diff>0?'ph-up':'ph-down'}" style="margin-left:6px">${diff>0?'▲':'▼'} ${Math.abs(diff).toFixed(1)}%</span>`:'';
       return`<div class="parse-row match">
         <input type="checkbox" ${item.selected?'checked':''} onchange="parsedItems[${idx}].selected=this.checked" style="margin-right:8px;flex-shrink:0">
         <div class="parse-name">${item.match.ingredient_name}<div style="font-size:10px;color:var(--text2)">${item.rawName}</div></div>
@@ -1003,12 +1183,11 @@ async function saveAllPrices(){
       if(r!==null)saved++;
     }
   }
-  // Log the upload
   if(supplierId){
     const supName=allSup.find(s=>s.id===supplierId)?.name||'Unknown';
     await api('/pricelist_uploads','POST',{supplier_id:supplierId,supplier_name:supName,file_name:'Manual upload',status:'approved',items_total:parsedItems.length,items_matched:parsedItems.filter(x=>x.match).length,items_updated:saved});
   }
-  toast(`${saved} prices updated — all recipe costs recalculated`);
+  toast(`${saved} prices updated`);
   clearParse();
   await loadIngredients();
   if(allPrices.length)await loadPrices();
@@ -1027,32 +1206,6 @@ async function loadPlHistory(){
       <div style="text-align:right;font-size:11px;color:var(--text2)">${u.items_matched||0} matched · ${u.items_updated||0} updated</div>
       <span class="bk ${u.status==='approved'?'bg':u.status==='pending'?'bam':'brd'}">${u.status||'approved'}</span>
     </div>`).join('');
-}
-
-async function searchPricelists(){
-  const q=document.getElementById('pl-search').value.toLowerCase();
-  const cat=document.getElementById('pl-cat-filter').value;
-  if(!q&&!cat){document.getElementById('pl-browse-tb').innerHTML='<tr><td colspan="8" class="loader">Type an ingredient name to search</td></tr>';return;}
-  let path='/v_ingredient_prices?order=ingredient_name,current_price&select=ingredient_name,category,supplier_name,supplier_price_id,current_price,previous_price,price_change_pct,last_updated';
-  if(q)path+=`&ingredient_name=ilike.*${encodeURIComponent(q)}*`;
-  if(cat)path+=`&category=eq.${encodeURIComponent(cat)}`;
-  const d=await api(path);
-  if(!d){return;}
-  document.getElementById('pl-browse-tb').innerHTML=d.length?d.map(i=>{
-    const dp=parseFloat(i.price_change_pct)||0;
-    const badge=dp>5?`<span class="ph-badge ph-up">▲ +${dp.toFixed(1)}%</span>`:dp<-5?`<span class="ph-badge ph-down">▼ ${dp.toFixed(1)}%</span>`:`<span class="ph-badge ph-stable">Stable</span>`;
-    const updated=i.last_updated?new Date(i.last_updated).toLocaleDateString('en-GB',{day:'2-digit',month:'short'}):'—';
-    return`<tr>
-    <td style="font-weight:600">${i.ingredient_name}</td>
-    <td><span class="bk bbl">${i.category}</span></td>
-    <td style="font-size:12px">${i.supplier_name||'Unknown'}</td>
-    <td style="text-align:right;font-weight:700;color:var(--g)">${fmt(i.current_price)}</td>
-    <td style="color:var(--text2)">${i.unit||'—'}</td>
-    <td>${badge}</td>
-    <td style="color:var(--text2);font-size:11px">${updated}</td>
-    <td><button class="btn" style="font-size:10px;padding:3px 8px" onclick="openPriceEdit('${i.supplier_price_id}','${i.ingredient_name}','${i.supplier_name||''}','',${i.current_price})">✏ Edit</button></td>
-    </tr>`;
-  }).join(''):'<tr><td colspan="8" class="empty">No results found</td></tr>';
 }
 
 // ── DAILY ORDERS ──
@@ -1268,11 +1421,9 @@ async function addDish(){
 
 // ── PRINT ──
 function printPage(section){
-  // Activate section
   document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on','print-active'));
   const pg=document.getElementById('pg-'+section);
   if(pg){pg.classList.add('on','print-active');}
-  // Add print header
   const date=new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});
   const header=document.createElement('div');
   header.className='print-header';
@@ -1285,7 +1436,6 @@ function printPage(section){
   footer.innerHTML=`<span>KitchenOps · Aperitif Bali · ${date}</span><span>Approved by: _________________________ Date: _____________</span>`;
   if(pg)pg.append(footer);
   window.print();
-  // Clean up
   setTimeout(()=>{
     document.querySelectorAll('.print-header,.print-footer').forEach(el=>el.remove());
     pg?.classList.remove('print-active');
