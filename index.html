@@ -326,62 +326,40 @@ tr:hover td{background:var(--bg)}
 <div id="pg-ingpricing" class="pg">
   <div class="page-title">Ingredients &amp; Pricing</div>
   <div class="page-sub">Master ingredient library &middot; Supplier price master &middot; Price comparison</div>
-  <div class="tabs" style="margin-bottom:14px">
-    <div class="tab on" id="iptab-ingredients" onclick="setIpTab('ingredients')">Ingredients</div>
-    <div class="tab" id="iptab-spm" onclick="setIpTab('spm')">Price Master</div>
-    <div class="tab" id="iptab-prices" onclick="setIpTab('prices')">Price Compare</div>
+  <div class="bar">
+    <div class="si"><input id="is" placeholder="Search all ingredients..." oninput="filterIng()"></div>
+    <select id="ic" onchange="filterIng()">
+      <option value="">All categories</option>
+    </select>
+    <select id="ing-sup-filter" onchange="filterIng()">
+      <option value="">All suppliers</option>
+    </select>
+    <button class="btn no-print" onclick="openModal('ing')">+ Add</button>
+    <button class="btn no-print" onclick="exportCSV('ingredients')">&#x2B07; CSV</button>
+    <button class="btn no-print" onclick="printPage('ingpricing')">&#x1F5A8; Print</button>
   </div>
-  <div id="ippanel-ingredients">
-    <div class="bar">
-      <div class="si"><input id="is" placeholder="Search ingredient..." oninput="filterIng()"></div>
-      <select id="ic" onchange="filterIng()">
-        <option value="">All categories</option>
-      </select>
-      <button class="btn no-print" onclick="openModal('ing')">+ Add</button>
-      <button class="btn no-print" onclick="printPage('ingredients')">&#x1F5A8; Print</button>
-    </div>
-    <div class="card"><div class="tbl-wrap">
-      <table>
-        <thead><tr><th>Ingredient</th><th>Category</th><th>Unit</th><th>Current price</th><th>vs. prev</th><th>Supplier</th><th class="no-print">Update</th></tr></thead>
-        <tbody id="ing-tb"><tr><td colspan="7" class="loader">Loading...</td></tr></tbody>
-      </table>
-    </div></div>
-  </div>
+  <div class="alert-bar" id="price-alert" style="display:none">Checking price alerts...</div>
+  <div class="card"><div class="tbl-wrap">
+    <table>
+      <thead><tr>
+        <th>Ingredient</th><th>Category</th><th>Unit</th>
+        <th style="text-align:right">Best price</th><th>vs. prev</th>
+        <th>Supplier</th><th style="text-align:right">Alt. suppliers</th>
+        <th class="no-print">Update</th>
+      </tr></thead>
+      <tbody id="ing-tb"><tr><td colspan="8" class="loader">Loading...</td></tr></tbody>
+    </table>
+  </div></div>
+  <!-- Hidden elements kept for backward compat -->
   <div id="ippanel-spm" style="display:none">
-    <div class="metrics spm-stats" id="spm-supplier-cards"><div class="loader">Loading suppliers...</div></div>
-    <div class="bar">
-      <div class="si"><input id="spm-search" placeholder="Search product name..." oninput="spmSearch()"></div>
-      <select id="spm-sup-filter" onchange="spmSearch()"><option value="">All suppliers</option></select>
-      <select id="spm-cat-filter" onchange="spmSearch()"><option value="">All categories</option></select>
-      <select id="spm-status-filter" onchange="spmSearch()">
-        <option value="">All items</option><option value="active">Active only</option><option value="zero_price_review">Zero price review</option>
-      </select>
-      <button class="btn" onclick="exportSpmCSV()">&#x2B07; Export CSV</button>
-    </div>
-    <div class="card">
-      <div class="ch"><div><div class="ct" id="spm-result-title">All items</div><div class="cs" id="spm-result-sub">Loading...</div></div></div>
-      <div class="tbl-wrap"><table>
-        <thead><tr><th>Product</th><th>Category</th><th>Brand/Grade</th><th>Pack size</th><th>Unit</th><th style="text-align:right">Price (IDR)</th><th>Supplier</th><th>Status</th></tr></thead>
-        <tbody id="spm-tb"><tr><td colspan="8" class="loader">Loading price master...</td></tr></tbody>
-      </table></div>
-      <div class="pagination" id="spm-pagination"></div>
-    </div>
+    <div id="spm-supplier-cards"></div>
+    <input id="spm-search"><select id="spm-sup-filter"></select><select id="spm-cat-filter"></select><select id="spm-status-filter"></select>
+    <div id="spm-result-title"></div><div id="spm-result-sub"></div>
+    <tbody id="spm-tb"></tbody><div id="spm-pagination"></div>
   </div>
   <div id="ippanel-prices" style="display:none">
-    <div class="bar">
-      <div class="si"><input id="ps" placeholder="Search ingredient..." oninput="filterPrices()"></div>
-      <select id="pcat" onchange="filterPrices()">
-        <option value="">All categories</option>
-        <option>Vegetables</option><option>Fruits</option><option>Meat</option><option>Fish</option>
-        <option>Dairy</option><option>Dry Store</option><option>Pastry</option>
-      </select>
-      <button class="btn no-print" onclick="printPage('prices')">&#x1F5A8; Print</button>
-    </div>
-    <div class="alert-bar" id="price-alert">Checking price alerts...</div>
-    <div class="card"><div class="tbl-wrap">
-      <table><thead><tr><th>Ingredient</th><th>Category</th><th>Best price</th><th>Supplier</th><th>Change</th><th>Action</th></tr></thead>
-      <tbody id="price-tb"><tr><td colspan="6" class="loader">Loading...</td></tr></tbody></table>
-    </div></div>
+    <input id="ps"><select id="pcat"></select>
+    <tbody id="price-tb"></tbody>
   </div>
 </div>
 
@@ -735,7 +713,7 @@ function go(id,btn){
   document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
   document.getElementById('pg-'+id).classList.add('on');
   if(btn)btn.classList.add('on');
-  if(id==='ingpricing'){loadIngredients();if(!allPrices.length)loadPrices();if(!spmInitDone)initSpm();}
+  if(id==='ingpricing')loadIngredients();
   if(id==='monthly')loadMonthly();
   if(id==='recipes')loadRecipeList();
   if(id==='dishes')loadDishList();
@@ -805,38 +783,92 @@ async function addSupplier(){
 }
 
 // ── INGREDIENTS ──
+// All prices including non-preferred (for alt supplier count)
+let allPricesRaw=[];
+
 async function loadIngredients(){
-  document.getElementById('ing-tb').innerHTML='<tr><td colspan="7" class="loader"><span class="spinner"></span>Loading ingredients...</td></tr>';
-  const d=await api('/v_ingredient_prices?is_preferred=eq.true&order=category,ingredient_name&select=ingredient_id,supplier_price_id,ingredient_name,category,unit,supplier_name,current_price,previous_price,price_change_pct');
-  if(!d)return;
-  allIng=d;
-  // Dynamically populate category filter from actual data
-  const cats=[...new Set(d.map(i=>i.category).filter(Boolean))].sort();
+  document.getElementById('ing-tb').innerHTML='<tr><td colspan="8" class="loader"><span class="spinner"></span>Loading all ingredients...</td></tr>';
+  // Fetch preferred prices (one row per ingredient = best price)
+  let preferred=[];
+  for(let off=0;off<10000;off+=1000){
+    const d=await api('/v_ingredient_prices?is_preferred=eq.true&order=category,ingredient_name&select=ingredient_id,supplier_price_id,ingredient_name,category,unit,supplier_name,current_price,previous_price,price_change_pct&limit=1000&offset='+off);
+    if(!d||d.length===0)break;
+    preferred=preferred.concat(d);
+    if(d.length<1000)break;
+  }
+  allIng=preferred;
+  // Fetch ALL prices to count alternatives
+  let allp=[];
+  for(let off=0;off<20000;off+=1000){
+    const d=await api('/v_ingredient_prices?order=ingredient_name,current_price&select=ingredient_name,supplier_name,current_price&limit=1000&offset='+off);
+    if(!d||d.length===0)break;
+    allp=allp.concat(d);
+    if(d.length<1000)break;
+  }
+  allPricesRaw=allp;
+  // Build alt supplier count map
+  const altCount={};
+  allp.forEach(p=>{altCount[p.ingredient_name]=(altCount[p.ingredient_name]||0)+1;});
+  window._altCount=altCount;
+  // Populate filters
+  const cats=[...new Set(preferred.map(i=>i.category).filter(Boolean))].sort();
   const catSel=document.getElementById('ic');
-  const curVal=catSel.value;
-  catSel.innerHTML='<option value="">All categories ('+d.length+')</option>'+cats.map(c=>`<option value="${c}">${c}</option>`).join('');
-  if(curVal&&cats.includes(curVal))catSel.value=curVal;
-  renderIng(allIng);
+  const curCat=catSel.value;
+  catSel.innerHTML='<option value="">All categories ('+preferred.length+')</option>'+cats.map(c=>`<option value="${c}">${c}</option>`).join('');
+  if(curCat&&cats.includes(curCat))catSel.value=curCat;
+  const sups=[...new Set(preferred.map(i=>i.supplier_name).filter(Boolean))].sort();
+  const supSel=document.getElementById('ing-sup-filter');
+  const curSup=supSel.value;
+  supSel.innerHTML='<option value="">All suppliers</option>'+sups.map(s=>`<option value="${s}">${s}</option>`).join('');
+  if(curSup&&sups.includes(curSup))supSel.value=curSup;
+  // Check price alerts
+  const alerts=preferred.filter(p=>parseFloat(p.price_change_pct)>5);
+  const alertBar=document.getElementById('price-alert');
+  if(alerts.length){alertBar.textContent='⚠️ '+alerts.length+' ingredient'+(alerts.length>1?'s':'')+' with price increases above 5% — review before ordering';alertBar.style.display='block';}
+  else alertBar.style.display='none';
+  renderIng(preferred);
 }
 function renderIng(list){
+  const altCount=window._altCount||{};
   document.getElementById('ing-tb').innerHTML=list.length?list.map(i=>{
     const dp=parseFloat(i.price_change_pct)||0;
     const arrow=dp>5?`<span class="ph-badge ph-up">▲ +${dp.toFixed(1)}%</span>`:dp<-5?`<span class="ph-badge ph-down">▼ ${dp.toFixed(1)}%</span>`:`<span class="ph-badge ph-stable">Stable</span>`;
+    const total=altCount[i.ingredient_name]||1;
+    const alts=total-1;
+    const altBadge=alts>0?`<span class="bk bam" style="cursor:pointer" onclick="showAltSuppliers('${i.ingredient_name.replace(/'/g,"\\'")}',this)">${alts} more</span>`:`<span style="color:var(--text3);font-size:11px">—</span>`;
     return`<tr>
     <td style="font-weight:600">${i.ingredient_name}</td>
     <td><span class="bk bbl">${i.category}</span></td>
     <td style="color:var(--text2)">${i.unit}</td>
-    <td style="font-weight:700">${fmt(i.current_price)}</td>
+    <td style="font-weight:700;color:var(--g)">${fmt(i.current_price)}</td>
     <td>${arrow}</td>
     <td style="color:var(--text2);font-size:12px">${i.supplier_name||'Unknown'}</td>
+    <td style="text-align:right">${altBadge}</td>
     <td class="no-print"><button class="btn" style="font-size:10px;padding:3px 9px" onclick="openPriceEdit('${i.supplier_price_id}','${i.ingredient_name}','${i.supplier_name||''}','${i.unit}',${i.current_price})">✏ Edit price</button></td>
     </tr>`;
-  }).join(''):'<tr><td colspan="7" class="empty">No ingredients found</td></tr>';
+  }).join(''):'<tr><td colspan="8" class="empty">No ingredients found</td></tr>';
 }
 function filterIng(){
   const q=document.getElementById('is').value.toLowerCase();
   const cat=document.getElementById('ic').value;
-  renderIng(allIng.filter(i=>i.ingredient_name.toLowerCase().includes(q)&&(!cat||i.category===cat)));
+  const sup=document.getElementById('ing-sup-filter').value;
+  renderIng(allIng.filter(i=>
+    i.ingredient_name.toLowerCase().includes(q)&&
+    (!cat||i.category===cat)&&
+    (!sup||i.supplier_name===sup)
+  ));
+}
+function showAltSuppliers(name,el){
+  const row=el.closest('tr');
+  // Remove any existing alt rows
+  const next=row.nextSibling;
+  if(next&&next.classList&&next.classList.contains('alt-row')){next.remove();el.textContent=el.textContent;return;}
+  const alts=allPricesRaw.filter(p=>p.ingredient_name===name).sort((a,b)=>a.current_price-b.current_price);
+  const altHtml=alts.map(a=>`<tr class="alt-row" style="background:var(--gbg)">
+    <td colspan="2" style="padding-left:32px;font-size:11px;color:var(--text2)">↳ ${a.supplier_name}</td>
+    <td></td><td style="font-size:12px;font-weight:600">${fmt(a.current_price)}</td>
+    <td colspan="4"></td></tr>`).join('');
+  row.insertAdjacentHTML('afterend',altHtml);
 }
 async function addIngredient(){
   const name=document.getElementById('ing-name').value.trim();
@@ -867,8 +899,14 @@ async function savePrice(){
 
 // ── PRICE COMPARE ──
 async function loadPrices(){
-  const d=await api('/v_ingredient_prices?order=ingredient_name,current_price&select=ingredient_name,category,supplier_name,current_price,previous_price,price_change_pct');
-  if(!d)return;allPrices=d;
+  let priceAll=[];
+  for(let off=0;off<20000;off+=1000){
+    const d=await api('/v_ingredient_prices?order=ingredient_name,current_price&select=ingredient_name,category,supplier_name,current_price,previous_price,price_change_pct&limit=1000&offset='+off);
+    if(!d||d.length===0)break;
+    priceAll=priceAll.concat(d);
+    if(d.length<1000)break;
+  }
+  allPrices=priceAll;
   const alerts=d.filter(p=>parseFloat(p.price_change_pct)>5);
   document.getElementById('price-alert').textContent=alerts.length?`${alerts.length} ingredient${alerts.length>1?'s':''} with price increases above 5% — review before ordering`:'All prices stable';
   renderPrices();
@@ -1185,8 +1223,15 @@ async function loadPlHistory(){
 
 // ── DAILY ORDERS ──
 async function loadOrderSheet(){
-  const d=await api('/v_ingredient_prices?is_preferred=eq.true&order=category,ingredient_name&select=ingredient_id,supplier_price_id,ingredient_name,category,unit,current_price,supplier_name');
-  if(!d)return;window._orderData=d;
+  // Fetch all ingredients in chunks to bypass 1000-row limit
+  let orderAll=[];
+  for(let off=0;off<10000;off+=1000){
+    const d=await api('/v_ingredient_prices?is_preferred=eq.true&order=category,ingredient_name&select=ingredient_id,supplier_price_id,ingredient_name,category,unit,current_price,supplier_name&limit=1000&offset='+off);
+    if(!d||d.length===0)break;
+    orderAll=orderAll.concat(d);
+    if(d.length<1000)break;
+  }
+  window._orderData=orderAll;
   document.getElementById('order-tb').innerHTML=d.map((i,idx)=>`
     <tr>
     <td style="font-weight:600;font-size:12px">${i.ingredient_name}</td>
