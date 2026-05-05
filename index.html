@@ -907,7 +907,7 @@ async function loadPrices(){
     if(d.length<1000)break;
   }
   allPrices=priceAll;
-  const alerts=d.filter(p=>parseFloat(p.price_change_pct)>5);
+  const alerts=priceAll.filter(p=>parseFloat(p.price_change_pct)>5);
   document.getElementById('price-alert').textContent=alerts.length?`${alerts.length} ingredient${alerts.length>1?'s':''} with price increases above 5% — review before ordering`:'All prices stable';
   renderPrices();
 }
@@ -1232,7 +1232,7 @@ async function loadOrderSheet(){
     if(d.length<1000)break;
   }
   window._orderData=orderAll;
-  document.getElementById('order-tb').innerHTML=d.map((i,idx)=>`
+  document.getElementById('order-tb').innerHTML=orderAll.map((i,idx)=>`
     <tr>
     <td style="font-weight:600;font-size:12px">${i.ingredient_name}</td>
     <td><span class="bk bbl" style="font-size:9px">${(i.category||'').slice(0,4).toUpperCase()}</span></td>
