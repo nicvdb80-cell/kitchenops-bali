@@ -336,8 +336,6 @@ tr:hover td{background:var(--bg)}
       <div class="si"><input id="is" placeholder="Search ingredient..." oninput="filterIng()"></div>
       <select id="ic" onchange="filterIng()">
         <option value="">All categories</option>
-        <option>Vegetables</option><option>Fruits</option><option>Meat</option><option>Fish</option>
-        <option>Dairy</option><option>Dry Store</option><option>Pastry</option><option>Beverage</option>
       </select>
       <button class="btn no-print" onclick="openModal('ing')">+ Add</button>
       <button class="btn no-print" onclick="printPage('ingredients')">&#x1F5A8; Print</button>
@@ -771,7 +769,8 @@ let _priceEditSpId=null;
 
 function initApp(){
   document.getElementById('order-date').value=new Date().toISOString().split('T')[0];
-  loadSuppliers().then(()=>{loadIngredients();loadOrderSheet();});
+  loadSuppliers().then(()=>{loadOrderSheet();});
+  // Ingredients load fresh when the tab is opened
 }
 
 // ── SUPPLIERS ──
@@ -807,8 +806,17 @@ async function addSupplier(){
 
 // ── INGREDIENTS ──
 async function loadIngredients(){
+  document.getElementById('ing-tb').innerHTML='<tr><td colspan="7" class="loader"><span class="spinner"></span>Loading ingredients...</td></tr>';
   const d=await api('/v_ingredient_prices?is_preferred=eq.true&order=category,ingredient_name&select=ingredient_id,supplier_price_id,ingredient_name,category,unit,supplier_name,current_price,previous_price,price_change_pct');
-  if(!d)return;allIng=d;renderIng(allIng);
+  if(!d)return;
+  allIng=d;
+  // Dynamically populate category filter from actual data
+  const cats=[...new Set(d.map(i=>i.category).filter(Boolean))].sort();
+  const catSel=document.getElementById('ic');
+  const curVal=catSel.value;
+  catSel.innerHTML='<option value="">All categories ('+d.length+')</option>'+cats.map(c=>`<option value="${c}">${c}</option>`).join('');
+  if(curVal&&cats.includes(curVal))catSel.value=curVal;
+  renderIng(allIng);
 }
 function renderIng(list){
   document.getElementById('ing-tb').innerHTML=list.length?list.map(i=>{
@@ -1420,15 +1428,4 @@ function exportCSV(type){
     rows=allIng.map(i=>[i.ingredient_name,i.category,i.unit,i.current_price,i.previous_price,parseFloat(i.price_change_pct).toFixed(1)+'%',i.supplier_name]);
   }
   if(!rows.length){toast('Load data first',true);return;}
-  const csv=[headers,...rows].map(r=>r.map(v=>`"${String(v||'').replace(/"/g,'""')}"`).join(',')).join('\n');
-  const a=document.createElement('a');
-  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
-  a.download=`kitchenops_${type}_${new Date().toISOString().split('T')[0]}.csv`;
-  a.click();
-  toast('CSV exported');
-}
-
-if(sessionStorage.getItem('ko_auth')==='1')initApp();
-</script>
-</body>
-</html>
+  const csv=[headers,...rows].map(r=>
