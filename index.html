@@ -686,7 +686,7 @@ const SK='sb_publishable_vzvJV73AoLe_isJ3PhXplw_zke7NG_F';
 const H={'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json','Prefer':'return=representation'};
 const CODES=['Kitchen2026!','Chef@Bali','Aperitif2026','Purchasing@Bali'];
 const fmt=n=>'IDR '+Math.round(n||0).toLocaleString('id-ID');
-const fmtShort=n=>{if(!n)return'\u2014';if(n>=1000000)return'IDR '+(n/1000000).toFixed(1)+'M';if(n>=1000)return'IDR '+(n/1000).toFixed(0)+'K';return fmt(n);};
+const fmtShort=n=>{if(!n)return'—';if(n>=1000000)return'IDR '+(n/1000000).toFixed(1)+'M';if(n>=1000)return'IDR '+(n/1000).toFixed(0)+'K';return fmt(n);};
 
 async function api(path,method='GET',body=null){
   try{
@@ -779,16 +779,16 @@ async function loadSuppliers(){
   if(!d)return;
   allSup=d;renderSup(allSup);
   document.getElementById('db-dot').className='db-dot live';
-  document.getElementById('db-lbl').textContent='Live \u00b7 Bali';
+  document.getElementById('db-lbl').textContent='Live · Bali';
 }
 function renderSup(list){
   document.getElementById('sup-tb').innerHTML=list.length?list.map(s=>`
     <tr>
     <td style="font-weight:600">${s.name}</td>
     <td><span class="bk btl">${s.category}</span></td>
-    <td><a href="tel:${s.phone}" style="color:var(--blm);text-decoration:none;font-weight:600">${s.phone||'\u2014'}</a></td>
-    <td style="color:var(--text2);font-size:12px">${s.delivery_days||'\u2014'}</td>
-    <td style="color:var(--text2);font-size:12px">${s.payment_terms||'\u2014'}</td>
+    <td><a href="tel:${s.phone}" style="color:var(--blm);text-decoration:none;font-weight:600">${s.phone||'—'}</a></td>
+    <td style="color:var(--text2);font-size:12px">${s.delivery_days||'—'}</td>
+    <td style="color:var(--text2);font-size:12px">${s.payment_terms||'—'}</td>
     <td><span class="bk ${s.is_active?'bg':'brd'}">${s.is_active?'Active':'Inactive'}</span></td>
     </tr>`).join(''):'<tr><td colspan="6" class="empty">No suppliers found</td></tr>';
 }
@@ -821,7 +821,7 @@ async function loadIngredients(){
 function renderIng(list){
   document.getElementById('ing-tb').innerHTML=list.length?list.map(i=>{
     const dp=parseFloat(i.price_change_pct)||0;
-    const arrow=dp>5?`<span class="ph-badge ph-up">\u25b2 +${dp.toFixed(1)}%</span>`:dp<-5?`<span class="ph-badge ph-down">\u25bc ${dp.toFixed(1)}%</span>`:`<span class="ph-badge ph-stable">Stable</span>`;
+    const arrow=dp>5?`<span class="ph-badge ph-up">▲ +${dp.toFixed(1)}%</span>`:dp<-5?`<span class="ph-badge ph-down">▼ ${dp.toFixed(1)}%</span>`:`<span class="ph-badge ph-stable">Stable</span>`;
     return`<tr>
     <td style="font-weight:600">${i.ingredient_name}</td>
     <td><span class="bk bbl">${i.category}</span></td>
@@ -829,7 +829,7 @@ function renderIng(list){
     <td style="font-weight:700">${fmt(i.current_price)}</td>
     <td>${arrow}</td>
     <td style="color:var(--text2);font-size:12px">${i.supplier_name||'Unknown'}</td>
-    <td class="no-print"><button class="btn" style="font-size:10px;padding:3px 9px" onclick="openPriceEdit('${i.supplier_price_id}','${i.ingredient_name}','${i.supplier_name||''}','${i.unit}',${i.current_price})">\u270f Edit price</button></td>
+    <td class="no-print"><button class="btn" style="font-size:10px;padding:3px 9px" onclick="openPriceEdit('${i.supplier_price_id}','${i.ingredient_name}','${i.supplier_name||''}','${i.unit}',${i.current_price})">✏ Edit price</button></td>
     </tr>`;
   }).join(''):'<tr><td colspan="7" class="empty">No ingredients found</td></tr>';
 }
@@ -870,7 +870,7 @@ async function loadPrices(){
   const d=await api('/v_ingredient_prices?order=ingredient_name,current_price&select=ingredient_name,category,supplier_name,current_price,previous_price,price_change_pct');
   if(!d)return;allPrices=d;
   const alerts=d.filter(p=>parseFloat(p.price_change_pct)>5);
-  document.getElementById('price-alert').textContent=alerts.length?`${alerts.length} ingredient${alerts.length>1?'s':''} with price increases above 5% \u2014 review before ordering`:'All prices stable';
+  document.getElementById('price-alert').textContent=alerts.length?`${alerts.length} ingredient${alerts.length>1?'s':''} with price increases above 5% — review before ordering`:'All prices stable';
   renderPrices();
 }
 function renderPrices(){
@@ -884,11 +884,11 @@ function renderPrices(){
     list.sort((a,b)=>a.current_price-b.current_price);
     const b=list[0];const dp=parseFloat(b.price_change_pct)||0;
     const action=dp>30?'Urgent: find alternative':dp>15?'Review contract':dp>5?'Monitor':'No action needed';
-    const badge=dp>5?`<span class="ph-badge ph-up">\u25b2 +${dp.toFixed(1)}%</span>`:dp<-5?`<span class="ph-badge ph-down">\u25bc ${dp.toFixed(1)}%</span>`:`<span class="ph-badge ph-stable">Stable</span>`;
+    const badge=dp>5?`<span class="ph-badge ph-up">▲ +${dp.toFixed(1)}%</span>`:dp<-5?`<span class="ph-badge ph-down">▼ ${dp.toFixed(1)}%</span>`:`<span class="ph-badge ph-stable">Stable</span>`;
     return`<tr>
-    <td style="font-weight:600">${name}</td><td><span class="bk bbl">${b.category||'\u2014'}</span></td>
+    <td style="font-weight:600">${name}</td><td><span class="bk bbl">${b.category||'—'}</span></td>
     <td style="font-weight:700;color:var(--g)">${fmt(b.current_price)}</td>
-    <td style="font-size:12px;color:var(--text2)">${b.supplier_name||'\u2014'}</td>
+    <td style="font-size:12px;color:var(--text2)">${b.supplier_name||'—'}</td>
     <td>${badge}</td><td style="font-size:11px;color:var(--text2)">${action}</td>
     </tr>`;
   }).join('')||'<tr><td colspan="6" class="empty">No results</td></tr>';
@@ -987,10 +987,10 @@ function renderSpmTable(){
   document.getElementById('spm-tb').innerHTML=page.map(r=>`
     <tr>
     <td style="font-weight:600;max-width:220px">${r.ingredient_name_clean}</td>
-    <td style="font-size:11px;color:var(--text2);max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.category||'\u2014'}</td>
-    <td style="font-size:11px;color:var(--text2)">${r.brand_grade||'\u2014'}</td>
-    <td style="font-size:11px;color:var(--text2)">${r.packing_size||'\u2014'}</td>
-    <td style="font-size:11px;color:var(--text2)">${r.order_unit||'\u2014'}</td>
+    <td style="font-size:11px;color:var(--text2);max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.category||'—'}</td>
+    <td style="font-size:11px;color:var(--text2)">${r.brand_grade||'—'}</td>
+    <td style="font-size:11px;color:var(--text2)">${r.packing_size||'—'}</td>
+    <td style="font-size:11px;color:var(--text2)">${r.order_unit||'—'}</td>
     <td style="text-align:right;font-weight:700;color:${r.price_status==='zero_price_review'?'var(--rdm)':'var(--text)'}">${r.unit_price_idr>0?fmt(r.unit_price_idr):'TBC'}</td>
     <td style="font-size:11px;color:var(--text2)">${r.supplier.replace('PT Finefood Indonesia - ','FF ').replace('PT Finefood Indonesia','FF Indo').replace('PT Masuya Graha Trikencana','Masuya').replace('PT Diamond Indonesia','Diamond')}</td>
     <td>${r.price_status==='zero_price_review'?'<span class="bk bam">Review</span>':'<span class="bk bg">Active</span>'}</td>
@@ -1004,9 +1004,9 @@ function renderSpmTable(){
   if(spmPage<totalPages-2)pages.push('...');
   if(totalPages>1)pages.push(totalPages);
   document.getElementById('spm-pagination').innerHTML=
-    `<button class="page-btn" onclick="spmGoPage(${spmPage-1})" ${spmPage===1?'disabled':''}>\u2190 Prev</button>`+
+    `<button class="page-btn" onclick="spmGoPage(${spmPage-1})" ${spmPage===1?'disabled':''}>← Prev</button>`+
     pages.map(p=>p==='...'?`<span style="padding:4px 6px;color:var(--text3)">&hellip;</span>`:`<button class="page-btn ${p===spmPage?'active':''}" onclick="spmGoPage(${p})">${p}</button>`).join('')+
-    `<button class="page-btn" onclick="spmGoPage(${spmPage+1})" ${spmPage===totalPages?'disabled':''}>Next \u2192</button>`;
+    `<button class="page-btn" onclick="spmGoPage(${spmPage+1})" ${spmPage===totalPages?'disabled':''}>Next →</button>`;
 }
 
 function spmGoPage(p){
@@ -1086,7 +1086,7 @@ function parseLines(lines,source){
     if(!price)return;
     let name=line
       .replace(/[\d]{1,3}(?:[.,][\d]{3})*(?:[.,][\d]+)?\s*[Kk]?(?:\/(?:kg|KG|liter|pcs|pack|btl|box|gr|gram|ml|pc|pck|lt))?/g,'')
-      .replace(/[-\u2013\/|:;]/g,' ').replace(/\s+/g,' ')
+      .replace(/[-–\/|:;]/g,' ').replace(/\s+/g,' ')
       .trim();
     if(name.length<2||seen.has(name.toLowerCase()))return;
     seen.add(name.toLowerCase());
@@ -1120,7 +1120,7 @@ function renderParseResults(source){
     if(item.match){
       const old=parseFloat(item.match.current_price)||0;
       const diff=old>0?((item.price-old)/old*100):0;
-      const diffBadge=Math.abs(diff)>0.5?`<span class="ph-badge ${diff>0?'ph-up':'ph-down'}" style="margin-left:6px">${diff>0?'\u25b2':'\u25bc'} ${Math.abs(diff).toFixed(1)}%</span>`:'';
+      const diffBadge=Math.abs(diff)>0.5?`<span class="ph-badge ${diff>0?'ph-up':'ph-down'}" style="margin-left:6px">${diff>0?'▲':'▼'} ${Math.abs(diff).toFixed(1)}%</span>`:'';
       return`<div class="parse-row match">
         <input type="checkbox" ${item.selected?'checked':''} onchange="parsedItems[${idx}].selected=this.checked" style="margin-right:8px;flex-shrink:0">
         <div class="parse-name">${item.match.ingredient_name}<div style="font-size:10px;color:var(--text2)">${item.rawName}</div></div>
@@ -1176,9 +1176,9 @@ async function loadPlHistory(){
     <div class="upload-history-row">
       <div style="flex:1">
         <div style="font-weight:600">${u.supplier_name}</div>
-        <div style="font-size:10px;color:var(--text2)">${u.file_name||'Manual'} \u00b7 ${new Date(u.upload_date).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</div>
+        <div style="font-size:10px;color:var(--text2)">${u.file_name||'Manual'} · ${new Date(u.upload_date).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</div>
       </div>
-      <div style="text-align:right;font-size:11px;color:var(--text2)">${u.items_matched||0} matched \u00b7 ${u.items_updated||0} updated</div>
+      <div style="text-align:right;font-size:11px;color:var(--text2)">${u.items_matched||0} matched · ${u.items_updated||0} updated</div>
       <span class="bk ${u.status==='approved'?'bg':u.status==='pending'?'bam':'brd'}">${u.status||'approved'}</span>
     </div>`).join('');
 }
@@ -1191,10 +1191,10 @@ async function loadOrderSheet(){
     <tr>
     <td style="font-weight:600;font-size:12px">${i.ingredient_name}</td>
     <td><span class="bk bbl" style="font-size:9px">${(i.category||'').slice(0,4).toUpperCase()}</span></td>
-    ${['C','F','M','P','T'].map(s=>`<td style="text-align:center"><input class="qty" data-i="${idx}" data-s="${s}" type="number" min="0" step="0.1" placeholder="\u2014"></td>`).join('')}
-    <td style="text-align:right;font-size:11px;color:var(--text2)" id="rt-${idx}">\u2014</td>
+    ${['C','F','M','P','T'].map(s=>`<td style="text-align:center"><input class="qty" data-i="${idx}" data-s="${s}" type="number" min="0" step="0.1" placeholder="—"></td>`).join('')}
+    <td style="text-align:right;font-size:11px;color:var(--text2)" id="rt-${idx}">—</td>
     <td style="text-align:right;font-size:11px">${fmt(i.current_price)}/kg</td>
-    <td style="text-align:right;font-weight:600" id="rc-${idx}">\u2014</td>
+    <td style="text-align:right;font-weight:600" id="rc-${idx}">—</td>
     </tr>`).join('');
 }
 function calcOrder(){
@@ -1203,8 +1203,8 @@ function calcOrder(){
   window._orderData.forEach((ing,idx)=>{
     let qty=0;['C','F','M','P','T'].forEach(s=>{const el=document.querySelector(`input[data-i="${idx}"][data-s="${s}"]`);qty+=parseFloat(el?.value||0);});
     const cost=qty*ing.current_price;
-    document.getElementById(`rt-${idx}`).textContent=qty>0?qty.toFixed(2)+' '+ing.unit:'\u2014';
-    document.getElementById(`rc-${idx}`).textContent=qty>0?fmt(cost):'\u2014';
+    document.getElementById(`rt-${idx}`).textContent=qty>0?qty.toFixed(2)+' '+ing.unit:'—';
+    document.getElementById(`rc-${idx}`).textContent=qty>0?fmt(cost):'—';
     if(qty>0){total+=cost;items++;sups.add(ing.supplier_name);}
   });
   document.getElementById('m-items').textContent=items;
@@ -1226,7 +1226,7 @@ async function saveOrder(){
     if(qty<=0)return null;
     return{order_id:orderId,ingredient_id:ing.ingredient_id,supplier_price_id:ing.supplier_price_id,section_id:secMap[s],quantity:qty,unit_price:ing.current_price};
   }).filter(Boolean));
-  if(lines.length){const r=await api('/daily_order_lines','POST',lines);if(r)toast(`Order saved \u2014 ${lines.length} lines \u00b7 ${orderDate}`);}
+  if(lines.length){const r=await api('/daily_order_lines','POST',lines);if(r)toast(`Order saved — ${lines.length} lines · ${orderDate}`);}
   else toast('Enter at least one quantity',true);
   calcOrder();
 }
@@ -1242,7 +1242,7 @@ async function loadMonthly(){
   d.forEach(r=>{const sp=parseFloat(r.total_spend)||0;grand+=sp;if(!catMap[r.category])catMap[r.category]=0;catMap[r.category]+=sp;if(!supMap[r.supplier_name])supMap[r.supplier_name]=0;supMap[r.supplier_name]+=sp;});
   document.getElementById('mon-total').textContent=fmt(grand);
   const topCat=Object.entries(catMap).sort((a,b)=>b[1]-a[1])[0];
-  document.getElementById('mon-top').textContent=topCat?topCat[0]:'\u2014';
+  document.getElementById('mon-top').textContent=topCat?topCat[0]:'—';
   document.getElementById('mon-cat-tb').innerHTML=Object.entries(catMap).sort((a,b)=>b[1]-a[1]).map(([cat,v])=>`<tr><td style="font-weight:600">${cat}</td><td style="text-align:right">${fmt(v)}</td></tr>`).join('');
   document.getElementById('mon-sup-tb').innerHTML=Object.entries(supMap).sort((a,b)=>b[1]-a[1]).map(([sup,v])=>`<tr><td style="font-weight:600">${sup}</td><td style="text-align:right">${fmt(v)}</td></tr>`).join('');
   const alerts=await api('/v_ingredient_prices?price_change_pct=gt.5&order=price_change_pct.desc&select=ingredient_name,supplier_name,current_price,previous_price,price_change_pct');
@@ -1277,7 +1277,7 @@ async function loadRecipe(){
   if(!recipe)return;const r=recipe[0];
   document.getElementById('rec-card').style.display='block';
   document.getElementById('rec-title').textContent=r.name;
-  document.getElementById('rec-yield').textContent=`Yield: ${r.yield_portions||'\u2014'} portions${r.yield_quantity?' \u00b7 '+r.yield_quantity+' '+(r.yield_unit||'g'):''} \u00b7 Target FC: ${r.target_fc_pct||35}%`;
+  document.getElementById('rec-yield').textContent=`Yield: ${r.yield_portions||'—'} portions${r.yield_quantity?' · '+r.yield_quantity+' '+(r.yield_unit||'g'):''} · Target FC: ${r.target_fc_pct||35}%`;
   let total=0;
   if(rows&&rows.length){
     document.getElementById('rec-tb').innerHTML=rows.map(ri=>{
@@ -1288,7 +1288,7 @@ async function loadRecipe(){
       const cost=(ri.quantity*pricePerUnit)/(ri.yield_pct/100);
       total+=cost;
       return`<tr>
-      <td>${ri.ingredients?.name||'\u2014'}</td>
+      <td>${ri.ingredients?.name||'—'}</td>
       <td style="text-align:right">${ri.quantity}</td>
       <td>${ri.unit}</td>
       <td style="text-align:right;font-size:12px">${fmt(pricePerUnit)}<span style="font-size:10px;color:var(--text2)">/${ri.unit}</span></td>
@@ -1303,9 +1303,9 @@ async function loadRecipe(){
   document.getElementById('rec-foot').textContent=fmt(total);
   const portions=r.yield_portions||1;
   document.getElementById('rec-portions').textContent=portions+' portions';
-  document.getElementById('rec-cpp').textContent=total>0?fmt(total/portions):'\u2014';
-  document.getElementById('rec-sug').textContent=total>0?fmt((total/portions)/((r.target_fc_pct||35)/100)):'\u2014';
-  document.getElementById('rec-fcp').textContent='\u2014';document.getElementById('rec-gp').textContent='\u2014';document.getElementById('rec-sell').value='';
+  document.getElementById('rec-cpp').textContent=total>0?fmt(total/portions):'—';
+  document.getElementById('rec-sug').textContent=total>0?fmt((total/portions)/((r.target_fc_pct||35)/100)):'—';
+  document.getElementById('rec-fcp').textContent='—';document.getElementById('rec-gp').textContent='—';document.getElementById('rec-sell').value='';
   window._recTotal=total;window._recPort=portions;window._recTarget=r.target_fc_pct||35;
 }
 function calcRecipeFC(){
@@ -1332,7 +1332,7 @@ async function loadDishList(){
   sel.innerHTML='<option value="">Select dish...</option>';
   Object.entries(groups).sort().forEach(([section,list])=>{
     const og=document.createElement('optgroup');og.label=section;
-    list.forEach(x=>{const op=document.createElement('option');op.value=x.id;op.textContent=x.name+(x.course?' \u00b7 '+x.course:'');og.appendChild(op);});
+    list.forEach(x=>{const op=document.createElement('option');op.value=x.id;op.textContent=x.name+(x.course?' · '+x.course:'');og.appendChild(op);});
     sel.appendChild(og);
   });
 }
@@ -1343,7 +1343,7 @@ function filterDishList(){
   sel.innerHTML='<option value="">Select dish...</option>';
   Object.entries(groups).sort().forEach(([section,list])=>{
     const og=document.createElement('optgroup');og.label=section;
-    list.forEach(x=>{const op=document.createElement('option');op.value=x.id;op.textContent=x.name+(x.course?' \u00b7 '+x.course:'');og.appendChild(op);});
+    list.forEach(x=>{const op=document.createElement('option');op.value=x.id;op.textContent=x.name+(x.course?' · '+x.course:'');og.appendChild(op);});
     sel.appendChild(og);
   });
 }
@@ -1357,13 +1357,13 @@ async function loadDish(){
   if(!dish)return;const d=dish[0];
   document.getElementById('dish-card').style.display='block';
   document.getElementById('dish-title').textContent=d.name;
-  document.getElementById('dish-course-label').textContent=(d.course||'')+(d.menu_section?' \u00b7 '+d.menu_section:'');
+  document.getElementById('dish-course-label').textContent=(d.course||'')+(d.menu_section?' · '+d.menu_section:'');
   const engMap={star:'Star',puzzle:'Puzzle',plow:'Plow Horse',dog:'Dog'};
   const engClass={star:'bg',puzzle:'bbl',plow:'btl',dog:'brd'};
   const eng=document.getElementById('dish-eng');
-  eng.textContent=engMap[d.menu_category]||d.menu_category||'\u2014';
+  eng.textContent=engMap[d.menu_category]||d.menu_category||'—';
   eng.className='bk '+(engClass[d.menu_category]||'bgr');
-  document.getElementById('dish-section-badge').textContent=d.menu_section||'\u2014';
+  document.getElementById('dish-section-badge').textContent=d.menu_section||'—';
   let total=0;
   if(comps&&comps.length){
     document.getElementById('dish-comp-list').innerHTML=comps.map(c=>{
@@ -1372,9 +1372,9 @@ async function loadDish(){
     }).join('');
   }else{document.getElementById('dish-comp-list').innerHTML='<div class="empty">No components added yet</div>';}
   document.getElementById('dish-fc-total').textContent=fmt(total);
-  document.getElementById('dish-target').textContent=total>0?fmt(total/((d.target_fc_pct||35)/100)):'\u2014';
-  document.getElementById('dish-notes-display').textContent=d.notes||'\u2014';
-  document.getElementById('dish-fcp').textContent='\u2014';document.getElementById('dish-gp').textContent='\u2014';
+  document.getElementById('dish-target').textContent=total>0?fmt(total/((d.target_fc_pct||35)/100)):'—';
+  document.getElementById('dish-notes-display').textContent=d.notes||'—';
+  document.getElementById('dish-fcp').textContent='—';document.getElementById('dish-gp').textContent='—';
   document.getElementById('dish-sell').value=d.selling_price||'';
   window._dishTotal=total;window._dishTarget=d.target_fc_pct||35;
   if(d.selling_price)calcDishFC();
@@ -1403,12 +1403,12 @@ function printPage(section){
   const header=document.createElement('div');
   header.className='print-header';
   header.style.cssText='display:block;padding:0 0 16px;border-bottom:1px solid #ccc;margin-bottom:16px';
-  header.innerHTML=`<div style="font-size:18px;font-weight:700">KitchenOps \u2014 Aperitif Bali</div><div style="font-size:12px;color:#666;margin-top:4px">Printed: ${date}</div>`;
+  header.innerHTML=`<div style="font-size:18px;font-weight:700">KitchenOps — Aperitif Bali</div><div style="font-size:12px;color:#666;margin-top:4px">Printed: ${date}</div>`;
   if(pg)pg.prepend(header);
   const footer=document.createElement('div');
   footer.className='print-footer';
   footer.style.cssText='display:block;padding:20px 0 0;border-top:1px solid #ccc;margin-top:20px;font-size:11px;color:#666;display:flex;justify-content:space-between';
-  footer.innerHTML=`<span>KitchenOps \u00b7 Aperitif Bali \u00b7 ${date}</span><span>Approved by: _________________________ Date: _____________</span>`;
+  footer.innerHTML=`<span>KitchenOps · Aperitif Bali · ${date}</span><span>Approved by: _________________________ Date: _____________</span>`;
   if(pg)pg.append(footer);
   window.print();
   setTimeout(()=>{
