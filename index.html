@@ -211,12 +211,12 @@ tr:hover td{background:var(--bg)}
       <div class="login-lb"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
       <div class="login-brand">KitchenOps</div>
     </div>
-    <div class="login-sub">Aperitif · Bali · Culinary Operations</div>
+    <div class="login-sub">Aperitif &middot; Bali &middot; Culinary Operations</div>
     <label class="login-lbl">Access Code</label>
     <input class="login-inp" type="password" id="pw-input" placeholder="Enter access code" onkeydown="if(event.key==='Enter')doLogin()" autofocus>
     <button class="login-btn" onclick="doLogin()">Enter</button>
     <div class="login-err" id="login-err"></div>
-    <div class="login-footer">Authorised personnel only · 2026</div>
+    <div class="login-footer">Authorised personnel only &middot; 2026</div>
   </div>
 </div>
 
@@ -225,7 +225,7 @@ tr:hover td{background:var(--bg)}
 <header class="hdr">
   <div class="logo">
     <div class="lb"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
-    <div><div class="brand">KitchenOps</div><div class="brand-sub">Aperitif · Purchasing &amp; Food Cost</div></div>
+    <div><div class="brand">KitchenOps</div><div class="brand-sub">Aperitif &middot; Purchasing &amp; Food Cost</div></div>
   </div>
   <div class="hdr-r">
     <span class="db-dot" id="db-dot"></span><span class="db-lbl" id="db-lbl">Connecting...</span>
@@ -237,23 +237,21 @@ tr:hover td{background:var(--bg)}
   <nav class="nav">
     <button class="nb on" onclick="go('suppliers',this)">Suppliers</button>
     <button class="nb" onclick="go('pricelists',this)">Pricelists</button>
-    <button class="nb" onclick="go('spm',this)">Price Master</button>
-    <button class="nb" onclick="go('ingredients',this)">Ingredients</button>
-    <button class="nb" onclick="go('prices',this)">Price Compare</button>
+    <button class="nb" onclick="go('ingpricing',this)">Ingredients &amp; Pricing</button>
     <button class="nb" onclick="go('orders',this)">Daily Orders</button>
     <button class="nb" onclick="go('monthly',this)">Monthly</button>
     <button class="nb" onclick="go('recipes',this)">Recipe Costing</button>
     <button class="nb" onclick="go('dishes',this)">Dish Costing</button>
-    <button class="nb" onclick="go('printcenter',this)">🖨 Print</button>
+    <button class="nb" onclick="go('printcenter',this)">&#x1F5A8; Print</button>
   </nav>
 </div>
 
 <main class="main">
 
-<!-- SUPPLIERS -->
+<!-- SUPPLIERS (unchanged) -->
 <div id="pg-suppliers" class="pg on">
   <div class="page-title">Supplier directory</div>
-  <div class="page-sub">All active vendors — tap phone to call or WhatsApp</div>
+  <div class="page-sub">All active vendors &mdash; tap phone to call or WhatsApp</div>
   <div class="bar">
     <div class="si"><input id="ss" placeholder="Search suppliers..." oninput="filterSup()"></div>
     <select id="sc" onchange="filterSup()">
@@ -265,7 +263,7 @@ tr:hover td{background:var(--bg)}
       <option>Chicken Supplies</option><option>Beverages</option><option>Dry Goods</option>
     </select>
     <button class="btn no-print" onclick="openModal('sup')">+ Add Supplier</button>
-    <button class="btn no-print" onclick="printPage('suppliers')">🖨 Print</button>
+    <button class="btn no-print" onclick="printPage('suppliers')">&#x1F5A8; Print</button>
   </div>
   <div class="card"><div class="tbl-wrap">
     <table><thead><tr><th>Supplier</th><th>Category</th><th>Phone</th><th>Delivery days</th><th>Payment</th><th>Status</th></tr></thead>
@@ -273,10 +271,10 @@ tr:hover td{background:var(--bg)}
   </div></div>
 </div>
 
-<!-- SUPPLIER PRICELISTS -->
+<!-- SUPPLIER PRICELISTS (unchanged) -->
 <div id="pg-pricelists" class="pg">
   <div class="page-title">Supplier pricelists</div>
-  <div class="page-sub">Upload and manage supplier price lists — prices flow into recipe food costs</div>
+  <div class="page-sub">Upload and manage supplier price lists &mdash; prices flow into recipe food costs</div>
   <div class="tabs">
     <div class="tab on" onclick="setPlTab(this,'pl-upload')">Upload new pricelist</div>
     <div class="tab" onclick="setPlTab(this,'pl-history')">Upload history</div>
@@ -289,14 +287,14 @@ tr:hover td{background:var(--bg)}
         <select id="pl-sup-sel" style="flex:1;min-width:200px"><option value="">Select supplier for this upload...</option></select>
       </div>
       <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()" ondragover="e=>{e.preventDefault();document.getElementById('drop-zone').classList.add('drag')}" ondragleave="document.getElementById('drop-zone').classList.remove('drag')" ondrop="e=>{e.preventDefault();document.getElementById('drop-zone').classList.remove('drag');if(e.dataTransfer.files[0])processFile(e.dataTransfer.files[0])}">
-        <div class="drop-zone-icon">📄</div>
+        <div class="drop-zone-icon">&#x1F4C4;</div>
         <p><strong>Click to select file</strong> or drag and drop</p>
-        <p style="font-size:10px;color:var(--text3)">Excel (.xlsx) · CSV · Text</p>
+        <p style="font-size:10px;color:var(--text3)">Excel (.xlsx) &middot; CSV &middot; Text</p>
         <input type="file" id="file-input" accept=".xlsx,.xls,.csv,.txt" onchange="handleFile(event)">
       </div>
       <div style="margin-top:12px">
         <div style="font-size:11px;color:var(--text2);margin-bottom:6px;font-weight:600">Or paste price list text:</div>
-        <textarea id="paste-input" style="width:100%;height:120px;padding:10px;border:0.5px solid var(--border);border-radius:8px;font-size:12px;font-family:monospace;background:var(--surface);color:var(--text);resize:vertical" placeholder="Paste price list here — one item per line&#10;Example: Salmon Fillet Fresh 320,000/kg"></textarea>
+        <textarea id="paste-input" style="width:100%;height:120px;padding:10px;border:0.5px solid var(--border);border-radius:8px;font-size:12px;font-family:monospace;background:var(--surface);color:var(--text);resize:vertical" placeholder="Paste price list here &mdash; one item per line&#10;Example: Salmon Fillet Fresh 320,000/kg"></textarea>
         <div style="display:flex;gap:8px;margin-top:8px">
           <button class="btn btng" onclick="parsePasteInput()">Parse &amp; Preview</button>
           <button class="btn" onclick="clearParse()">Clear</button>
@@ -306,10 +304,10 @@ tr:hover td{background:var(--bg)}
     <div id="parse-results" style="display:none">
       <div class="card">
         <div class="ch">
-          <div><div class="ct">Preview — review before saving</div><div class="cs" id="parse-summary">—</div></div>
+          <div><div class="ct">Preview &mdash; review before saving</div><div class="cs" id="parse-summary">&mdash;</div></div>
           <div style="display:flex;gap:8px">
             <button class="btn" onclick="clearParse()">Cancel</button>
-            <button class="btn btng" onclick="saveAllPrices()">✓ Approve &amp; save all matched</button>
+            <button class="btn btng" onclick="saveAllPrices()">&#x2713; Approve &amp; save all matched</button>
           </div>
         </div>
         <div id="parse-list" style="max-height:500px;overflow-y:auto;padding:10px 14px"></div>
@@ -324,94 +322,80 @@ tr:hover td{background:var(--bg)}
   </div>
 </div>
 
-<!-- SUPPLIER PRICE MASTER -->
-<div id="pg-spm" class="pg">
-  <div class="page-title">Supplier Price Master</div>
-  <div class="page-sub">April 2026 master pricelist — 3,591 lines across 8 suppliers</div>
-  <div class="metrics spm-stats" id="spm-supplier-cards">
-    <div class="loader">Loading suppliers...</div>
+<!-- INGREDIENTS & PRICING (merged: Price Master + Ingredients + Price Compare) -->
+<div id="pg-ingpricing" class="pg">
+  <div class="page-title">Ingredients &amp; Pricing</div>
+  <div class="page-sub">Master ingredient library &middot; Supplier price master &middot; Price comparison</div>
+  <div class="tabs" style="margin-bottom:14px">
+    <div class="tab on" id="iptab-ingredients" onclick="setIpTab('ingredients')">Ingredients</div>
+    <div class="tab" id="iptab-spm" onclick="setIpTab('spm')">Price Master</div>
+    <div class="tab" id="iptab-prices" onclick="setIpTab('prices')">Price Compare</div>
   </div>
-  <div class="bar">
-    <div class="si"><input id="spm-search" placeholder="Search product name..." oninput="spmSearch()"></div>
-    <select id="spm-sup-filter" onchange="spmSearch()"><option value="">All suppliers</option></select>
-    <select id="spm-cat-filter" onchange="spmSearch()"><option value="">All categories</option></select>
-    <select id="spm-status-filter" onchange="spmSearch()">
-      <option value="">All items</option>
-      <option value="active">Active only</option>
-      <option value="zero_price_review">Zero price review</option>
-    </select>
-    <button class="btn" onclick="exportSpmCSV()">⬇ Export CSV</button>
-  </div>
-  <div class="card">
-    <div class="ch">
-      <div><div class="ct" id="spm-result-title">All items</div><div class="cs" id="spm-result-sub">Loading...</div></div>
+  <div id="ippanel-ingredients">
+    <div class="bar">
+      <div class="si"><input id="is" placeholder="Search ingredient..." oninput="filterIng()"></div>
+      <select id="ic" onchange="filterIng()">
+        <option value="">All categories</option>
+        <option>Vegetables</option><option>Fruits</option><option>Meat</option><option>Fish</option>
+        <option>Dairy</option><option>Dry Store</option><option>Pastry</option><option>Beverage</option>
+      </select>
+      <button class="btn no-print" onclick="openModal('ing')">+ Add</button>
+      <button class="btn no-print" onclick="printPage('ingredients')">&#x1F5A8; Print</button>
     </div>
-    <div class="tbl-wrap">
+    <div class="card"><div class="tbl-wrap">
       <table>
-        <thead><tr>
-          <th>Product</th><th>Category</th><th>Brand/Grade</th>
-          <th>Pack size</th><th>Unit</th>
-          <th style="text-align:right">Price (IDR)</th>
-          <th>Supplier</th><th>Status</th>
-        </tr></thead>
-        <tbody id="spm-tb"><tr><td colspan="8" class="loader">Loading price master...</td></tr></tbody>
+        <thead><tr><th>Ingredient</th><th>Category</th><th>Unit</th><th>Current price</th><th>vs. prev</th><th>Supplier</th><th class="no-print">Update</th></tr></thead>
+        <tbody id="ing-tb"><tr><td colspan="7" class="loader">Loading...</td></tr></tbody>
       </table>
+    </div></div>
+  </div>
+  <div id="ippanel-spm" style="display:none">
+    <div class="metrics spm-stats" id="spm-supplier-cards"><div class="loader">Loading suppliers...</div></div>
+    <div class="bar">
+      <div class="si"><input id="spm-search" placeholder="Search product name..." oninput="spmSearch()"></div>
+      <select id="spm-sup-filter" onchange="spmSearch()"><option value="">All suppliers</option></select>
+      <select id="spm-cat-filter" onchange="spmSearch()"><option value="">All categories</option></select>
+      <select id="spm-status-filter" onchange="spmSearch()">
+        <option value="">All items</option><option value="active">Active only</option><option value="zero_price_review">Zero price review</option>
+      </select>
+      <button class="btn" onclick="exportSpmCSV()">&#x2B07; Export CSV</button>
     </div>
-    <div class="pagination" id="spm-pagination"></div>
+    <div class="card">
+      <div class="ch"><div><div class="ct" id="spm-result-title">All items</div><div class="cs" id="spm-result-sub">Loading...</div></div></div>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Product</th><th>Category</th><th>Brand/Grade</th><th>Pack size</th><th>Unit</th><th style="text-align:right">Price (IDR)</th><th>Supplier</th><th>Status</th></tr></thead>
+        <tbody id="spm-tb"><tr><td colspan="8" class="loader">Loading price master...</td></tr></tbody>
+      </table></div>
+      <div class="pagination" id="spm-pagination"></div>
+    </div>
+  </div>
+  <div id="ippanel-prices" style="display:none">
+    <div class="bar">
+      <div class="si"><input id="ps" placeholder="Search ingredient..." oninput="filterPrices()"></div>
+      <select id="pcat" onchange="filterPrices()">
+        <option value="">All categories</option>
+        <option>Vegetables</option><option>Fruits</option><option>Meat</option><option>Fish</option>
+        <option>Dairy</option><option>Dry Store</option><option>Pastry</option>
+      </select>
+      <button class="btn no-print" onclick="printPage('prices')">&#x1F5A8; Print</button>
+    </div>
+    <div class="alert-bar" id="price-alert">Checking price alerts...</div>
+    <div class="card"><div class="tbl-wrap">
+      <table><thead><tr><th>Ingredient</th><th>Category</th><th>Best price</th><th>Supplier</th><th>Change</th><th>Action</th></tr></thead>
+      <tbody id="price-tb"><tr><td colspan="6" class="loader">Loading...</td></tr></tbody></table>
+    </div></div>
   </div>
 </div>
 
-<!-- INGREDIENTS -->
-<div id="pg-ingredients" class="pg">
-  <div class="page-title">Master ingredient library</div>
-  <div class="page-sub">Click ✏ Edit price on any row to update manually — all recipe costs recalculate instantly</div>
-  <div class="bar">
-    <div class="si"><input id="is" placeholder="Search ingredient..." oninput="filterIng()"></div>
-    <select id="ic" onchange="filterIng()">
-      <option value="">All categories</option>
-      <option>Vegetables</option><option>Fruits</option><option>Meat</option><option>Fish</option>
-      <option>Dairy</option><option>Dry Store</option><option>Pastry</option><option>Beverage</option>
-    </select>
-    <button class="btn no-print" onclick="openModal('ing')">+ Add</button>
-    <button class="btn no-print" onclick="printPage('ingredients')">🖨 Print</button>
-  </div>
-  <div class="card"><div class="tbl-wrap">
-    <table>
-      <thead><tr><th>Ingredient</th><th>Category</th><th>Unit</th><th>Current price</th><th>vs. prev</th><th>Supplier</th><th class="no-print">Update</th></tr></thead>
-      <tbody id="ing-tb"><tr><td colspan="7" class="loader">Loading...</td></tr></tbody>
-    </table>
-  </div></div>
-</div>
-
-<!-- PRICE COMPARE -->
-<div id="pg-prices" class="pg">
-  <div class="page-title">Price comparison</div>
-  <div class="page-sub">All suppliers for each ingredient — cheapest to most expensive</div>
-  <div class="bar">
-    <div class="si"><input id="ps" placeholder="Search ingredient..." oninput="filterPrices()"></div>
-    <select id="pcat" onchange="filterPrices()">
-      <option value="">All categories</option>
-      <option>Vegetables</option><option>Fruits</option><option>Meat</option><option>Fish</option>
-      <option>Dairy</option><option>Dry Store</option><option>Pastry</option>
-    </select>
-    <button class="btn no-print" onclick="printPage('prices')">🖨 Print</button>
-  </div>
-  <div class="alert-bar" id="price-alert">Checking price alerts...</div>
-  <div class="card"><div class="tbl-wrap">
-    <table><thead><tr><th>Ingredient</th><th>Category</th><th>Best price</th><th>Supplier</th><th>Change</th><th>Action</th></tr></thead>
-    <tbody id="price-tb"><tr><td colspan="6" class="loader">Loading...</td></tr></tbody></table>
-  </div></div>
-</div>
-
-<!-- DAILY ORDERS -->
+<!-- DAILY ORDERS (unchanged) -->
 <div id="pg-orders" class="pg">
   <div class="page-title">Daily order sheet</div>
-  <div class="page-sub">C = Cold Kitchen · F = Fish · M = Main Kitchen · P = Pastry · T = Team Dining</div>
+  <div class="page-sub">C = Cold Kitchen &middot; F = Fish &middot; M = Main Kitchen &middot; P = Pastry &middot; T = Team Dining</div>
   <div class="bar no-print">
     <input type="date" id="order-date">
     <button class="btn" onclick="calcOrder()">Calculate totals</button>
     <button class="btn btng" onclick="saveOrder()">Save order</button>
-    <button class="btn" onclick="printPage('orders')">🖨 Print</button>
+    <button class="btn" onclick="printPage('orders')">&#x1F5A8; Print</button>
   </div>
   <div class="metrics no-print">
     <div class="mc"><div class="mcl">Items ordered</div><div class="mcv" id="m-items">0</div></div>
@@ -428,7 +412,7 @@ tr:hover td{background:var(--bg)}
   </div></div>
 </div>
 
-<!-- MONTHLY -->
+<!-- MONTHLY (unchanged) -->
 <div id="pg-monthly" class="pg">
   <div class="page-title">Monthly purchasing summary</div>
   <div class="page-sub">Aggregated spend from saved daily orders</div>
@@ -440,12 +424,12 @@ tr:hover td{background:var(--bg)}
       <option value="6">June</option><option value="7">July</option><option value="8">August</option>
     </select>
     <button class="btn btng" onclick="loadMonthly()">Load report</button>
-    <button class="btn" onclick="printPage('monthly')">🖨 Print</button>
+    <button class="btn" onclick="printPage('monthly')">&#x1F5A8; Print</button>
   </div>
   <div class="metrics">
-    <div class="mc"><div class="mcl">Total spent</div><div class="mcv" style="color:var(--g);font-size:16px" id="mon-total">—</div></div>
-    <div class="mc"><div class="mcl">Price alerts</div><div class="mcv" style="color:var(--am)" id="mon-alerts-count">—</div></div>
-    <div class="mc"><div class="mcl">Top category</div><div class="mcv" id="mon-top" style="font-size:13px">—</div></div>
+    <div class="mc"><div class="mcl">Total spent</div><div class="mcv" style="color:var(--g);font-size:16px" id="mon-total">&mdash;</div></div>
+    <div class="mc"><div class="mcl">Price alerts</div><div class="mcv" style="color:var(--am)" id="mon-alerts-count">&mdash;</div></div>
+    <div class="mc"><div class="mcl">Top category</div><div class="mcv" id="mon-top" style="font-size:13px">&mdash;</div></div>
   </div>
   <div class="tabs">
     <div class="tab on" onclick="setTab(this,'mon-cat')">By category</div>
@@ -466,18 +450,18 @@ tr:hover td{background:var(--bg)}
   </table></div></div>
 </div>
 
-<!-- RECIPE COSTING -->
+<!-- RECIPE COSTING (unchanged) -->
 <div id="pg-recipes" class="pg">
   <div class="page-title">Recipe food cost calculator</div>
-  <div class="page-sub">Sub-recipes combine to form dish costs — prices auto-update from ingredient library</div>
+  <div class="page-sub">Sub-recipes combine to form dish costs &mdash; prices auto-update from ingredient library</div>
   <div class="bar no-print">
     <select id="rec-sel" onchange="loadRecipe()" style="flex:1;min-width:200px"><option value="">Select recipe...</option></select>
     <button class="btn btng" onclick="openModal('recipe')">+ New Recipe</button>
-    <button class="btn" onclick="printPage('recipes')">🖨 Print</button>
+    <button class="btn" onclick="printPage('recipes')">&#x1F5A8; Print</button>
   </div>
   <div class="card" id="rec-card" style="display:none">
     <div class="ch">
-      <div><div class="ct" id="rec-title">—</div><div class="cs" id="rec-yield">—</div></div>
+      <div><div class="ct" id="rec-title">&mdash;</div><div class="cs" id="rec-yield">&mdash;</div></div>
       <div style="text-align:right"><div style="font-size:22px;font-weight:700;color:var(--g)" id="rec-total">IDR 0</div><div style="font-size:10px;color:var(--text2)">total recipe cost</div></div>
     </div>
     <div class="tbl-wrap"><table>
@@ -486,17 +470,17 @@ tr:hover td{background:var(--bg)}
       <tfoot><tr class="total-row"><td colspan="5">Total recipe cost</td><td style="text-align:right" id="rec-foot">IDR 0</td></tr></tfoot>
     </table></div>
     <div class="fc-row">
-      <div class="fcf"><label>Portions</label><div style="font-size:14px;font-weight:700;padding:5px 0" id="rec-portions">—</div></div>
-      <div class="fcf"><label>Cost/portion</label><div style="font-size:14px;font-weight:700;padding:5px 0;color:var(--g)" id="rec-cpp">—</div></div>
+      <div class="fcf"><label>Portions</label><div style="font-size:14px;font-weight:700;padding:5px 0" id="rec-portions">&mdash;</div></div>
+      <div class="fcf"><label>Cost/portion</label><div style="font-size:14px;font-weight:700;padding:5px 0;color:var(--g)" id="rec-cpp">&mdash;</div></div>
       <div class="fcf no-print"><label>Selling price (IDR)</label><input type="number" id="rec-sell" placeholder="e.g. 285000" oninput="calcRecipeFC()" style="width:130px"></div>
-      <div class="fcs"><div class="fcsl">Food cost %</div><div class="fcsv" id="rec-fcp">—</div></div>
-      <div class="fcs"><div class="fcsl">Gross profit</div><div class="fcsv" id="rec-gp">—</div></div>
-      <div class="fcs"><div class="fcsl">Suggested sell</div><div class="fcsv" id="rec-sug" style="color:var(--tlm)">—</div></div>
+      <div class="fcs"><div class="fcsl">Food cost %</div><div class="fcsv" id="rec-fcp">&mdash;</div></div>
+      <div class="fcs"><div class="fcsl">Gross profit</div><div class="fcsv" id="rec-gp">&mdash;</div></div>
+      <div class="fcs"><div class="fcsl">Suggested sell</div><div class="fcsv" id="rec-sug" style="color:var(--tlm)">&mdash;</div></div>
     </div>
   </div>
 </div>
 
-<!-- DISH COSTING -->
+<!-- DISH COSTING (unchanged) -->
 <div id="pg-dishes" class="pg">
   <div class="page-title">Dish food cost calculator</div>
   <div class="page-sub">Each dish = sum of all component sub-recipes</div>
@@ -509,42 +493,42 @@ tr:hover td{background:var(--bg)}
       <option value="Bar">Bar menu</option>
     </select>
     <button class="btn btng" onclick="openModal('dish')">+ New Dish</button>
-    <button class="btn" onclick="printPage('dishes')">🖨 Print</button>
+    <button class="btn" onclick="printPage('dishes')">&#x1F5A8; Print</button>
   </div>
   <div class="card" id="dish-card" style="display:none">
     <div class="ch">
-      <div><div class="ct" id="dish-title">—</div><div class="cs" id="dish-course-label">—</div></div>
-      <div style="display:flex;gap:8px"><span id="dish-eng" class="bk bg">—</span><span id="dish-section-badge" class="bk bgr">—</span></div>
+      <div><div class="ct" id="dish-title">&mdash;</div><div class="cs" id="dish-course-label">&mdash;</div></div>
+      <div style="display:flex;gap:8px"><span id="dish-eng" class="bk bg">&mdash;</span><span id="dish-section-badge" class="bk bgr">&mdash;</span></div>
     </div>
     <div id="dish-comp-list"></div>
     <div style="padding:0 16px 12px"><table style="min-width:0">
-      <tfoot><tr class="total-row"><td style="padding:10px 0">Total food cost</td><td style="text-align:right;padding:10px 0;font-size:15px" id="dish-fc-total">—</td></tr></tfoot>
+      <tfoot><tr class="total-row"><td style="padding:10px 0">Total food cost</td><td style="text-align:right;padding:10px 0;font-size:15px" id="dish-fc-total">&mdash;</td></tr></tfoot>
     </table></div>
     <div class="fc-row">
       <div class="fcf no-print"><label>Selling price (IDR)</label><input type="number" id="dish-sell" placeholder="e.g. 950000" oninput="calcDishFC()" style="width:130px"></div>
-      <div class="fcs"><div class="fcsl">Food cost %</div><div class="fcsv" id="dish-fcp">—</div></div>
-      <div class="fcs"><div class="fcsl">Gross profit</div><div class="fcsv" id="dish-gp">—</div></div>
-      <div class="fcs"><div class="fcsl">Suggested sell</div><div class="fcsv" id="dish-target" style="color:var(--tlm)">—</div></div>
+      <div class="fcs"><div class="fcsl">Food cost %</div><div class="fcsv" id="dish-fcp">&mdash;</div></div>
+      <div class="fcs"><div class="fcsl">Gross profit</div><div class="fcsv" id="dish-gp">&mdash;</div></div>
+      <div class="fcs"><div class="fcsl">Suggested sell</div><div class="fcsv" id="dish-target" style="color:var(--tlm)">&mdash;</div></div>
     </div>
     <div style="padding:10px 16px;background:var(--bg);border-top:0.5px solid var(--border)">
-      <div style="font-size:11px;color:var(--text2)" id="dish-notes-display">—</div>
+      <div style="font-size:11px;color:var(--text2)" id="dish-notes-display">&mdash;</div>
     </div>
   </div>
   <div style="font-size:11px;color:var(--text2);margin-top:8px">
-    <span class="bk bg">Star</span> high margin + high popularity &nbsp;·&nbsp;
-    <span class="bk bbl">Puzzle</span> high margin + low popularity &nbsp;·&nbsp;
-    <span class="bk btl">Plow Horse</span> low margin + high popularity &nbsp;·&nbsp;
+    <span class="bk bg">Star</span> high margin + high popularity &nbsp;&middot;&nbsp;
+    <span class="bk bbl">Puzzle</span> high margin + low popularity &nbsp;&middot;&nbsp;
+    <span class="bk btl">Plow Horse</span> low margin + high popularity &nbsp;&middot;&nbsp;
     <span class="bk brd">Dog</span> review or remove
   </div>
 </div>
 
-<!-- PRINT CENTER -->
+<!-- PRINT CENTER (unchanged except nav index refs) -->
 <div id="pg-printcenter" class="pg">
   <div class="page-title">Print Center</div>
   <div class="page-sub">Print or export any document in a clean professional format</div>
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px">
     <div class="card" style="padding:20px">
-      <div style="font-size:24px;margin-bottom:8px">📋</div>
+      <div style="font-size:24px;margin-bottom:8px">&#x1F4CB;</div>
       <div style="font-weight:600;margin-bottom:4px">Supplier Contact Sheet</div>
       <div style="font-size:11px;color:var(--text2)">All suppliers with contact details, delivery days, payment terms</div>
       <div style="margin-top:12px;display:flex;gap:6px">
@@ -553,7 +537,7 @@ tr:hover td{background:var(--bg)}
       </div>
     </div>
     <div class="card" style="padding:20px">
-      <div style="font-size:24px;margin-bottom:8px">🥬</div>
+      <div style="font-size:24px;margin-bottom:8px">&#x1F96C;</div>
       <div style="font-weight:600;margin-bottom:4px">Ingredient Price List</div>
       <div style="font-size:11px;color:var(--text2)">All ingredients with current prices, suppliers, categories</div>
       <div style="margin-top:12px;display:flex;gap:6px">
@@ -562,40 +546,40 @@ tr:hover td{background:var(--bg)}
       </div>
     </div>
     <div class="card" style="padding:20px">
-      <div style="font-size:24px;margin-bottom:8px">📊</div>
+      <div style="font-size:24px;margin-bottom:8px">&#x1F4CA;</div>
       <div style="font-weight:600;margin-bottom:4px">Price Comparison Report</div>
-      <div style="font-size:11px;color:var(--text2)">Cheapest supplier per ingredient — price change alerts</div>
+      <div style="font-size:11px;color:var(--text2)">Cheapest supplier per ingredient &mdash; price change alerts</div>
       <div style="margin-top:12px"><button class="btn btng" style="font-size:11px" onclick="printPage('prices')">Print</button></div>
     </div>
     <div class="card" style="padding:20px">
-      <div style="font-size:24px;margin-bottom:8px">📦</div>
+      <div style="font-size:24px;margin-bottom:8px">&#x1F4E6;</div>
       <div style="font-weight:600;margin-bottom:4px">Supplier Price Master</div>
-      <div style="font-size:11px;color:var(--text2)">Full April 2026 pricelist — 3,591 lines across all 8 suppliers</div>
+      <div style="font-size:11px;color:var(--text2)">Full April 2026 pricelist &mdash; 3,591 lines across all 8 suppliers</div>
       <div style="margin-top:12px"><button class="btn btng" style="font-size:11px" onclick="exportSpmCSV()">Export CSV</button></div>
     </div>
     <div class="card" style="padding:20px">
-      <div style="font-size:24px;margin-bottom:8px">📝</div>
+      <div style="font-size:24px;margin-bottom:8px">&#x1F4DD;</div>
       <div style="font-weight:600;margin-bottom:4px">Daily Order Sheet</div>
       <div style="font-size:11px;color:var(--text2)">Today's order broken down by section and supplier</div>
       <div style="margin-top:12px"><button class="btn btng" style="font-size:11px" onclick="printPage('orders')">Print</button></div>
     </div>
     <div class="card" style="padding:20px">
-      <div style="font-size:24px;margin-bottom:8px">🍽</div>
+      <div style="font-size:24px;margin-bottom:8px">&#x1F37D;</div>
       <div style="font-weight:600;margin-bottom:4px">Recipe Food Cost Card</div>
       <div style="font-size:11px;color:var(--text2)">Select recipe first in Recipe Costing tab, then print</div>
-      <div style="margin-top:12px"><button class="btn btng" style="font-size:11px" onclick="go('recipes',document.querySelectorAll('.nb')[7])">Go to Recipe →</button></div>
+      <div style="margin-top:12px"><button class="btn btng" style="font-size:11px" onclick="go('recipes',document.querySelectorAll('.nb')[5])">Go to Recipe &rarr;</button></div>
     </div>
     <div class="card" style="padding:20px">
-      <div style="font-size:24px;margin-bottom:8px">🍖</div>
+      <div style="font-size:24px;margin-bottom:8px">&#x1F356;</div>
       <div style="font-weight:600;margin-bottom:4px">Dish Food Cost Sheet</div>
       <div style="font-size:11px;color:var(--text2)">Select dish first in Dish Costing tab, then print</div>
-      <div style="margin-top:12px"><button class="btn btng" style="font-size:11px" onclick="go('dishes',document.querySelectorAll('.nb')[8])">Go to Dish →</button></div>
+      <div style="margin-top:12px"><button class="btn btng" style="font-size:11px" onclick="go('dishes',document.querySelectorAll('.nb')[6])">Go to Dish &rarr;</button></div>
     </div>
     <div class="card" style="padding:20px">
-      <div style="font-size:24px;margin-bottom:8px">📅</div>
+      <div style="font-size:24px;margin-bottom:8px">&#x1F4C5;</div>
       <div style="font-weight:600;margin-bottom:4px">Monthly Purchasing Summary</div>
       <div style="font-size:11px;color:var(--text2)">Load a month first, then print the full summary</div>
-      <div style="margin-top:12px"><button class="btn btng" style="font-size:11px" onclick="go('monthly',document.querySelectorAll('.nb')[6])">Go to Monthly →</button></div>
+      <div style="margin-top:12px"><button class="btn btng" style="font-size:11px" onclick="go('monthly',document.querySelectorAll('.nb')[4])">Go to Monthly &rarr;</button></div>
     </div>
   </div>
 </div>
@@ -603,7 +587,7 @@ tr:hover td{background:var(--bg)}
 </main>
 </div>
 
-<!-- MODALS -->
+<!-- MODALS (all unchanged) -->
 <div class="modal-overlay" id="modal-sup">
   <div class="modal">
     <div class="modal-title">Add supplier</div>
@@ -645,8 +629,8 @@ tr:hover td{background:var(--bg)}
     <div class="modal-title">New recipe / sub-recipe</div>
     <div class="fr"><label>Recipe name *</label><input type="text" id="rn-name" placeholder="e.g. Woku Sauce (C)"></div>
     <div class="fr"><label>Category</label><input type="text" id="rn-cat" placeholder="Sub-recipe / Sauce / Dessert / Bar..."></div>
-    <div class="fr"><label>Yield — portions</label><input type="number" id="rn-portions" min="1"></div>
-    <div class="fr"><label>Yield — total weight (grams)</label><input type="number" id="rn-weight" min="0"></div>
+    <div class="fr"><label>Yield &mdash; portions</label><input type="number" id="rn-portions" min="1"></div>
+    <div class="fr"><label>Yield &mdash; total weight (grams)</label><input type="number" id="rn-weight" min="0"></div>
     <div class="fr"><label>Target food cost %</label><input type="number" id="rn-fc" value="35" min="1" max="100"></div>
     <div class="fr"><label>Notes</label><textarea id="rn-notes"></textarea></div>
     <div class="fa"><button class="btn" onclick="closeModal('recipe')">Cancel</button><button class="btn btng" onclick="addRecipe()">Save recipe</button></div>
@@ -668,10 +652,10 @@ tr:hover td{background:var(--bg)}
     <div class="fr"><label>Selling price (IDR)</label><input type="number" id="dn-sell"></div>
     <div class="fr"><label>Target food cost %</label><input type="number" id="dn-fc" value="35"></div>
     <div class="fr"><label>Menu engineering</label><select id="dn-eng">
-      <option value="star">Star — high margin + high popularity</option>
-      <option value="puzzle">Puzzle — high margin + low popularity</option>
-      <option value="plow">Plow Horse — low margin + high popularity</option>
-      <option value="dog">Dog — low margin + low popularity</option>
+      <option value="star">Star &mdash; high margin + high popularity</option>
+      <option value="puzzle">Puzzle &mdash; high margin + low popularity</option>
+      <option value="plow">Plow Horse &mdash; low margin + high popularity</option>
+      <option value="dog">Dog &mdash; low margin + low popularity</option>
     </select></div>
     <div class="fr"><label>Notes</label><textarea id="dn-notes"></textarea></div>
     <div class="fa"><button class="btn" onclick="closeModal('dish')">Cancel</button><button class="btn btng" onclick="addDish()">Save dish</button></div>
@@ -682,10 +666,10 @@ tr:hover td{background:var(--bg)}
   <div class="modal">
     <div class="modal-title">Update price</div>
     <div style="margin-bottom:16px">
-      <div style="font-size:15px;font-weight:700" id="pu-name">—</div>
-      <div style="font-size:11px;color:var(--text2);margin-top:2px" id="pu-sup">—</div>
+      <div style="font-size:15px;font-weight:700" id="pu-name">&mdash;</div>
+      <div style="font-size:11px;color:var(--text2);margin-top:2px" id="pu-sup">&mdash;</div>
     </div>
-    <div class="fr"><label>Current price</label><div style="font-size:18px;font-weight:700;color:var(--text2);padding:6px 0" id="pu-current">—</div></div>
+    <div class="fr"><label>Current price</label><div style="font-size:18px;font-weight:700;color:var(--text2);padding:6px 0" id="pu-current">&mdash;</div></div>
     <div class="fr"><label>New price (IDR per <span id="pu-unit">kg</span>) *</label><input type="number" id="pu-new" placeholder="Enter new price" min="0"></div>
     <div style="font-size:11px;color:var(--text2);margin-bottom:12px">All recipe costs recalculate instantly on save.</div>
     <div class="fa">
@@ -704,7 +688,7 @@ const SK='sb_publishable_vzvJV73AoLe_isJ3PhXplw_zke7NG_F';
 const H={'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json','Prefer':'return=representation'};
 const CODES=['Kitchen2026!','Chef@Bali','Aperitif2026','Purchasing@Bali'];
 const fmt=n=>'IDR '+Math.round(n||0).toLocaleString('id-ID');
-const fmtShort=n=>{if(!n)return'—';if(n>=1000000)return'IDR '+(n/1000000).toFixed(1)+'M';if(n>=1000)return'IDR '+(n/1000).toFixed(0)+'K';return fmt(n);};
+const fmtShort=n=>{if(!n)return'\u2014';if(n>=1000000)return'IDR '+(n/1000000).toFixed(1)+'M';if(n>=1000)return'IDR '+(n/1000).toFixed(0)+'K';return fmt(n);};
 
 async function api(path,method='GET',body=null){
   try{
@@ -753,17 +737,26 @@ function go(id,btn){
   document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
   document.getElementById('pg-'+id).classList.add('on');
   if(btn)btn.classList.add('on');
-  if(id==='prices')loadPrices();
+  if(id==='ingpricing'){loadIngredients();if(!allPrices.length)loadPrices();if(!spmInitDone)initSpm();}
   if(id==='monthly')loadMonthly();
   if(id==='recipes')loadRecipeList();
   if(id==='dishes')loadDishList();
   if(id==='pricelists'){loadSupplierSelect();loadPlHistory();}
-  if(id==='spm')initSpm();
 }
 function setTab(el,id){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
   el.classList.add('on');
   ['mon-cat','mon-sup','mon-palerts'].forEach(x=>document.getElementById(x).style.display=x===id?'block':'none');
+}
+function setIpTab(name){
+  ['ingredients','spm','prices'].forEach(function(p){
+    var panel=document.getElementById('ippanel-'+p);
+    var tab=document.getElementById('iptab-'+p);
+    if(panel)panel.style.display=(p===name)?'block':'none';
+    if(tab)tab.classList.toggle('on',p===name);
+  });
+  if(name==='spm'&&!spmInitDone)initSpm();
+  if(name==='prices'&&!allPrices.length)loadPrices();
 }
 function setPlTab(el,id){
   el.closest('.tabs').querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
@@ -787,16 +780,16 @@ async function loadSuppliers(){
   if(!d)return;
   allSup=d;renderSup(allSup);
   document.getElementById('db-dot').className='db-dot live';
-  document.getElementById('db-lbl').textContent='Live · Bali';
+  document.getElementById('db-lbl').textContent='Live \u00b7 Bali';
 }
 function renderSup(list){
   document.getElementById('sup-tb').innerHTML=list.length?list.map(s=>`
     <tr>
     <td style="font-weight:600">${s.name}</td>
     <td><span class="bk btl">${s.category}</span></td>
-    <td><a href="tel:${s.phone}" style="color:var(--blm);text-decoration:none;font-weight:600">${s.phone||'—'}</a></td>
-    <td style="color:var(--text2);font-size:12px">${s.delivery_days||'—'}</td>
-    <td style="color:var(--text2);font-size:12px">${s.payment_terms||'—'}</td>
+    <td><a href="tel:${s.phone}" style="color:var(--blm);text-decoration:none;font-weight:600">${s.phone||'\u2014'}</a></td>
+    <td style="color:var(--text2);font-size:12px">${s.delivery_days||'\u2014'}</td>
+    <td style="color:var(--text2);font-size:12px">${s.payment_terms||'\u2014'}</td>
     <td><span class="bk ${s.is_active?'bg':'brd'}">${s.is_active?'Active':'Inactive'}</span></td>
     </tr>`).join(''):'<tr><td colspan="6" class="empty">No suppliers found</td></tr>';
 }
@@ -820,7 +813,7 @@ async function loadIngredients(){
 function renderIng(list){
   document.getElementById('ing-tb').innerHTML=list.length?list.map(i=>{
     const dp=parseFloat(i.price_change_pct)||0;
-    const arrow=dp>5?`<span class="ph-badge ph-up">▲ +${dp.toFixed(1)}%</span>`:dp<-5?`<span class="ph-badge ph-down">▼ ${dp.toFixed(1)}%</span>`:`<span class="ph-badge ph-stable">Stable</span>`;
+    const arrow=dp>5?`<span class="ph-badge ph-up">\u25b2 +${dp.toFixed(1)}%</span>`:dp<-5?`<span class="ph-badge ph-down">\u25bc ${dp.toFixed(1)}%</span>`:`<span class="ph-badge ph-stable">Stable</span>`;
     return`<tr>
     <td style="font-weight:600">${i.ingredient_name}</td>
     <td><span class="bk bbl">${i.category}</span></td>
@@ -828,7 +821,7 @@ function renderIng(list){
     <td style="font-weight:700">${fmt(i.current_price)}</td>
     <td>${arrow}</td>
     <td style="color:var(--text2);font-size:12px">${i.supplier_name||'Unknown'}</td>
-    <td class="no-print"><button class="btn" style="font-size:10px;padding:3px 9px" onclick="openPriceEdit('${i.supplier_price_id}','${i.ingredient_name}','${i.supplier_name||''}','${i.unit}',${i.current_price})">✏ Edit price</button></td>
+    <td class="no-print"><button class="btn" style="font-size:10px;padding:3px 9px" onclick="openPriceEdit('${i.supplier_price_id}','${i.ingredient_name}','${i.supplier_name||''}','${i.unit}',${i.current_price})">\u270f Edit price</button></td>
     </tr>`;
   }).join(''):'<tr><td colspan="7" class="empty">No ingredients found</td></tr>';
 }
@@ -869,7 +862,7 @@ async function loadPrices(){
   const d=await api('/v_ingredient_prices?order=ingredient_name,current_price&select=ingredient_name,category,supplier_name,current_price,previous_price,price_change_pct');
   if(!d)return;allPrices=d;
   const alerts=d.filter(p=>parseFloat(p.price_change_pct)>5);
-  document.getElementById('price-alert').textContent=alerts.length?`${alerts.length} ingredient${alerts.length>1?'s':''} with price increases above 5% — review before ordering`:'All prices stable';
+  document.getElementById('price-alert').textContent=alerts.length?`${alerts.length} ingredient${alerts.length>1?'s':''} with price increases above 5% \u2014 review before ordering`:'All prices stable';
   renderPrices();
 }
 function renderPrices(){
@@ -883,11 +876,11 @@ function renderPrices(){
     list.sort((a,b)=>a.current_price-b.current_price);
     const b=list[0];const dp=parseFloat(b.price_change_pct)||0;
     const action=dp>30?'Urgent: find alternative':dp>15?'Review contract':dp>5?'Monitor':'No action needed';
-    const badge=dp>5?`<span class="ph-badge ph-up">▲ +${dp.toFixed(1)}%</span>`:dp<-5?`<span class="ph-badge ph-down">▼ ${dp.toFixed(1)}%</span>`:`<span class="ph-badge ph-stable">Stable</span>`;
+    const badge=dp>5?`<span class="ph-badge ph-up">\u25b2 +${dp.toFixed(1)}%</span>`:dp<-5?`<span class="ph-badge ph-down">\u25bc ${dp.toFixed(1)}%</span>`:`<span class="ph-badge ph-stable">Stable</span>`;
     return`<tr>
-    <td style="font-weight:600">${name}</td><td><span class="bk bbl">${b.category||'—'}</span></td>
+    <td style="font-weight:600">${name}</td><td><span class="bk bbl">${b.category||'\u2014'}</span></td>
     <td style="font-weight:700;color:var(--g)">${fmt(b.current_price)}</td>
-    <td style="font-size:12px;color:var(--text2)">${b.supplier_name||'—'}</td>
+    <td style="font-size:12px;color:var(--text2)">${b.supplier_name||'\u2014'}</td>
     <td>${badge}</td><td style="font-size:11px;color:var(--text2)">${action}</td>
     </tr>`;
   }).join('')||'<tr><td colspan="6" class="empty">No results</td></tr>';
@@ -904,19 +897,10 @@ let spmInitDone=false;
 async function initSpm(){
   if(spmInitDone)return;
   spmInitDone=true;
-
-  // Load supplier summary cards
   const stats=await api('/supplier_price_master?select=supplier,price_status&order=supplier');
   if(!stats)return;
-
-  // Build supplier counts
   const supCounts={};
-  const catSet=new Set();
-  stats.forEach(r=>{
-    supCounts[r.supplier]=(supCounts[r.supplier]||0)+1;
-  });
-
-  // Render supplier cards
+  stats.forEach(r=>{supCounts[r.supplier]=(supCounts[r.supplier]||0)+1;});
   const cardsEl=document.getElementById('spm-supplier-cards');
   const total=stats.length;
   cardsEl.innerHTML=`
@@ -931,19 +915,14 @@ async function initSpm(){
         <div class="spm-card-count">${cnt.toLocaleString()}</div>
         <div class="spm-card-sub">items</div>
       </div>`).join('')}`;
-
-  // Populate supplier filter dropdown
   const supSel=document.getElementById('spm-sup-filter');
   supSel.innerHTML='<option value="">All suppliers</option>'+
     Object.keys(supCounts).sort().map(s=>`<option value="${s}">${s}</option>`).join('');
-
-  // Load all data (paginated from DB, 500 at a time)
   await loadSpmData();
 }
 
 async function loadSpmData(){
-  document.getElementById('spm-tb').innerHTML='<tr><td colspan="8" class="loader"><span class="spinner"></span>Loading 3,591 prices...</td></tr>';
-  // Load in chunks of 1000
+  document.getElementById('spm-tb').innerHTML='<tr><td colspan="8" class="loader"><span class="spinner"></span>Loading prices...</td></tr>';
   let all=[];
   const chunkSize=1000;
   for(let offset=0;offset<4000;offset+=chunkSize){
@@ -953,20 +932,16 @@ async function loadSpmData(){
     if(d.length<chunkSize)break;
   }
   spmData=all;
-
-  // Populate category filter
   const cats=[...new Set(all.map(r=>r.category).filter(Boolean))].sort();
   const catSel=document.getElementById('spm-cat-filter');
   catSel.innerHTML='<option value="">All categories</option>'+cats.map(c=>`<option value="${c}">${c}</option>`).join('');
-
   spmFiltered=spmData;
   spmPage=1;
   renderSpmTable();
-  document.getElementById('spm-result-sub').textContent=`${spmData.length.toLocaleString()} items · April 2026`;
+  document.getElementById('spm-result-sub').textContent=`${spmData.length.toLocaleString()} items`;
 }
 
 function spmFilterSupplier(sup,el){
-  // Update card highlight
   document.querySelectorAll('.spm-card').forEach(c=>c.classList.remove('active'));
   if(el)el.classList.add('active');
   else document.getElementById('spm-all-card')?.classList.add('active');
@@ -979,7 +954,6 @@ function spmSearch(){
   const sup=document.getElementById('spm-sup-filter').value;
   const cat=document.getElementById('spm-cat-filter').value;
   const status=document.getElementById('spm-status-filter').value;
-
   spmFiltered=spmData.filter(r=>{
     if(sup&&r.supplier!==sup)return false;
     if(cat&&r.category!==cat)return false;
@@ -987,7 +961,6 @@ function spmSearch(){
     if(q&&!r.ingredient_name_clean.toLowerCase().includes(q)&&!(r.supplier_product_name||'').toLowerCase().includes(q)&&!(r.brand_grade||'').toLowerCase().includes(q))return false;
     return true;
   });
-
   spmPage=1;
   renderSpmTable();
   const title=sup?sup:(q?`Results for "${q}"`:'All items');
@@ -998,40 +971,34 @@ function spmSearch(){
 function renderSpmTable(){
   const start=(spmPage-1)*SPM_PAGE_SIZE;
   const page=spmFiltered.slice(start,start+SPM_PAGE_SIZE);
-
   if(!page.length){
     document.getElementById('spm-tb').innerHTML='<tr><td colspan="8" class="empty">No items found</td></tr>';
     document.getElementById('spm-pagination').innerHTML='';
     return;
   }
-
   document.getElementById('spm-tb').innerHTML=page.map(r=>`
     <tr>
     <td style="font-weight:600;max-width:220px">${r.ingredient_name_clean}</td>
-    <td style="font-size:11px;color:var(--text2);max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.category||'—'}</td>
-    <td style="font-size:11px;color:var(--text2)">${r.brand_grade||'—'}</td>
-    <td style="font-size:11px;color:var(--text2)">${r.packing_size||'—'}</td>
-    <td style="font-size:11px;color:var(--text2)">${r.order_unit||'—'}</td>
+    <td style="font-size:11px;color:var(--text2);max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.category||'\u2014'}</td>
+    <td style="font-size:11px;color:var(--text2)">${r.brand_grade||'\u2014'}</td>
+    <td style="font-size:11px;color:var(--text2)">${r.packing_size||'\u2014'}</td>
+    <td style="font-size:11px;color:var(--text2)">${r.order_unit||'\u2014'}</td>
     <td style="text-align:right;font-weight:700;color:${r.price_status==='zero_price_review'?'var(--rdm)':'var(--text)'}">${r.unit_price_idr>0?fmt(r.unit_price_idr):'TBC'}</td>
     <td style="font-size:11px;color:var(--text2)">${r.supplier.replace('PT Finefood Indonesia - ','FF ').replace('PT Finefood Indonesia','FF Indo').replace('PT Masuya Graha Trikencana','Masuya').replace('PT Diamond Indonesia','Diamond')}</td>
     <td>${r.price_status==='zero_price_review'?'<span class="bk bam">Review</span>':'<span class="bk bg">Active</span>'}</td>
     </tr>`).join('');
-
-  // Pagination
   const totalPages=Math.ceil(spmFiltered.length/SPM_PAGE_SIZE);
   if(totalPages<=1){document.getElementById('spm-pagination').innerHTML='';return;}
-
   let pages=[];
   pages.push(1);
   if(spmPage>3)pages.push('...');
   for(let i=Math.max(2,spmPage-1);i<=Math.min(totalPages-1,spmPage+1);i++)pages.push(i);
   if(spmPage<totalPages-2)pages.push('...');
   if(totalPages>1)pages.push(totalPages);
-
   document.getElementById('spm-pagination').innerHTML=
-    `<button class="page-btn" onclick="spmGoPage(${spmPage-1})" ${spmPage===1?'disabled':''}>← Prev</button>`+
-    pages.map(p=>p==='...'?`<span style="padding:4px 6px;color:var(--text3)">…</span>`:`<button class="page-btn ${p===spmPage?'active':''}" onclick="spmGoPage(${p})">${p}</button>`).join('')+
-    `<button class="page-btn" onclick="spmGoPage(${spmPage+1})" ${spmPage===totalPages?'disabled':''}>Next →</button>`;
+    `<button class="page-btn" onclick="spmGoPage(${spmPage-1})" ${spmPage===1?'disabled':''}>\u2190 Prev</button>`+
+    pages.map(p=>p==='...'?`<span style="padding:4px 6px;color:var(--text3)">&hellip;</span>`:`<button class="page-btn ${p===spmPage?'active':''}" onclick="spmGoPage(${p})">${p}</button>`).join('')+
+    `<button class="page-btn" onclick="spmGoPage(${spmPage+1})" ${spmPage===totalPages?'disabled':''}>Next \u2192</button>`;
 }
 
 function spmGoPage(p){
@@ -1050,7 +1017,7 @@ function exportSpmCSV(){
   const csv=[headers,...rows].map(r=>r.map(v=>`"${String(v||'').replace(/"/g,'""')}"`).join(',')).join('\n');
   const a=document.createElement('a');
   a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
-  a.download=`price_master_april2026_${new Date().toISOString().split('T')[0]}.csv`;
+  a.download=`price_master_${new Date().toISOString().split('T')[0]}.csv`;
   a.click();
   toast(`Exported ${src.length.toLocaleString()} rows`);
 }
@@ -1111,7 +1078,7 @@ function parseLines(lines,source){
     if(!price)return;
     let name=line
       .replace(/[\d]{1,3}(?:[.,][\d]{3})*(?:[.,][\d]+)?\s*[Kk]?(?:\/(?:kg|KG|liter|pcs|pack|btl|box|gr|gram|ml|pc|pck|lt))?/g,'')
-      .replace(/[-–\/|:;]/g,' ').replace(/\s+/g,' ')
+      .replace(/[-\u2013\/|:;]/g,' ').replace(/\s+/g,' ')
       .trim();
     if(name.length<2||seen.has(name.toLowerCase()))return;
     seen.add(name.toLowerCase());
@@ -1145,7 +1112,7 @@ function renderParseResults(source){
     if(item.match){
       const old=parseFloat(item.match.current_price)||0;
       const diff=old>0?((item.price-old)/old*100):0;
-      const diffBadge=Math.abs(diff)>0.5?`<span class="ph-badge ${diff>0?'ph-up':'ph-down'}" style="margin-left:6px">${diff>0?'▲':'▼'} ${Math.abs(diff).toFixed(1)}%</span>`:'';
+      const diffBadge=Math.abs(diff)>0.5?`<span class="ph-badge ${diff>0?'ph-up':'ph-down'}" style="margin-left:6px">${diff>0?'\u25b2':'\u25bc'} ${Math.abs(diff).toFixed(1)}%</span>`:'';
       return`<div class="parse-row match">
         <input type="checkbox" ${item.selected?'checked':''} onchange="parsedItems[${idx}].selected=this.checked" style="margin-right:8px;flex-shrink:0">
         <div class="parse-name">${item.match.ingredient_name}<div style="font-size:10px;color:var(--text2)">${item.rawName}</div></div>
@@ -1201,9 +1168,9 @@ async function loadPlHistory(){
     <div class="upload-history-row">
       <div style="flex:1">
         <div style="font-weight:600">${u.supplier_name}</div>
-        <div style="font-size:10px;color:var(--text2)">${u.file_name||'Manual'} · ${new Date(u.upload_date).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</div>
+        <div style="font-size:10px;color:var(--text2)">${u.file_name||'Manual'} \u00b7 ${new Date(u.upload_date).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</div>
       </div>
-      <div style="text-align:right;font-size:11px;color:var(--text2)">${u.items_matched||0} matched · ${u.items_updated||0} updated</div>
+      <div style="text-align:right;font-size:11px;color:var(--text2)">${u.items_matched||0} matched \u00b7 ${u.items_updated||0} updated</div>
       <span class="bk ${u.status==='approved'?'bg':u.status==='pending'?'bam':'brd'}">${u.status||'approved'}</span>
     </div>`).join('');
 }
@@ -1216,10 +1183,10 @@ async function loadOrderSheet(){
     <tr>
     <td style="font-weight:600;font-size:12px">${i.ingredient_name}</td>
     <td><span class="bk bbl" style="font-size:9px">${(i.category||'').slice(0,4).toUpperCase()}</span></td>
-    ${['C','F','M','P','T'].map(s=>`<td style="text-align:center"><input class="qty" data-i="${idx}" data-s="${s}" type="number" min="0" step="0.1" placeholder="—"></td>`).join('')}
-    <td style="text-align:right;font-size:11px;color:var(--text2)" id="rt-${idx}">—</td>
+    ${['C','F','M','P','T'].map(s=>`<td style="text-align:center"><input class="qty" data-i="${idx}" data-s="${s}" type="number" min="0" step="0.1" placeholder="\u2014"></td>`).join('')}
+    <td style="text-align:right;font-size:11px;color:var(--text2)" id="rt-${idx}">\u2014</td>
     <td style="text-align:right;font-size:11px">${fmt(i.current_price)}/kg</td>
-    <td style="text-align:right;font-weight:600" id="rc-${idx}">—</td>
+    <td style="text-align:right;font-weight:600" id="rc-${idx}">\u2014</td>
     </tr>`).join('');
 }
 function calcOrder(){
@@ -1228,8 +1195,8 @@ function calcOrder(){
   window._orderData.forEach((ing,idx)=>{
     let qty=0;['C','F','M','P','T'].forEach(s=>{const el=document.querySelector(`input[data-i="${idx}"][data-s="${s}"]`);qty+=parseFloat(el?.value||0);});
     const cost=qty*ing.current_price;
-    document.getElementById(`rt-${idx}`).textContent=qty>0?qty.toFixed(2)+' '+ing.unit:'—';
-    document.getElementById(`rc-${idx}`).textContent=qty>0?fmt(cost):'—';
+    document.getElementById(`rt-${idx}`).textContent=qty>0?qty.toFixed(2)+' '+ing.unit:'\u2014';
+    document.getElementById(`rc-${idx}`).textContent=qty>0?fmt(cost):'\u2014';
     if(qty>0){total+=cost;items++;sups.add(ing.supplier_name);}
   });
   document.getElementById('m-items').textContent=items;
@@ -1251,7 +1218,7 @@ async function saveOrder(){
     if(qty<=0)return null;
     return{order_id:orderId,ingredient_id:ing.ingredient_id,supplier_price_id:ing.supplier_price_id,section_id:secMap[s],quantity:qty,unit_price:ing.current_price};
   }).filter(Boolean));
-  if(lines.length){const r=await api('/daily_order_lines','POST',lines);if(r)toast(`Order saved — ${lines.length} lines · ${orderDate}`);}
+  if(lines.length){const r=await api('/daily_order_lines','POST',lines);if(r)toast(`Order saved \u2014 ${lines.length} lines \u00b7 ${orderDate}`);}
   else toast('Enter at least one quantity',true);
   calcOrder();
 }
@@ -1267,7 +1234,7 @@ async function loadMonthly(){
   d.forEach(r=>{const sp=parseFloat(r.total_spend)||0;grand+=sp;if(!catMap[r.category])catMap[r.category]=0;catMap[r.category]+=sp;if(!supMap[r.supplier_name])supMap[r.supplier_name]=0;supMap[r.supplier_name]+=sp;});
   document.getElementById('mon-total').textContent=fmt(grand);
   const topCat=Object.entries(catMap).sort((a,b)=>b[1]-a[1])[0];
-  document.getElementById('mon-top').textContent=topCat?topCat[0]:'—';
+  document.getElementById('mon-top').textContent=topCat?topCat[0]:'\u2014';
   document.getElementById('mon-cat-tb').innerHTML=Object.entries(catMap).sort((a,b)=>b[1]-a[1]).map(([cat,v])=>`<tr><td style="font-weight:600">${cat}</td><td style="text-align:right">${fmt(v)}</td></tr>`).join('');
   document.getElementById('mon-sup-tb').innerHTML=Object.entries(supMap).sort((a,b)=>b[1]-a[1]).map(([sup,v])=>`<tr><td style="font-weight:600">${sup}</td><td style="text-align:right">${fmt(v)}</td></tr>`).join('');
   const alerts=await api('/v_ingredient_prices?price_change_pct=gt.5&order=price_change_pct.desc&select=ingredient_name,supplier_name,current_price,previous_price,price_change_pct');
@@ -1302,7 +1269,7 @@ async function loadRecipe(){
   if(!recipe)return;const r=recipe[0];
   document.getElementById('rec-card').style.display='block';
   document.getElementById('rec-title').textContent=r.name;
-  document.getElementById('rec-yield').textContent=`Yield: ${r.yield_portions||'—'} portions${r.yield_quantity?' · '+r.yield_quantity+' '+(r.yield_unit||'g'):''} · Target FC: ${r.target_fc_pct||35}%`;
+  document.getElementById('rec-yield').textContent=`Yield: ${r.yield_portions||'\u2014'} portions${r.yield_quantity?' \u00b7 '+r.yield_quantity+' '+(r.yield_unit||'g'):''} \u00b7 Target FC: ${r.target_fc_pct||35}%`;
   let total=0;
   if(rows&&rows.length){
     document.getElementById('rec-tb').innerHTML=rows.map(ri=>{
@@ -1313,7 +1280,7 @@ async function loadRecipe(){
       const cost=(ri.quantity*pricePerUnit)/(ri.yield_pct/100);
       total+=cost;
       return`<tr>
-      <td>${ri.ingredients?.name||'—'}</td>
+      <td>${ri.ingredients?.name||'\u2014'}</td>
       <td style="text-align:right">${ri.quantity}</td>
       <td>${ri.unit}</td>
       <td style="text-align:right;font-size:12px">${fmt(pricePerUnit)}<span style="font-size:10px;color:var(--text2)">/${ri.unit}</span></td>
@@ -1328,9 +1295,9 @@ async function loadRecipe(){
   document.getElementById('rec-foot').textContent=fmt(total);
   const portions=r.yield_portions||1;
   document.getElementById('rec-portions').textContent=portions+' portions';
-  document.getElementById('rec-cpp').textContent=total>0?fmt(total/portions):'—';
-  document.getElementById('rec-sug').textContent=total>0?fmt((total/portions)/((r.target_fc_pct||35)/100)):'—';
-  document.getElementById('rec-fcp').textContent='—';document.getElementById('rec-gp').textContent='—';document.getElementById('rec-sell').value='';
+  document.getElementById('rec-cpp').textContent=total>0?fmt(total/portions):'\u2014';
+  document.getElementById('rec-sug').textContent=total>0?fmt((total/portions)/((r.target_fc_pct||35)/100)):'\u2014';
+  document.getElementById('rec-fcp').textContent='\u2014';document.getElementById('rec-gp').textContent='\u2014';document.getElementById('rec-sell').value='';
   window._recTotal=total;window._recPort=portions;window._recTarget=r.target_fc_pct||35;
 }
 function calcRecipeFC(){
@@ -1357,7 +1324,7 @@ async function loadDishList(){
   sel.innerHTML='<option value="">Select dish...</option>';
   Object.entries(groups).sort().forEach(([section,list])=>{
     const og=document.createElement('optgroup');og.label=section;
-    list.forEach(x=>{const op=document.createElement('option');op.value=x.id;op.textContent=x.name+(x.course?' · '+x.course:'');og.appendChild(op);});
+    list.forEach(x=>{const op=document.createElement('option');op.value=x.id;op.textContent=x.name+(x.course?' \u00b7 '+x.course:'');og.appendChild(op);});
     sel.appendChild(og);
   });
 }
@@ -1368,7 +1335,7 @@ function filterDishList(){
   sel.innerHTML='<option value="">Select dish...</option>';
   Object.entries(groups).sort().forEach(([section,list])=>{
     const og=document.createElement('optgroup');og.label=section;
-    list.forEach(x=>{const op=document.createElement('option');op.value=x.id;op.textContent=x.name+(x.course?' · '+x.course:'');og.appendChild(op);});
+    list.forEach(x=>{const op=document.createElement('option');op.value=x.id;op.textContent=x.name+(x.course?' \u00b7 '+x.course:'');og.appendChild(op);});
     sel.appendChild(og);
   });
 }
@@ -1382,13 +1349,13 @@ async function loadDish(){
   if(!dish)return;const d=dish[0];
   document.getElementById('dish-card').style.display='block';
   document.getElementById('dish-title').textContent=d.name;
-  document.getElementById('dish-course-label').textContent=(d.course||'')+(d.menu_section?' · '+d.menu_section:'');
+  document.getElementById('dish-course-label').textContent=(d.course||'')+(d.menu_section?' \u00b7 '+d.menu_section:'');
   const engMap={star:'Star',puzzle:'Puzzle',plow:'Plow Horse',dog:'Dog'};
   const engClass={star:'bg',puzzle:'bbl',plow:'btl',dog:'brd'};
   const eng=document.getElementById('dish-eng');
-  eng.textContent=engMap[d.menu_category]||d.menu_category||'—';
+  eng.textContent=engMap[d.menu_category]||d.menu_category||'\u2014';
   eng.className='bk '+(engClass[d.menu_category]||'bgr');
-  document.getElementById('dish-section-badge').textContent=d.menu_section||'—';
+  document.getElementById('dish-section-badge').textContent=d.menu_section||'\u2014';
   let total=0;
   if(comps&&comps.length){
     document.getElementById('dish-comp-list').innerHTML=comps.map(c=>{
@@ -1397,9 +1364,9 @@ async function loadDish(){
     }).join('');
   }else{document.getElementById('dish-comp-list').innerHTML='<div class="empty">No components added yet</div>';}
   document.getElementById('dish-fc-total').textContent=fmt(total);
-  document.getElementById('dish-target').textContent=total>0?fmt(total/((d.target_fc_pct||35)/100)):'—';
-  document.getElementById('dish-notes-display').textContent=d.notes||'—';
-  document.getElementById('dish-fcp').textContent='—';document.getElementById('dish-gp').textContent='—';
+  document.getElementById('dish-target').textContent=total>0?fmt(total/((d.target_fc_pct||35)/100)):'\u2014';
+  document.getElementById('dish-notes-display').textContent=d.notes||'\u2014';
+  document.getElementById('dish-fcp').textContent='\u2014';document.getElementById('dish-gp').textContent='\u2014';
   document.getElementById('dish-sell').value=d.selling_price||'';
   window._dishTotal=total;window._dishTarget=d.target_fc_pct||35;
   if(d.selling_price)calcDishFC();
@@ -1428,12 +1395,12 @@ function printPage(section){
   const header=document.createElement('div');
   header.className='print-header';
   header.style.cssText='display:block;padding:0 0 16px;border-bottom:1px solid #ccc;margin-bottom:16px';
-  header.innerHTML=`<div style="font-size:18px;font-weight:700">KitchenOps — Aperitif Bali</div><div style="font-size:12px;color:#666;margin-top:4px">Printed: ${date}</div>`;
+  header.innerHTML=`<div style="font-size:18px;font-weight:700">KitchenOps \u2014 Aperitif Bali</div><div style="font-size:12px;color:#666;margin-top:4px">Printed: ${date}</div>`;
   if(pg)pg.prepend(header);
   const footer=document.createElement('div');
   footer.className='print-footer';
   footer.style.cssText='display:block;padding:20px 0 0;border-top:1px solid #ccc;margin-top:20px;font-size:11px;color:#666;display:flex;justify-content:space-between';
-  footer.innerHTML=`<span>KitchenOps · Aperitif Bali · ${date}</span><span>Approved by: _________________________ Date: _____________</span>`;
+  footer.innerHTML=`<span>KitchenOps \u00b7 Aperitif Bali \u00b7 ${date}</span><span>Approved by: _________________________ Date: _____________</span>`;
   if(pg)pg.append(footer);
   window.print();
   setTimeout(()=>{
