@@ -1428,4 +1428,15 @@ function exportCSV(type){
     rows=allIng.map(i=>[i.ingredient_name,i.category,i.unit,i.current_price,i.previous_price,parseFloat(i.price_change_pct).toFixed(1)+'%',i.supplier_name]);
   }
   if(!rows.length){toast('Load data first',true);return;}
-  const csv=[headers,...rows].map(r=>
+  const csv=[headers,...rows].map(r=>r.map(v=>`"${String(v||'').replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.download=`kitchenops_${type}_${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();
+  toast('CSV exported');
+}
+
+if(sessionStorage.getItem('ko_auth')==='1')initApp();
+</script>
+</body>
+</html>
