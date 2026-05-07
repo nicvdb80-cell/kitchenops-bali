@@ -2,8 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>KitchenOps — Aperitif Bali</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="KitchenOps">
+<meta name="theme-color" content="#2D5A0E">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -193,12 +197,107 @@ tr:hover td{background:var(--bg)}
 .print-header,.print-footer{display:none}
 
 @media(max-width:600px){
-  .main{padding:12px}
+  /* ── MOBILE BASE ── */
+  body{font-size:14px}
+  .main{padding:12px;padding-bottom:80px}
   .metrics{grid-template-columns:1fr 1fr}
   .mcv{font-size:18px}
-  th,td{padding:7px 10px;font-size:11px}
   .hdr{padding:8px 12px}
-  .nav .nb{padding:8px 10px;font-size:11px}
+
+  /* Hide top nav on mobile — replaced by bottom tab bar */
+  .nav-wrap{display:none}
+
+  /* ── MOBILE BOTTOM TAB BAR ── */
+  .mob-nav{
+    display:flex;position:fixed;bottom:0;left:0;right:0;
+    background:var(--surface);border-top:0.5px solid var(--border);
+    z-index:150;height:64px;align-items:stretch;
+    box-shadow:0 -4px 20px rgba(0,0,0,0.06);
+  }
+  .mob-tab{
+    flex:1;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;gap:3px;border:none;background:transparent;
+    cursor:pointer;color:var(--text3);font-size:9px;font-weight:600;
+    text-transform:uppercase;letter-spacing:.04em;padding:6px 2px;
+    transition:color .15s;
+  }
+  .mob-tab svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;flex-shrink:0}
+  .mob-tab.on{color:var(--g)}
+  .mob-tab.on svg{stroke:var(--g)}
+
+  /* ── INGREDIENT CARDS (mobile) ── */
+  .ing-card{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:12px 14px;border-bottom:0.5px solid var(--border);
+    gap:10px;
+  }
+  .ing-card:last-child{border-bottom:none}
+  .ing-card-left{flex:1;min-width:0}
+  .ing-card-name{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ing-card-meta{font-size:11px;color:var(--text2);margin-top:2px}
+  .ing-card-right{text-align:right;flex-shrink:0}
+  .ing-card-price{font-size:16px;font-weight:700;color:var(--g)}
+  .ing-card-sup{font-size:10px;color:var(--text2);margin-top:1px}
+
+  /* ── HIDE DESKTOP TABLE, SHOW MOBILE CARDS ── */
+  .mob-hide{display:none!important}
+  .mob-show{display:block!important}
+
+  /* ── BIGGER TOUCH TARGETS ── */
+  .btn{padding:10px 16px;font-size:13px}
+  select,input[type=number],input[type=text],input[type=date]{
+    padding:10px 12px;font-size:14px;
+  }
+  .si input{padding:10px 12px 10px 36px;font-size:14px}
+
+  /* ── TOOLBAR stacks on mobile ── */
+  .bar{flex-direction:column;gap:8px}
+  .bar .si{min-width:unset;width:100%}
+  .bar select{width:100%}
+
+  /* ── SEARCH BAR stays horizontal ── */
+  .bar-search{flex-direction:row!important}
+  .bar-search .si{flex:1}
+
+  /* ── MODALS full screen on mobile ── */
+  .modal-overlay{align-items:flex-end;padding:0}
+  .modal{border-radius:16px 16px 0 0;max-width:100%;max-height:85vh}
+
+  /* ── PAGE TITLE smaller ── */
+  .page-title{font-size:17px}
+  .page-sub{font-size:11px;margin-bottom:12px}
+
+  /* ── METRICS ── */
+  .mc{padding:10px 12px}
+  .mcl{font-size:9px}
+  .mcv{font-size:20px}
+
+  /* ── CARDS ── */
+  .card{border-radius:8px}
+  .ch{padding:10px 12px}
+
+  /* ── DAILY ORDERS mobile: hide section columns C/F/M/P/T, show single qty ── */
+  .order-section-col{display:none}
+  .order-total-col{display:table-cell!important}
+
+  /* ── RECIPE / DISH COSTING ── */
+  .fc-row{flex-direction:column;gap:12px}
+  .fcs,.fcf{text-align:left}
+
+  /* ── HIDE non-essential table columns on mobile ── */
+  th.mob-hide,td.mob-hide{display:none}
+
+  /* Supplier table - hide less important cols */
+  /* Keep: Name, Phone, Status */
+
+  /* Alert bar */
+  .alert-bar{font-size:11px;padding:8px 12px}
+}
+
+/* Desktop: hide mobile elements */
+@media(min-width:601px){
+  .mob-nav{display:none}
+  .mob-show{display:none!important}
 }
 </style>
 </head>
@@ -266,7 +365,7 @@ tr:hover td{background:var(--bg)}
     <button class="btn no-print" onclick="printPage('suppliers')">&#x1F5A8; Print</button>
   </div>
   <div class="card"><div class="tbl-wrap">
-    <table><thead><tr><th>Supplier</th><th>Category</th><th>Phone</th><th>Delivery days</th><th>Payment</th><th>Status</th></tr></thead>
+    <table><thead><tr><th>Supplier</th><th class="mob-hide">Category</th><th>Phone</th><th class="mob-hide">Delivery days</th><th class="mob-hide">Payment</th><th>Status</th></tr></thead>
     <tbody id="sup-tb"><tr><td colspan="6" class="loader">Loading...</td></tr></tbody></table>
   </div></div>
 </div>
@@ -561,6 +660,31 @@ tr:hover td{background:var(--bg)}
 </div>
 
 </main>
+
+<!-- MOBILE BOTTOM NAV -->
+<nav class="mob-nav" id="mob-nav">
+  <button class="mob-tab on" onclick="go('ingpricing',this)" id="mobt-ingpricing">
+    <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
+    Ingredients
+  </button>
+  <button class="mob-tab" onclick="go('orders',this)" id="mobt-orders">
+    <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2"/><polyline points="9 11 12 14 22 4"/></svg>
+    Orders
+  </button>
+  <button class="mob-tab" onclick="go('recipes',this)" id="mobt-recipes">
+    <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2z"/><path d="M12 6v6l4 2"/></svg>
+    Recipes
+  </button>
+  <button class="mob-tab" onclick="go('dishes',this)" id="mobt-dishes">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 12h8M12 8v8"/></svg>
+    Dishes
+  </button>
+  <button class="mob-tab" onclick="go('suppliers',this)" id="mobt-suppliers">
+    <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+    Suppliers
+  </button>
+</nav>
+
 </div>
 
 <!-- MODALS (all unchanged) -->
@@ -716,13 +840,19 @@ if(sessionStorage.getItem('ko_auth')==='1'){
 function go(id,btn){
   document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.mob-tab').forEach(b=>b.classList.remove('on'));
   document.getElementById('pg-'+id).classList.add('on');
   if(btn)btn.classList.add('on');
+  // Sync mobile tab if it exists
+  const mobTab=document.getElementById('mobt-'+id);
+  if(mobTab)mobTab.classList.add('on');
   if(id==='ingpricing')loadIngredients();
   if(id==='monthly')loadMonthly();
   if(id==='recipes')loadRecipeList();
   if(id==='dishes')loadDishList();
   if(id==='pricelists'){loadSupplierSelect();loadPlHistory();}
+  // Scroll to top on mobile
+  if(window.innerWidth<=600)window.scrollTo(0,0);
 }
 function setTab(el,id){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
@@ -768,10 +898,10 @@ function renderSup(list){
   document.getElementById('sup-tb').innerHTML=list.length?list.map(s=>`
     <tr>
     <td style="font-weight:600">${s.name}</td>
-    <td><span class="bk btl">${s.category}</span></td>
+    <td class="mob-hide"><span class="bk btl">${s.category}</span></td>
     <td><a href="tel:${s.phone}" style="color:var(--blm);text-decoration:none;font-weight:600">${s.phone||'—'}</a></td>
-    <td style="color:var(--text2);font-size:12px">${s.delivery_days||'—'}</td>
-    <td style="color:var(--text2);font-size:12px">${s.payment_terms||'—'}</td>
+    <td class="mob-hide" style="color:var(--text2);font-size:12px">${s.delivery_days||'—'}</td>
+    <td class="mob-hide" style="color:var(--text2);font-size:12px">${s.payment_terms||'—'}</td>
     <td><span class="bk ${s.is_active?'bg':'brd'}">${s.is_active?'Active':'Inactive'}</span></td>
     </tr>`).join(''):'<tr><td colspan="6" class="empty">No suppliers found</td></tr>';
 }
@@ -835,24 +965,27 @@ async function loadIngredients(){
 }
 function renderIng(list){
   const altCount=window._altCount||{};
-  document.getElementById('ing-tb').innerHTML=list.length?list.map(i=>{
-    const dp=parseFloat(i.price_change_pct)||0;
-    const arrow=dp>5?`<span class="ph-badge ph-up">▲ +${dp.toFixed(1)}%</span>`:dp<-5?`<span class="ph-badge ph-down">▼ ${dp.toFixed(1)}%</span>`:`<span class="ph-badge ph-stable">Stable</span>`;
-    const total=altCount[i.ingredient_name]||1;
-    const alts=total-1;
-    const altBadge=alts>0?`<span class="bk bam" style="cursor:pointer" onclick="showAltSuppliers('${i.ingredient_name.replace(/'/g,"\\'")}',this)">${alts} more</span>`:`<span style="color:var(--text3);font-size:11px">—</span>`;
-    return`<tr>
-    <td style="font-weight:600">${i.ingredient_name}</td>
-    <td><span class="bk bbl">${i.category}</span></td>
-    <td style="color:var(--text2)">${i.unit}</td>
-    <td style="font-weight:700;color:var(--g)">${fmt(i.current_price)}</td>
-    <td>${arrow}</td>
-    <td style="color:var(--text2);font-size:12px">${i.supplier_name||'Unknown'}</td>
-    <td style="text-align:right">${altBadge}</td>
-    <td class="no-print"><button class="btn" style="font-size:10px;padding:3px 9px" onclick="openPriceEdit('${i.supplier_price_id}','${i.ingredient_name}','${i.supplier_name||''}','${i.unit}',${i.current_price})">✏ Edit price</button></td>
-    </tr>`;
-  }).join(''):'<tr><td colspan="8" class="empty">No ingredients found</td></tr>';
+  const isMobile=window.innerWidth<=600;
+  if(isMobile){
+    document.getElementById('ing-tb').innerHTML=list.length?list.map(i=>{
+      const dp=parseFloat(i.price_change_pct)||0;
+      const badge=dp>5?`<span class="ph-badge ph-up" style="font-size:9px;margin-left:4px">▲ +${dp.toFixed(1)}%</span>`:dp<-5?`<span class="ph-badge ph-down" style="font-size:9px;margin-left:4px">▼ ${dp.toFixed(1)}%</span>`:'';
+      const alts=(altCount[i.ingredient_name]||1)-1;
+      const altTxt=alts>0?alts+' more supplier'+(alts>1?'s':''):'';
+      return`<tr onclick="openPriceEdit('${i.supplier_price_id}','${i.ingredient_name}','${i.supplier_name||''}','${i.unit}',${i.current_price})" style="cursor:pointer"><td colspan="8" style="padding:0"><div class="ing-card"><div class="ing-card-left"><div class="ing-card-name">${i.ingredient_name}</div><div class="ing-card-meta">${i.supplier_name||'Unknown'} &middot; ${i.unit}${badge}</div></div><div class="ing-card-right"><div class="ing-card-price">${fmt(i.current_price)}</div><div class="ing-card-sup" style="color:var(--text3);font-size:10px">${altTxt||i.category}</div></div></div></td></tr>`;
+    }).join(''):'<tr><td colspan="8" class="empty">No ingredients found</td></tr>';
+  } else {
+    document.getElementById('ing-tb').innerHTML=list.length?list.map(i=>{
+      const dp=parseFloat(i.price_change_pct)||0;
+      const arrow=dp>5?`<span class="ph-badge ph-up">▲ +${dp.toFixed(1)}%</span>`:dp<-5?`<span class="ph-badge ph-down">▼ ${dp.toFixed(1)}%</span>`:`<span class="ph-badge ph-stable">Stable</span>`;
+      const total=altCount[i.ingredient_name]||1;
+      const alts=total-1;
+      const altBadge=alts>0?`<span class="bk bam" style="cursor:pointer" onclick="showAltSuppliers('${i.ingredient_name.replace(/'/g,"\'")}',this)">${alts} more</span>`:`<span style="color:var(--text3);font-size:11px">—</span>`;
+      return`<tr><td style="font-weight:600">${i.ingredient_name}</td><td><span class="bk bbl">${i.category}</span></td><td style="color:var(--text2)">${i.unit}</td><td style="font-weight:700;color:var(--g)">${fmt(i.current_price)}</td><td>${arrow}</td><td style="color:var(--text2);font-size:12px">${i.supplier_name||'Unknown'}</td><td style="text-align:right">${altBadge}</td><td class="no-print"><button class="btn" style="font-size:10px;padding:3px 9px" onclick="openPriceEdit('${i.supplier_price_id}','${i.ingredient_name}','${i.supplier_name||''}','${i.unit}',${i.current_price})">✏ Edit price</button></td></tr>`;
+    }).join(''):'<tr><td colspan="8" class="empty">No ingredients found</td></tr>';
+  }
 }
+
 function filterIng(){
   const q=document.getElementById('is').value.toLowerCase();
   const cat=document.getElementById('ic').value;
