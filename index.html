@@ -196,7 +196,7 @@ tr:hover td{background:var(--bg)}
 }
 .print-header,.print-footer{display:none}
 
-@media(max-width:600px){
+@media(max-width:768px){
   /* ── MOBILE BASE ── */
   body{font-size:14px}
   .main{padding:12px;padding-bottom:80px}
@@ -292,10 +292,38 @@ tr:hover td{background:var(--bg)}
 
   /* Alert bar */
   .alert-bar{font-size:11px;padding:8px 12px}
+
+  /* ── LOGIN on mobile ── */
+  .login-box{padding:28px 20px;margin:16px}
+  .login-brand{font-size:18px}
+
+  /* ── DAILY ORDERS on mobile: hide section cols, show compact ── */
+  table{min-width:unset!important}
+  .order-col-section{display:none!important}
+
+  /* ── ORDER CARD layout on mobile ── */
+  .order-card{display:flex;align-items:center;padding:10px 12px;border-bottom:0.5px solid var(--border);gap:8px}
+  .order-card-name{flex:1;font-weight:600;font-size:13px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .order-card-qty{width:60px;text-align:right}
+  .order-card-cost{width:80px;text-align:right;font-weight:600;color:var(--g);font-size:12px}
+
+  /* ── FC ROW stacks ── */
+  .fc-row{flex-direction:column;gap:10px}
+  .fcs,.fcf{text-align:left}
+
+  /* ── HIDE less important columns on mobile ── */
+  .col-hide-mob{display:none!important}
+
+  /* ── PAGE headers ── */
+  .page-title{font-size:16px}
+  .page-sub{font-size:11px}
+
+  /* ── BUTTONS smaller on mobile ── */
+  .bar .btn{padding:8px 12px;font-size:12px}
 }
 
 /* Desktop: hide mobile elements */
-@media(min-width:601px){
+@media(min-width:769px){
   .mob-nav{display:none}
   .mob-show{display:none!important}
 }
@@ -483,12 +511,12 @@ tr:hover td{background:var(--bg)}
   <div class="card"><div class="tbl-wrap">
     <table style="min-width:680px">
       <thead><tr>
-        <th>Ingredient</th><th>Cat</th>
-        <th style="text-align:center">BM</th>
-        <th style="text-align:center">OW</th>
-        <th style="text-align:center">BT</th>
-        <th style="text-align:right">Total</th>
-        <th style="text-align:right">Price/unit</th>
+        <th>Ingredient</th><th class="col-hide-mob">Cat</th>
+        <th style="text-align:center" class="col-hide-mob">BM</th>
+        <th style="text-align:center" class="col-hide-mob">OW</th>
+        <th style="text-align:center" class="col-hide-mob">BT</th>
+        <th style="text-align:center">Qty</th>
+        <th style="text-align:right" class="col-hide-mob">Price/unit</th>
         <th style="text-align:right">Cost</th>
       </tr></thead>
       <tbody id="bar-order-tb"><tr><td colspan="8" class="loader">Loading...</td></tr></tbody>
@@ -515,7 +543,7 @@ tr:hover td{background:var(--bg)}
   </div>
   <div class="card"><div class="tbl-wrap">
     <table style="min-width:720px">
-      <thead><tr><th>Ingredient</th><th>Cat</th><th style="text-align:center">C</th><th style="text-align:center">F</th><th style="text-align:center">M</th><th style="text-align:center">P</th><th style="text-align:center">T</th><th style="text-align:right">Total</th><th style="text-align:right">Price/kg</th><th style="text-align:right">Cost</th></tr></thead>
+      <thead><tr><th>Ingredient</th><th class="col-hide-mob">Cat</th><th style="text-align:center" class="col-hide-mob">C</th><th style="text-align:center" class="col-hide-mob">F</th><th style="text-align:center" class="col-hide-mob">M</th><th style="text-align:center" class="col-hide-mob">P</th><th style="text-align:center" class="col-hide-mob">T</th><th style="text-align:center">Qty</th><th style="text-align:right" class="col-hide-mob">Price/kg</th><th style="text-align:right">Cost</th></tr></thead>
       <tbody id="order-tb"><tr><td colspan="10" class="loader">Loading...</td></tr></tbody>
       <tfoot><tr class="total-row"><td colspan="7">Grand total</td><td></td><td></td><td style="text-align:right" id="order-grand">IDR 0</td></tr></tfoot>
     </table>
@@ -1472,13 +1500,17 @@ async function loadOrderSheet(){
     if(d.length<1000)break;
   }
   window._orderData=orderAll;
+  const isMob=window.innerWidth<=768;
   document.getElementById('order-tb').innerHTML=orderAll.map((i,idx)=>`
     <tr>
     <td style="font-weight:600;font-size:12px">${i.ingredient_name}</td>
-    <td><span class="bk bbl" style="font-size:9px">${(i.category||'').slice(0,4).toUpperCase()}</span></td>
-    ${['C','F','M','P','T'].map(s=>`<td style="text-align:center"><input class="qty" data-i="${idx}" data-s="${s}" type="number" min="0" step="0.1" placeholder="—"></td>`).join('')}
+    <td class="col-hide-mob"><span class="bk bbl" style="font-size:9px">${(i.category||'').slice(0,4).toUpperCase()}</span></td>
+    ${isMob
+      ? `<td style="text-align:center"><input class="qty" data-i="${idx}" data-s="M" type="number" min="0" step="0.1" placeholder="0" style="width:60px" oninput="['C','F','P','T'].forEach(s=>{const el=document.querySelector('input[data-i=\'${idx}\'][data-s=\''+s+'\']');if(el)el.value=this.value;})"></td>`
+      : ['C','F','M','P','T'].map(s=>`<td style="text-align:center" class="${s!=='M'?'col-hide-mob':''}"><input class="qty" data-i="${idx}" data-s="${s}" type="number" min="0" step="0.1" placeholder="—"></td>`).join('')
+    }
     <td style="text-align:right;font-size:11px;color:var(--text2)" id="rt-${idx}">—</td>
-    <td style="text-align:right;font-size:11px">${fmt(i.current_price)}/kg</td>
+    <td style="text-align:right;font-size:11px" class="col-hide-mob">${fmt(i.current_price)}/kg</td>
     <td style="text-align:right;font-weight:600" id="rc-${idx}">—</td>
     </tr>`).join('');
 }
@@ -1526,13 +1558,17 @@ async function loadBarOrderSheet(){
     if(d.length<1000)break;
   }
   window._barOrderData=all;
+  const isBarMob=window.innerWidth<=768;
   document.getElementById('bar-order-tb').innerHTML=all.map((i,idx)=>`
     <tr>
     <td style="font-weight:600;font-size:12px">${i.ingredient_name}</td>
-    <td><span class="bk bbl" style="font-size:9px">${(i.category||'').slice(0,4).toUpperCase()}</span></td>
-    ${['BM','OW','BT'].map(s=>`<td style="text-align:center"><input class="qty" data-bi="${idx}" data-bs="${s}" type="number" min="0" step="0.1" placeholder="—"></td>`).join('')}
+    <td class="col-hide-mob"><span class="bk bbl" style="font-size:9px">${(i.category||'').slice(0,4).toUpperCase()}</span></td>
+    ${isBarMob
+      ? `<td style="text-align:center"><input class="qty" data-bi="${idx}" data-bs="BM" type="number" min="0" step="0.1" placeholder="0" style="width:60px" oninput="['OW','BT'].forEach(s=>{const el=document.querySelector('input[data-bi=\'${idx}\'][data-bs=\''+s+'\']');if(el)el.value=this.value;})"></td>`
+      : ['BM','OW','BT'].map(s=>`<td style="text-align:center" class="${s!=='BM'?'col-hide-mob':''}"><input class="qty" data-bi="${idx}" data-bs="${s}" type="number" min="0" step="0.1" placeholder="—"></td>`).join('')
+    }
     <td style="text-align:right;font-size:11px;color:var(--text2)" id="brt-${idx}">—</td>
-    <td style="text-align:right;font-size:11px">${fmt(i.current_price)}</td>
+    <td style="text-align:right;font-size:11px" class="col-hide-mob">${fmt(i.current_price)}</td>
     <td style="text-align:right;font-weight:600" id="brc-${idx}">—</td>
     </tr>`).join('');
 }
