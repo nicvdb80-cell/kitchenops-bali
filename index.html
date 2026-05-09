@@ -182,6 +182,22 @@ tr:hover td{background:var(--bg)}
 .spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--gm);border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:6px}
 @keyframes spin{to{transform:rotate(360deg)}}
 
+/* SECTION SELECTOR */
+.section-selector{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.section-btn{
+  flex:1;min-width:80px;max-width:140px;
+  padding:12px 8px;border:1.5px solid var(--border);border-radius:10px;
+  background:var(--surface);color:var(--text2);font-size:11px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.04em;cursor:pointer;
+  text-align:center;line-height:1.6;transition:all .15s;
+}
+.section-btn:hover{border-color:var(--gm);background:var(--gbg);color:var(--g)}
+.section-btn.on{border-color:var(--g);background:var(--gbg);color:var(--g)}
+@media(max-width:768px){
+  .section-btn{padding:14px 6px;font-size:12px;min-width:60px}
+  .section-btn span{font-size:22px!important}
+}
+
 /* PRINT */
 @media print {
   .hdr,.nav-wrap,.no-print{display:none!important}
@@ -408,7 +424,7 @@ tr:hover td{background:var(--bg)}
     <button class="nb on" onclick="go('suppliers',this)">Suppliers</button>
     <button class="nb" onclick="go('pricelists',this)">Pricelists</button>
     <button class="nb" onclick="go('ingpricing',this)">Ingredients &amp; Pricing</button>
-    <button class="nb" onclick="go('orders',this)">Daily Orders</button>
+    <button class="nb" onclick="go('orders',this)">Kitchen Orders</button>
     <button class="nb" onclick="go('barorders',this)">Bar Orders</button>
     <button class="nb" onclick="go('monthly',this)">Monthly</button>
     <button class="nb" onclick="go('recipes',this)">Recipe Costing</button>
@@ -537,7 +553,19 @@ tr:hover td{background:var(--bg)}
 <!-- BAR ORDERS -->
 <div id="pg-barorders" class="pg">
   <div class="page-title">Bar order sheet</div>
-  <div class="page-sub">BM = Bar Manager &middot; OW = Owner &middot; BT = Bar Team</div>
+  <div class="page-sub">Select your section, enter quantities</div>
+  <!-- Bar section selector -->
+  <div class="section-selector no-print" style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+    <button class="section-btn on" data-section="BM" onclick="selectBarSection('BM',this)">
+      <span style="font-size:18px">🍸</span><br>Bar Manager
+    </button>
+    <button class="section-btn" data-section="OW" onclick="selectBarSection('OW',this)">
+      <span style="font-size:18px">👔</span><br>Owner
+    </button>
+    <button class="section-btn" data-section="BT" onclick="selectBarSection('BT',this)">
+      <span style="font-size:18px">🍹</span><br>Bar Team
+    </button>
+  </div>
   <div class="bar no-print">
     <input type="date" id="bar-order-date">
     <button class="btn" onclick="calcBarOrder()">Calculate totals</button>
@@ -547,7 +575,7 @@ tr:hover td{background:var(--bg)}
   <div class="metrics no-print">
     <div class="mc"><div class="mcl">Items ordered</div><div class="mcv" id="bm-items">0</div></div>
     <div class="mc"><div class="mcl">Total value</div><div class="mcv" id="bm-cost" style="font-size:15px">IDR 0</div></div>
-    <div class="mc"><div class="mcl">Sections</div><div class="mcv">3</div></div>
+    <div class="mc"><div class="mcl">Section</div><div class="mcv" id="bm-section" style="font-size:14px">Bar Manager</div></div>
   </div>
   <div class="card"><div class="tbl-wrap">
     <table style="min-width:680px">
@@ -566,10 +594,28 @@ tr:hover td{background:var(--bg)}
   </div></div>
 </div>
 
-<!-- DAILY ORDERS (unchanged) -->
+<!-- KITCHEN ORDERS -->
 <div id="pg-orders" class="pg">
-  <div class="page-title">Daily order sheet</div>
-  <div class="page-sub">C = Cold Kitchen &middot; F = Fish &middot; M = Main Kitchen &middot; P = Pastry &middot; T = Team Dining</div>
+  <div class="page-title">Kitchen order sheet</div>
+  <div class="page-sub">Select your section, enter quantities</div>
+  <!-- Section selector -->
+  <div class="section-selector no-print" style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+    <button class="section-btn on" data-section="C" onclick="selectSection('C',this)">
+      <span style="font-size:18px">🥩</span><br>Cold Kitchen
+    </button>
+    <button class="section-btn" data-section="F" onclick="selectSection('F',this)">
+      <span style="font-size:18px">🐟</span><br>Fish
+    </button>
+    <button class="section-btn" data-section="M" onclick="selectSection('M',this)">
+      <span style="font-size:18px">🍳</span><br>Main Kitchen
+    </button>
+    <button class="section-btn" data-section="P" onclick="selectSection('P',this)">
+      <span style="font-size:18px">🥐</span><br>Pastry
+    </button>
+    <button class="section-btn" data-section="O" onclick="selectSection('O',this)">
+      <span style="font-size:18px">👔</span><br>Owner
+    </button>
+  </div>
   <div class="bar no-print">
     <input type="date" id="order-date">
     <button class="btn" onclick="calcOrder()">Calculate totals</button>
@@ -580,7 +626,7 @@ tr:hover td{background:var(--bg)}
     <div class="mc"><div class="mcl">Items ordered</div><div class="mcv" id="m-items">0</div></div>
     <div class="mc"><div class="mcl">Total value</div><div class="mcv" id="m-cost" style="font-size:15px">IDR 0</div></div>
     <div class="mc"><div class="mcl">Suppliers</div><div class="mcv" id="m-sups">0</div></div>
-    <div class="mc"><div class="mcl">Sections</div><div class="mcv">5</div></div>
+    <div class="mc"><div class="mcl">Section</div><div class="mcv" id="m-section" style="font-size:14px">Cold Kitchen</div></div>
   </div>
   <div class="card"><div class="tbl-wrap">
     <table style="min-width:720px">
@@ -1530,7 +1576,56 @@ async function loadPlHistory(){
     </div>`).join('');
 }
 
-// ── DAILY ORDERS ──
+// ── SECTION SELECTION ──
+let activeSection='C';
+let activeBarSection='BM';
+
+const SECTION_NAMES={C:'Cold Kitchen',F:'Fish',M:'Main Kitchen',P:'Pastry',O:'Owner'};
+const BAR_SECTION_NAMES={BM:'Bar Manager',OW:'Owner',BT:'Bar Team'};
+
+function selectSection(sec,btn){
+  activeSection=sec;
+  document.querySelectorAll('.section-selector .section-btn').forEach(b=>b.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  const nameEl=document.getElementById('m-section');
+  if(nameEl)nameEl.textContent=SECTION_NAMES[sec]||sec;
+  // Highlight active section column in table (desktop) or show active on mobile
+  renderOrderHighlight();
+}
+
+function selectBarSection(sec,btn){
+  activeBarSection=sec;
+  document.querySelectorAll('#pg-barorders .section-btn').forEach(b=>b.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  const nameEl=document.getElementById('bm-section');
+  if(nameEl)nameEl.textContent=BAR_SECTION_NAMES[sec]||sec;
+  renderBarOrderHighlight();
+}
+
+function renderOrderHighlight(){
+  // On desktop highlight the active section column
+  if(window.innerWidth>768){
+    document.querySelectorAll('#order-tb tr').forEach(row=>{
+      const secs=['C','F','M','P','O'];
+      row.querySelectorAll('td').forEach((td,i)=>{
+        if(i>=2&&i<=6) td.style.background=secs[i-2]===activeSection?'var(--gbg)':'';
+      });
+    });
+  }
+}
+
+function renderBarOrderHighlight(){
+  if(window.innerWidth>768){
+    document.querySelectorAll('#bar-order-tb tr').forEach(row=>{
+      const secs=['BM','OW','BT'];
+      row.querySelectorAll('td').forEach((td,i)=>{
+        if(i>=2&&i<=4) td.style.background=secs[i-2]===activeBarSection?'var(--gbg)':'';
+      });
+    });
+  }
+}
+
+// ── KITCHEN ORDERS ──
 async function loadOrderSheet(){
   // Fetch all ingredients in chunks to bypass 1000-row limit
   let orderAll=[];
@@ -1543,104 +1638,60 @@ async function loadOrderSheet(){
   window._orderData=orderAll;
   const isMob=window.innerWidth<=768;
   if(isMob){
-    // Mobile: card layout — one card per ingredient
+    // Mobile: card layout — enter qty for your active section only
     document.getElementById('order-tb').innerHTML=orderAll.map((i,idx)=>`
       <tr><td colspan="10" style="padding:0">
-        <div style="display:flex;align-items:center;padding:10px 12px;border-bottom:0.5px solid var(--border);gap:10px">
+        <div style="display:flex;align-items:center;padding:14px 12px;border-bottom:0.5px solid var(--border);gap:12px">
           <div style="flex:1;min-width:0">
-            <div style="font-weight:600;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${i.ingredient_name}</div>
-            <div style="font-size:11px;color:var(--text2);margin-top:2px">${fmt(i.current_price)}/kg</div>
+            <div style="font-weight:600;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${i.ingredient_name}</div>
+            <div style="font-size:12px;color:var(--text2);margin-top:3px">${fmt(i.current_price)} / ${i.unit}</div>
           </div>
-          <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
-            <input class="qty" data-i="${idx}" data-s="M" type="number" min="0" step="0.1" placeholder="0"
-              style="width:70px;padding:8px;font-size:14px;text-align:center"
-              oninput="['C','F','P','T'].forEach(s=>{const el=document.querySelector('input[data-i=\'${idx}\'][data-s=\''+s+'\']');if(el)el.value=this.value;});calcOrder()">
-            <span style="font-size:11px;color:var(--text2)">${i.unit}</span>
+          <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+            <input class="qty" data-i="${idx}" data-s="${activeSection}" type="number" min="0" step="0.1" placeholder="0"
+              style="width:75px;padding:10px;font-size:18px;text-align:center;border-radius:8px"
+              oninput="syncOrderSection(${idx},this.value);calcOrder()">
+            <span style="font-size:13px;color:var(--text2);min-width:24px">${i.unit}</span>
           </div>
-          <div style="text-align:right;min-width:70px;flex-shrink:0">
-            <div style="font-weight:600;font-size:13px;color:var(--g)" id="rc-${idx}">—</div>
+          <div style="text-align:right;min-width:74px;flex-shrink:0">
+            <div style="font-weight:700;font-size:14px;color:var(--g)" id="rc-${idx}">—</div>
           </div>
         </div>
-        ${['C','F','P','T'].map(s=>`<input type="hidden" class="qty" data-i="${idx}" data-s="${s}">`).join('')}
+        ${['C','F','M','P','O'].filter(s=>s!==activeSection).map(s=>`<input type="hidden" class="qty" data-i="${idx}" data-s="${s}" value="0">`).join('')}
         <div id="rt-${idx}" style="display:none"></div>
       </td></tr>`).join('');
   } else {
-    // Desktop: full table
+    // Desktop: full table with all sections
     document.getElementById('order-tb').innerHTML=orderAll.map((i,idx)=>`
       <tr>
       <td style="font-weight:600;font-size:12px">${i.ingredient_name}</td>
       <td><span class="bk bbl" style="font-size:9px">${(i.category||'').slice(0,4).toUpperCase()}</span></td>
-      ${['C','F','M','P','T'].map(s=>`<td style="text-align:center"><input class="qty" data-i="${idx}" data-s="${s}" type="number" min="0" step="0.1" placeholder="—"></td>`).join('')}
+      ${['C','F','M','P','O'].map(s=>`<td style="text-align:center"><input class="qty" data-i="${idx}" data-s="${s}" type="number" min="0" step="0.1" placeholder="—"></td>`).join('')}
       <td style="text-align:right;font-size:11px;color:var(--text2)" id="rt-${idx}">—</td>
       <td style="text-align:right;font-size:11px">${fmt(i.current_price)}/kg</td>
       <td style="text-align:right;font-weight:600" id="rc-${idx}">—</td>
       </tr>`).join('');
+    renderOrderHighlight();
   }
-}
-function calcOrder(){
-  if(!window._orderData)return;
-  let total=0,items=0;const sups=new Set();
-  window._orderData.forEach((ing,idx)=>{
-    let qty=0;['C','F','M','P','T'].forEach(s=>{const el=document.querySelector(`input[data-i="${idx}"][data-s="${s}"]`);qty+=parseFloat(el?.value||0);});
-    const cost=qty*ing.current_price;
-    document.getElementById(`rt-${idx}`).textContent=qty>0?qty.toFixed(2)+' '+ing.unit:'—';
-    document.getElementById(`rc-${idx}`).textContent=qty>0?fmt(cost):'—';
-    if(qty>0){total+=cost;items++;sups.add(ing.supplier_name);}
-  });
-  document.getElementById('m-items').textContent=items;
-  document.getElementById('m-cost').textContent=fmt(total);
-  document.getElementById('m-sups').textContent=sups.size;
-  document.getElementById('order-grand').textContent=fmt(total);
-}
-async function saveOrder(){
-  if(!window._orderData){toast('No data',true);return;}
-  const orderDate=document.getElementById('order-date').value;
-  const res=await api('/daily_orders','POST',{order_date:orderDate,status:'submitted',tenant_id:TENANT});
-  if(!res||!res[0])return;
-  const orderId=res[0].id;
-  const secData=await api('/sections?select=id,code');
-  const secMap={};secData?.forEach(s=>secMap[s.code]=s.id);
-  const lines=window._orderData.flatMap((ing,idx)=>['C','F','M','P','T'].map(s=>{
-    const el=document.querySelector(`input[data-i="${idx}"][data-s="${s}"]`);
-    const qty=parseFloat(el?.value||0);
-    if(qty<=0)return null;
-    return{order_id:orderId,ingredient_id:ing.ingredient_id,supplier_price_id:ing.supplier_price_id,section_id:secMap[s],quantity:qty,unit_price:ing.current_price};
-  }).filter(Boolean));
-  if(lines.length){const r=await api('/daily_order_lines','POST',lines);if(r)toast(`Order saved — ${lines.length} lines · ${orderDate}`);}
-  else toast('Enter at least one quantity',true);
-  calcOrder();
-}
 
-// ── BAR ORDERS ──
-async function loadBarOrderSheet(){
-  let all=[];
-  for(let off=0;off<10000;off+=1000){
-    const d=await api('/v_ingredient_prices?is_preferred=eq.true&order=category,ingredient_name&select=ingredient_id,supplier_price_id,ingredient_name,category,unit,current_price,supplier_name&limit=1000&offset='+off);
-    if(!d||d.length===0)break;
-    all=all.concat(d);
-    if(d.length<1000)break;
-  }
-  window._barOrderData=all;
-  const isBarMob=window.innerWidth<=768;
   if(isBarMob){
     document.getElementById('bar-order-tb').innerHTML=all.map((i,idx)=>`
       <tr><td colspan="8" style="padding:0">
-        <div style="display:flex;align-items:center;padding:10px 12px;border-bottom:0.5px solid var(--border);gap:10px">
+        <div style="display:flex;align-items:center;padding:14px 12px;border-bottom:0.5px solid var(--border);gap:12px">
           <div style="flex:1;min-width:0">
-            <div style="font-weight:600;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${i.ingredient_name}</div>
-            <div style="font-size:11px;color:var(--text2);margin-top:2px">${fmt(i.current_price)}</div>
+            <div style="font-weight:600;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${i.ingredient_name}</div>
+            <div style="font-size:12px;color:var(--text2);margin-top:3px">${fmt(i.current_price)} / ${i.unit}</div>
           </div>
-          <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
-            <input class="qty" data-bi="${idx}" data-bs="BM" type="number" min="0" step="0.1" placeholder="0"
-              style="width:70px;padding:8px;font-size:14px;text-align:center"
-              oninput="['OW','BT'].forEach(s=>{const el=document.querySelector('input[data-bi=\'${idx}\'][data-bs=\''+s+'\']');if(el)el.value=this.value;});calcBarOrder()">
-            <span style="font-size:11px;color:var(--text2)">${i.unit}</span>
+          <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+            <input class="qty" data-bi="${idx}" data-bs="${activeBarSection}" type="number" min="0" step="0.1" placeholder="0"
+              style="width:75px;padding:10px;font-size:18px;text-align:center;border-radius:8px"
+              oninput="syncBarSection(${idx},this.value);calcBarOrder()">
+            <span style="font-size:13px;color:var(--text2);min-width:24px">${i.unit}</span>
           </div>
-          <div style="text-align:right;min-width:70px;flex-shrink:0">
-            <div style="font-weight:600;font-size:13px;color:var(--g)" id="brc-${idx}">—</div>
+          <div style="text-align:right;min-width:74px;flex-shrink:0">
+            <div style="font-weight:700;font-size:14px;color:var(--g)" id="brc-${idx}">—</div>
           </div>
         </div>
-        ${['OW','BT'].map(s=>`<input type="hidden" class="qty" data-bi="${idx}" data-bs="${s}">`).join('')}
+        ${['BM','OW','BT'].filter(s=>s!==activeBarSection).map(s=>`<input type="hidden" class="qty" data-bi="${idx}" data-bs="${s}" value="0">`).join('')}
         <div id="brt-${idx}" style="display:none"></div>
       </td></tr>`).join('');
   } else {
@@ -1653,6 +1704,7 @@ async function loadBarOrderSheet(){
       <td style="text-align:right;font-size:11px">${fmt(i.current_price)}</td>
       <td style="text-align:right;font-weight:600" id="brc-${idx}">—</td>
       </tr>`).join('');
+    renderBarOrderHighlight();
   }
 }
 function calcBarOrder(){
