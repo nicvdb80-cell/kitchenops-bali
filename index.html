@@ -310,7 +310,7 @@ tr:hover td{background:var(--bg)}
       <div class="login-lb"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
       <div class="login-brand">KitchenOps</div>
     </div>
-    <div class="login-sub">Aperitif &middot; Bali &middot; Culinary Operations</div>
+    <div class="login-sub">Central Kitchen &middot; Bali &middot; Culinary Purchasing</div>
     <label class="login-lbl">Access Code</label>
     <input class="login-inp" type="password" id="pw-input" placeholder="Enter access code" onkeydown="if(event.key==='Enter')doLogin()" autofocus>
     <button class="login-btn" onclick="doLogin()">Enter</button>
@@ -324,7 +324,7 @@ tr:hover td{background:var(--bg)}
 <header class="hdr">
   <div class="logo">
     <div class="lb"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
-    <div><div class="brand">KitchenOps</div><div class="brand-sub">Aperitif &middot; Purchasing &amp; Food Cost</div></div>
+    <div><div class="brand">KitchenOps</div><div class="brand-sub"><span id="tenant-label">Central Office</span> &middot; KitchenOps</div></div>
   </div>
   <div class="hdr-r">
     <span class="db-dot" id="db-dot"></span><span class="db-lbl" id="db-lbl">Connecting...</span>
@@ -338,6 +338,7 @@ tr:hover td{background:var(--bg)}
     <button class="nb" onclick="go('pricelists',this)">Pricelists</button>
     <button class="nb" onclick="go('ingpricing',this)">Ingredients &amp; Pricing</button>
     <button class="nb" onclick="go('orders',this)">Daily Orders</button>
+    <button class="nb" onclick="go('barorders',this)">Bar Orders</button>
     <button class="nb" onclick="go('monthly',this)">Monthly</button>
     <button class="nb" onclick="go('recipes',this)">Recipe Costing</button>
     <button class="nb" onclick="go('dishes',this)">Dish Costing</button>
@@ -460,6 +461,38 @@ tr:hover td{background:var(--bg)}
     <input id="ps"><select id="pcat"></select>
     <tbody id="price-tb"></tbody>
   </div>
+</div>
+
+<!-- BAR ORDERS -->
+<div id="pg-barorders" class="pg">
+  <div class="page-title">Bar order sheet</div>
+  <div class="page-sub">BM = Bar Manager &middot; OW = Owner &middot; BT = Bar Team</div>
+  <div class="bar no-print">
+    <input type="date" id="bar-order-date">
+    <button class="btn" onclick="calcBarOrder()">Calculate totals</button>
+    <button class="btn btng" onclick="saveBarOrder()">Save order</button>
+    <button class="btn" onclick="printPage('barorders')">&#x1F5A8; Print</button>
+  </div>
+  <div class="metrics no-print">
+    <div class="mc"><div class="mcl">Items ordered</div><div class="mcv" id="bm-items">0</div></div>
+    <div class="mc"><div class="mcl">Total value</div><div class="mcv" id="bm-cost" style="font-size:15px">IDR 0</div></div>
+    <div class="mc"><div class="mcl">Sections</div><div class="mcv">3</div></div>
+  </div>
+  <div class="card"><div class="tbl-wrap">
+    <table style="min-width:680px">
+      <thead><tr>
+        <th>Ingredient</th><th>Cat</th>
+        <th style="text-align:center">BM</th>
+        <th style="text-align:center">OW</th>
+        <th style="text-align:center">BT</th>
+        <th style="text-align:right">Total</th>
+        <th style="text-align:right">Price/unit</th>
+        <th style="text-align:right">Cost</th>
+      </tr></thead>
+      <tbody id="bar-order-tb"><tr><td colspan="8" class="loader">Loading...</td></tr></tbody>
+      <tfoot><tr class="total-row"><td colspan="5">Grand total</td><td></td><td></td><td style="text-align:right" id="bar-order-grand">IDR 0</td></tr></tfoot>
+    </table>
+  </div></div>
 </div>
 
 <!-- DAILY ORDERS (unchanged) -->
@@ -786,7 +819,25 @@ tr:hover td{background:var(--bg)}
 const SB='https://flhsqerpikhihtirfutu.supabase.co/rest/v1';
 const SK='sb_publishable_vzvJV73AoLe_isJ3PhXplw_zke7NG_F';
 const H={'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json'};
-const CODES=['Kitchen2026!','Chef@Bali','Aperitif2026','Purchasing@Bali'];
+const TENANT_MAP={
+  'Kitchen2026!':'central_office',
+  'Chef@Bali':'central_office',
+  'Purch4sing@bali!':'central_office',
+  '4peritif26':'aperitif',
+  'Aperitif@chef!':'aperitif',
+  'Home2026!':'home',
+  'RestA2026!':'restaurant_a',
+  'RestB2026!':'restaurant_b'
+};
+const CODES=Object.keys(TENANT_MAP);
+const TENANT_NAMES={
+  'central_office':'Central Office',
+  'aperitif':'Aperitif',
+  'home':'Home',
+  'restaurant_a':'Restaurant A',
+  'restaurant_b':'Restaurant B'
+};
+let TENANT='central_office';
 const fmt=n=>'IDR '+Math.round(n||0).toLocaleString('id-ID');
 const fmtShort=n=>{if(!n)return'—';if(n>=1000000)return'IDR '+(n/1000000).toFixed(1)+'M';if(n>=1000)return'IDR '+(n/1000).toFixed(0)+'K';return fmt(n);};
 
@@ -815,9 +866,14 @@ function closeModal(id){document.getElementById('modal-'+id).classList.remove('o
 function doLogin(){
   const pw=document.getElementById('pw-input').value;
   if(CODES.includes(pw)){
+    TENANT=TENANT_MAP[pw];
     sessionStorage.setItem('ko_auth','1');
+    sessionStorage.setItem('ko_tenant',TENANT);
     document.getElementById('login-screen').style.display='none';
     document.getElementById('app').style.display='block';
+    // Show tenant name in header
+    const tl=document.getElementById('tenant-label');
+    if(tl)tl.textContent=TENANT_NAMES[TENANT]||TENANT;
     initApp();
   }else{
     document.getElementById('login-err').textContent='Incorrect access code.';
@@ -832,8 +888,11 @@ function doLogout(){
   document.getElementById('pw-input').value='';
 }
 if(sessionStorage.getItem('ko_auth')==='1'){
+  TENANT=sessionStorage.getItem('ko_tenant')||'central_office';
   document.getElementById('login-screen').style.display='none';
   document.getElementById('app').style.display='block';
+  const tl=document.getElementById('tenant-label');
+  if(tl)tl.textContent=TENANT_NAMES[TENANT]||TENANT;
 }
 
 // ── NAV ──
@@ -847,6 +906,7 @@ function go(id,btn){
   const mobTab=document.getElementById('mobt-'+id);
   if(mobTab)mobTab.classList.add('on');
   if(id==='ingpricing')loadIngredients();
+  if(id==='barorders'){if(!window._barOrderData)loadBarOrderSheet();document.getElementById('bar-order-date').value=new Date().toISOString().split('T')[0];}
   if(id==='monthly')loadMonthly();
   if(id==='recipes')loadRecipeList();
   if(id==='dishes')loadDishList();
@@ -882,7 +942,8 @@ let _priceEditSpId=null;
 
 function initApp(){
   document.getElementById('order-date').value=new Date().toISOString().split('T')[0];
-  loadSuppliers().then(()=>{loadOrderSheet();});
+  loadSuppliers().then(()=>{loadOrderSheet();loadBarOrderSheet();});
+  document.getElementById('bar-order-date').value=new Date().toISOString().split('T')[0];
   // Ingredients load fresh when the tab is opened
 }
 
@@ -1336,7 +1397,7 @@ async function saveAllPrices(){
   }
   if(supplierId){
     const supName=allSup.find(s=>s.id===supplierId)?.name||'Unknown';
-    await api('/pricelist_uploads','POST',{supplier_id:supplierId,supplier_name:supName,file_name:'Manual upload',status:'approved',items_total:parsedItems.length,items_matched:parsedItems.filter(x=>x.match).length,items_updated:saved});
+    await api('/pricelist_uploads','POST',{supplier_id:supplierId,supplier_name:supName,file_name:'Manual upload',status:'approved',tenant_id:TENANT,items_total:parsedItems.length,items_matched:parsedItems.filter(x=>x.match).length,items_updated:saved});
   }
   toast(`${saved} prices updated`);
   clearParse();
@@ -1398,7 +1459,7 @@ function calcOrder(){
 async function saveOrder(){
   if(!window._orderData){toast('No data',true);return;}
   const orderDate=document.getElementById('order-date').value;
-  const res=await api('/daily_orders','POST',{order_date:orderDate,status:'submitted'});
+  const res=await api('/daily_orders','POST',{order_date:orderDate,status:'submitted',tenant_id:TENANT});
   if(!res||!res[0])return;
   const orderId=res[0].id;
   const secData=await api('/sections?select=id,code');
@@ -1412,6 +1473,78 @@ async function saveOrder(){
   if(lines.length){const r=await api('/daily_order_lines','POST',lines);if(r)toast(`Order saved — ${lines.length} lines · ${orderDate}`);}
   else toast('Enter at least one quantity',true);
   calcOrder();
+}
+
+// ── BAR ORDERS ──
+async function loadBarOrderSheet(){
+  let all=[];
+  for(let off=0;off<10000;off+=1000){
+    const d=await api('/v_ingredient_prices?is_preferred=eq.true&order=category,ingredient_name&select=ingredient_id,supplier_price_id,ingredient_name,category,unit,current_price,supplier_name&limit=1000&offset='+off);
+    if(!d||d.length===0)break;
+    all=all.concat(d);
+    if(d.length<1000)break;
+  }
+  window._barOrderData=all;
+  document.getElementById('bar-order-tb').innerHTML=all.map((i,idx)=>`
+    <tr>
+    <td style="font-weight:600;font-size:12px">${i.ingredient_name}</td>
+    <td><span class="bk bbl" style="font-size:9px">${(i.category||'').slice(0,4).toUpperCase()}</span></td>
+    ${['BM','OW','BT'].map(s=>`<td style="text-align:center"><input class="qty" data-bi="${idx}" data-bs="${s}" type="number" min="0" step="0.1" placeholder="—"></td>`).join('')}
+    <td style="text-align:right;font-size:11px;color:var(--text2)" id="brt-${idx}">—</td>
+    <td style="text-align:right;font-size:11px">${fmt(i.current_price)}</td>
+    <td style="text-align:right;font-weight:600" id="brc-${idx}">—</td>
+    </tr>`).join('');
+}
+function calcBarOrder(){
+  if(!window._barOrderData)return;
+  let total=0,items=0;
+  window._barOrderData.forEach((ing,idx)=>{
+    let qty=0;
+    ['BM','OW','BT'].forEach(s=>{
+      const el=document.querySelector(`input[data-bi="${idx}"][data-bs="${s}"]`);
+      qty+=parseFloat(el?.value||0);
+    });
+    const cost=qty*ing.current_price;
+    document.getElementById(`brt-${idx}`).textContent=qty>0?qty.toFixed(2)+' '+ing.unit:'—';
+    document.getElementById(`brc-${idx}`).textContent=qty>0?fmt(cost):'—';
+    if(qty>0){total+=cost;items++;}
+  });
+  document.getElementById('bm-items').textContent=items;
+  document.getElementById('bm-cost').textContent=fmt(total);
+  document.getElementById('bar-order-grand').textContent=fmt(total);
+}
+async function saveBarOrder(){
+  if(!window._barOrderData){toast('No data',true);return;}
+  const orderDate=document.getElementById('bar-order-date').value;
+  const res=await api('/bar_orders','POST',{order_date:orderDate,status:'submitted',tenant_id:TENANT});
+  if(!res||!res[0])return;
+  const orderId=res[0].id;
+  const lines=window._barOrderData.flatMap((ing,idx)=>{
+    const qtys={};
+    ['BM','OW','BT'].forEach(s=>{
+      const el=document.querySelector(`input[data-bi="${idx}"][data-bs="${s}"]`);
+      qtys[s]=parseFloat(el?.value||0);
+    });
+    const totalQty=Object.values(qtys).reduce((a,b)=>a+b,0);
+    if(totalQty<=0)return[];
+    return[{
+      order_id:orderId,
+      ingredient_id:ing.ingredient_id,
+      supplier_price_id:ing.supplier_price_id,
+      ingredient_name:ing.ingredient_name,
+      unit:ing.unit,
+      unit_price:ing.current_price,
+      qty_bar_manager:qtys['BM'],
+      qty_owner:qtys['OW'],
+      qty_bar_team:qtys['BT'],
+      total_cost:(qtys['BM']+qtys['OW']+qtys['BT'])*ing.current_price
+    }];
+  });
+  if(lines.length){
+    const r=await api('/bar_order_lines','POST',lines);
+    if(r)toast(`Bar order saved — ${lines.length} lines · ${orderDate}`);
+  } else toast('Enter at least one quantity',true);
+  calcBarOrder();
 }
 
 // ── MONTHLY ──
@@ -1439,7 +1572,7 @@ async function loadMonthly(){
 
 // ── RECIPE COSTING ──
 async function loadRecipeList(){
-  const d=await api('/recipes?is_active=eq.true&order=category,name&select=id,name,category,yield_quantity,yield_unit,yield_portions,target_fc_pct');
+  const d=await api('/recipes?is_active=eq.true&tenant_id=eq.'+TENANT+'&order=category,name&select=id,name,category,yield_quantity,yield_unit,yield_portions,target_fc_pct');
   if(!d)return;
   const sel=document.getElementById('rec-sel');
   const groups={};d.forEach(r=>{const cat=r.category||'Other';if(!groups[cat])groups[cat]=[];groups[cat].push(r);});
@@ -1502,13 +1635,13 @@ function calcRecipeFC(){
 async function addRecipe(){
   const name=document.getElementById('rn-name').value.trim();
   if(!name){toast('Name required',true);return;}
-  const r=await api('/recipes','POST',{name,category:document.getElementById('rn-cat').value,yield_portions:parseInt(document.getElementById('rn-portions').value)||null,yield_quantity:parseFloat(document.getElementById('rn-weight').value)||null,yield_unit:'gram',target_fc_pct:parseFloat(document.getElementById('rn-fc').value)||35,notes:document.getElementById('rn-notes').value,is_active:true});
+  const r=await api('/recipes','POST',{name,tenant_id:TENANT,category:document.getElementById('rn-cat').value,yield_portions:parseInt(document.getElementById('rn-portions').value)||null,yield_quantity:parseFloat(document.getElementById('rn-weight').value)||null,yield_unit:'gram',target_fc_pct:parseFloat(document.getElementById('rn-fc').value)||35,notes:document.getElementById('rn-notes').value,is_active:true});
   if(r){closeModal('recipe');toast('Recipe created');await loadRecipeList();}
 }
 
 // ── DISH COSTING ──
 async function loadDishList(){
-  const d=await api('/dishes?is_active=eq.true&order=menu_section,course,name&select=id,name,course,menu_section,selling_price,target_fc_pct,menu_category,notes');
+  const d=await api('/dishes?is_active=eq.true&tenant_id=eq.'+TENANT+'&order=menu_section,course,name&select=id,name,course,menu_section,selling_price,target_fc_pct,menu_category,notes');
   if(!d)return;allDishes=d;
   const sel=document.getElementById('dish-sel');
   const groups={};d.forEach(x=>{const s=x.menu_section||'Other';if(!groups[s])groups[s]=[];groups[s].push(x);});
@@ -1573,7 +1706,7 @@ function calcDishFC(){
 async function addDish(){
   const name=document.getElementById('dn-name').value.trim();
   if(!name){toast('Name required',true);return;}
-  const r=await api('/dishes','POST',{name,course:document.getElementById('dn-course').value,menu_section:document.getElementById('dn-section').value,selling_price:parseFloat(document.getElementById('dn-sell').value)||null,target_fc_pct:parseFloat(document.getElementById('dn-fc').value)||35,menu_category:document.getElementById('dn-eng').value,notes:document.getElementById('dn-notes').value,is_active:true});
+  const r=await api('/dishes','POST',{name,tenant_id:TENANT,course:document.getElementById('dn-course').value,menu_section:document.getElementById('dn-section').value,selling_price:parseFloat(document.getElementById('dn-sell').value)||null,target_fc_pct:parseFloat(document.getElementById('dn-fc').value)||35,menu_category:document.getElementById('dn-eng').value,notes:document.getElementById('dn-notes').value,is_active:true});
   if(r){closeModal('dish');toast('Dish created');await loadDishList();}
 }
 
