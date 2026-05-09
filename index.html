@@ -747,6 +747,24 @@ tr:hover td{background:var(--bg)}
   </div>
 </div>
 
+<!-- COSTING HUB (mobile) -->
+<div id="pg-costing" class="pg">
+  <div class="page-title">Food Cost Calculator</div>
+  <div class="page-sub">Choose what you want to cost</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px">
+    <div class="card" style="padding:24px;text-align:center;cursor:pointer" onclick="go('recipes',null);document.getElementById('mobt-costing').classList.add('on')">
+      <div style="font-size:40px;margin-bottom:12px">📋</div>
+      <div style="font-weight:700;font-size:15px;margin-bottom:6px">Recipe Costing</div>
+      <div style="font-size:12px;color:var(--text2)">Sub-recipes & prep costs</div>
+    </div>
+    <div class="card" style="padding:24px;text-align:center;cursor:pointer" onclick="go('dishes',null);document.getElementById('mobt-costing').classList.add('on')">
+      <div style="font-size:40px;margin-bottom:12px">🍽️</div>
+      <div style="font-weight:700;font-size:15px;margin-bottom:6px">Dish Costing</div>
+      <div style="font-size:12px;color:var(--text2)">Full dish food cost</div>
+    </div>
+  </div>
+</div>
+
 <!-- PRINT CENTER (unchanged except nav index refs) -->
 <div id="pg-printcenter" class="pg">
   <div class="page-title">Print Center</div>
@@ -815,19 +833,19 @@ tr:hover td{background:var(--bg)}
 <nav class="mob-nav" id="mob-nav">
   <button class="mob-tab on" onclick="go('ingpricing',this)" id="mobt-ingpricing">
     <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
-    Ingredients
+    Prices
   </button>
   <button class="mob-tab" onclick="go('orders',this)" id="mobt-orders">
     <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2"/><polyline points="9 11 12 14 22 4"/></svg>
-    Orders
+    Kitchen
   </button>
-  <button class="mob-tab" onclick="go('recipes',this)" id="mobt-recipes">
-    <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2z"/><path d="M12 6v6l4 2"/></svg>
-    Recipes
+  <button class="mob-tab" onclick="go('barorders',this)" id="mobt-barorders">
+    <svg viewBox="0 0 24 24"><path d="M8 22V12m0 0V2l8 5-8 5z"/><path d="M16 22v-5a4 4 0 00-4-4H8"/></svg>
+    Bar
   </button>
-  <button class="mob-tab" onclick="go('dishes',this)" id="mobt-dishes">
-    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 12h8M12 8v8"/></svg>
-    Dishes
+  <button class="mob-tab" onclick="go('costing',this)" id="mobt-costing">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+    Costing
   </button>
   <button class="mob-tab" onclick="go('suppliers',this)" id="mobt-suppliers">
     <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
@@ -1058,10 +1076,12 @@ function go(id,btn){
   document.querySelectorAll('.mob-tab').forEach(b=>b.classList.remove('on'));
   document.getElementById('pg-'+id).classList.add('on');
   if(btn)btn.classList.add('on');
-  // Sync mobile tab if it exists
-  const mobTab=document.getElementById('mobt-'+id);
+  // Sync mobile tab — recipes/dishes both activate 'costing' tab
+  const mobId=(id==='recipes'||id==='dishes')?'costing':id;
+  const mobTab=document.getElementById('mobt-'+mobId);
   if(mobTab)mobTab.classList.add('on');
   if(id==='ingpricing')loadIngredients();
+  if(id==='costing'){loadRecipeList();} // preload recipes list
   if(id==='barorders'){if(!window._barOrderData)loadBarOrderSheet();document.getElementById('bar-order-date').value=new Date().toISOString().split('T')[0];}
   if(id==='monthly')loadMonthly();
   if(id==='recipes')loadRecipeList();
