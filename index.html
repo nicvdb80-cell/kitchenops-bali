@@ -198,11 +198,13 @@ tr:hover td{background:var(--bg)}
 
 @media(max-width:768px){
   /* ── MOBILE BASE ── */
-  body{font-size:14px}
-  .main{padding:12px;padding-bottom:80px}
-  .metrics{grid-template-columns:1fr 1fr}
-  .mcv{font-size:18px}
-  .hdr{padding:8px 12px}
+  body{font-size:15px}
+  .main{padding:12px 10px;padding-bottom:80px}
+  .metrics{grid-template-columns:1fr 1fr;gap:6px}
+  .mcv{font-size:20px}
+  .hdr{padding:10px 14px}
+  .brand{font-size:14px}
+  .brand-sub{font-size:11px}
 
   /* Hide top nav on mobile — replaced by bottom tab bar */
   .nav-wrap{display:none}
@@ -211,17 +213,18 @@ tr:hover td{background:var(--bg)}
   .mob-nav{
     display:flex;position:fixed;bottom:0;left:0;right:0;
     background:var(--surface);border-top:0.5px solid var(--border);
-    z-index:150;height:64px;align-items:stretch;
-    box-shadow:0 -4px 20px rgba(0,0,0,0.06);
+    z-index:150;height:68px;align-items:stretch;
+    box-shadow:0 -4px 24px rgba(0,0,0,0.08);
+    padding-bottom:env(safe-area-inset-bottom);
   }
   .mob-tab{
     flex:1;display:flex;flex-direction:column;align-items:center;
-    justify-content:center;gap:3px;border:none;background:transparent;
-    cursor:pointer;color:var(--text3);font-size:9px;font-weight:600;
-    text-transform:uppercase;letter-spacing:.04em;padding:6px 2px;
-    transition:color .15s;
+    justify-content:center;gap:4px;border:none;background:transparent;
+    cursor:pointer;color:var(--text3);font-size:10px;font-weight:600;
+    text-transform:uppercase;letter-spacing:.04em;padding:8px 2px;
+    transition:color .15s;-webkit-tap-highlight-color:transparent;
   }
-  .mob-tab svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;flex-shrink:0}
+  .mob-tab svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;flex-shrink:0}
   .mob-tab.on{color:var(--g)}
   .mob-tab.on svg{stroke:var(--g)}
 
@@ -290,36 +293,74 @@ tr:hover td{background:var(--bg)}
   /* Supplier table - hide less important cols */
   /* Keep: Name, Phone, Status */
 
-  /* Alert bar */
-  .alert-bar{font-size:11px;padding:8px 12px}
+  /* ── ALERT BAR ── */
+  .alert-bar{font-size:12px;padding:10px 14px}
 
   /* ── LOGIN on mobile ── */
-  .login-box{padding:28px 20px;margin:16px}
-  .login-brand{font-size:18px}
+  .login-box{padding:32px 20px;margin:12px;border-radius:20px}
+  .login-brand{font-size:20px}
+  .login-sub{font-size:13px}
+  .login-inp{padding:14px;font-size:16px;margin-bottom:14px}
+  .login-btn{padding:14px;font-size:16px}
+  .login-lbl{font-size:11px}
 
-  /* ── DAILY ORDERS on mobile: hide section cols, show compact ── */
+  /* ── BIGGER TOUCH TARGETS ── */
+  .btn{padding:11px 16px;font-size:13px;min-height:44px}
+  .qty{width:64px;padding:8px;font-size:16px;min-height:44px}
+  select,input[type=number],input[type=text],input[type=date]{
+    padding:12px;font-size:16px;min-height:44px;
+  }
+  .si input{padding:12px 12px 12px 38px;font-size:16px;min-height:44px}
+
+  /* ── TOOLBAR stacks ── */
+  .bar{flex-direction:column;gap:8px}
+  .bar .si{min-width:unset;width:100%}
+  .bar select{width:100%}
+
+  /* ── TABLES ── */
   table{min-width:unset!important}
-  .order-col-section{display:none!important}
-
-  /* ── ORDER CARD layout on mobile ── */
-  .order-card{display:flex;align-items:center;padding:10px 12px;border-bottom:0.5px solid var(--border);gap:8px}
-  .order-card-name{flex:1;font-weight:600;font-size:13px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .order-card-qty{width:60px;text-align:right}
-  .order-card-cost{width:80px;text-align:right;font-weight:600;color:var(--g);font-size:12px}
-
-  /* ── FC ROW stacks ── */
-  .fc-row{flex-direction:column;gap:10px}
-  .fcs,.fcf{text-align:left}
-
-  /* ── HIDE less important columns on mobile ── */
+  th{font-size:10px;padding:8px 10px}
+  td{font-size:14px;padding:12px 10px}
   .col-hide-mob{display:none!important}
 
-  /* ── PAGE headers ── */
-  .page-title{font-size:16px}
-  .page-sub{font-size:11px}
+  /* ── INGREDIENT CARDS ── */
+  .ing-card{padding:14px 12px}
+  .ing-card-name{font-size:15px}
+  .ing-card-price{font-size:18px}
+  .ing-card-meta{font-size:12px}
 
-  /* ── BUTTONS smaller on mobile ── */
-  .bar .btn{padding:8px 12px;font-size:12px}
+  /* ── MODALS slide up from bottom ── */
+  .modal-overlay{align-items:flex-end;padding:0}
+  .modal{border-radius:20px 20px 0 0;max-width:100%;max-height:88vh;padding:24px 20px}
+  .modal-title{font-size:17px}
+  .fr label{font-size:11px}
+  .fr input,.fr select,.fr textarea{font-size:16px;padding:12px}
+
+  /* ── FC ROW stacks ── */
+  .fc-row{flex-direction:column;gap:12px;padding:16px 12px}
+  .fcs,.fcf{text-align:left}
+  .fcsv{font-size:20px}
+  .fcsl{font-size:11px}
+
+  /* ── PAGE HEADERS ── */
+  .page-title{font-size:18px}
+  .page-sub{font-size:12px;margin-bottom:12px}
+
+  /* ── CARDS ── */
+  .card{border-radius:12px}
+  .ch{padding:12px 14px}
+  .ct{font-size:14px}
+  .cs{font-size:12px}
+
+  /* ── METRICS ── */
+  .mc{padding:12px}
+  .mcl{font-size:10px}
+  .mcv{font-size:22px}
+  .mc .mcs{font-size:12px}
+
+  /* ── BADGES ── */
+  .bk{font-size:11px;padding:3px 10px}
+  .ph-badge{font-size:11px;padding:3px 8px}
 }
 
 /* Desktop: hide mobile elements */
@@ -1501,18 +1542,40 @@ async function loadOrderSheet(){
   }
   window._orderData=orderAll;
   const isMob=window.innerWidth<=768;
-  document.getElementById('order-tb').innerHTML=orderAll.map((i,idx)=>`
-    <tr>
-    <td style="font-weight:600;font-size:12px">${i.ingredient_name}</td>
-    <td class="col-hide-mob"><span class="bk bbl" style="font-size:9px">${(i.category||'').slice(0,4).toUpperCase()}</span></td>
-    ${isMob
-      ? `<td style="text-align:center"><input class="qty" data-i="${idx}" data-s="M" type="number" min="0" step="0.1" placeholder="0" style="width:60px" oninput="['C','F','P','T'].forEach(s=>{const el=document.querySelector('input[data-i=\'${idx}\'][data-s=\''+s+'\']');if(el)el.value=this.value;})"></td>`
-      : ['C','F','M','P','T'].map(s=>`<td style="text-align:center" class="${s!=='M'?'col-hide-mob':''}"><input class="qty" data-i="${idx}" data-s="${s}" type="number" min="0" step="0.1" placeholder="—"></td>`).join('')
-    }
-    <td style="text-align:right;font-size:11px;color:var(--text2)" id="rt-${idx}">—</td>
-    <td style="text-align:right;font-size:11px" class="col-hide-mob">${fmt(i.current_price)}/kg</td>
-    <td style="text-align:right;font-weight:600" id="rc-${idx}">—</td>
-    </tr>`).join('');
+  if(isMob){
+    // Mobile: card layout — one card per ingredient
+    document.getElementById('order-tb').innerHTML=orderAll.map((i,idx)=>`
+      <tr><td colspan="10" style="padding:0">
+        <div style="display:flex;align-items:center;padding:10px 12px;border-bottom:0.5px solid var(--border);gap:10px">
+          <div style="flex:1;min-width:0">
+            <div style="font-weight:600;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${i.ingredient_name}</div>
+            <div style="font-size:11px;color:var(--text2);margin-top:2px">${fmt(i.current_price)}/kg</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+            <input class="qty" data-i="${idx}" data-s="M" type="number" min="0" step="0.1" placeholder="0"
+              style="width:70px;padding:8px;font-size:14px;text-align:center"
+              oninput="['C','F','P','T'].forEach(s=>{const el=document.querySelector('input[data-i=\'${idx}\'][data-s=\''+s+'\']');if(el)el.value=this.value;});calcOrder()">
+            <span style="font-size:11px;color:var(--text2)">${i.unit}</span>
+          </div>
+          <div style="text-align:right;min-width:70px;flex-shrink:0">
+            <div style="font-weight:600;font-size:13px;color:var(--g)" id="rc-${idx}">—</div>
+          </div>
+        </div>
+        ${['C','F','P','T'].map(s=>`<input type="hidden" class="qty" data-i="${idx}" data-s="${s}">`).join('')}
+        <div id="rt-${idx}" style="display:none"></div>
+      </td></tr>`).join('');
+  } else {
+    // Desktop: full table
+    document.getElementById('order-tb').innerHTML=orderAll.map((i,idx)=>`
+      <tr>
+      <td style="font-weight:600;font-size:12px">${i.ingredient_name}</td>
+      <td><span class="bk bbl" style="font-size:9px">${(i.category||'').slice(0,4).toUpperCase()}</span></td>
+      ${['C','F','M','P','T'].map(s=>`<td style="text-align:center"><input class="qty" data-i="${idx}" data-s="${s}" type="number" min="0" step="0.1" placeholder="—"></td>`).join('')}
+      <td style="text-align:right;font-size:11px;color:var(--text2)" id="rt-${idx}">—</td>
+      <td style="text-align:right;font-size:11px">${fmt(i.current_price)}/kg</td>
+      <td style="text-align:right;font-weight:600" id="rc-${idx}">—</td>
+      </tr>`).join('');
+  }
 }
 function calcOrder(){
   if(!window._orderData)return;
@@ -1559,18 +1622,38 @@ async function loadBarOrderSheet(){
   }
   window._barOrderData=all;
   const isBarMob=window.innerWidth<=768;
-  document.getElementById('bar-order-tb').innerHTML=all.map((i,idx)=>`
-    <tr>
-    <td style="font-weight:600;font-size:12px">${i.ingredient_name}</td>
-    <td class="col-hide-mob"><span class="bk bbl" style="font-size:9px">${(i.category||'').slice(0,4).toUpperCase()}</span></td>
-    ${isBarMob
-      ? `<td style="text-align:center"><input class="qty" data-bi="${idx}" data-bs="BM" type="number" min="0" step="0.1" placeholder="0" style="width:60px" oninput="['OW','BT'].forEach(s=>{const el=document.querySelector('input[data-bi=\'${idx}\'][data-bs=\''+s+'\']');if(el)el.value=this.value;})"></td>`
-      : ['BM','OW','BT'].map(s=>`<td style="text-align:center" class="${s!=='BM'?'col-hide-mob':''}"><input class="qty" data-bi="${idx}" data-bs="${s}" type="number" min="0" step="0.1" placeholder="—"></td>`).join('')
-    }
-    <td style="text-align:right;font-size:11px;color:var(--text2)" id="brt-${idx}">—</td>
-    <td style="text-align:right;font-size:11px" class="col-hide-mob">${fmt(i.current_price)}</td>
-    <td style="text-align:right;font-weight:600" id="brc-${idx}">—</td>
-    </tr>`).join('');
+  if(isBarMob){
+    document.getElementById('bar-order-tb').innerHTML=all.map((i,idx)=>`
+      <tr><td colspan="8" style="padding:0">
+        <div style="display:flex;align-items:center;padding:10px 12px;border-bottom:0.5px solid var(--border);gap:10px">
+          <div style="flex:1;min-width:0">
+            <div style="font-weight:600;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${i.ingredient_name}</div>
+            <div style="font-size:11px;color:var(--text2);margin-top:2px">${fmt(i.current_price)}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+            <input class="qty" data-bi="${idx}" data-bs="BM" type="number" min="0" step="0.1" placeholder="0"
+              style="width:70px;padding:8px;font-size:14px;text-align:center"
+              oninput="['OW','BT'].forEach(s=>{const el=document.querySelector('input[data-bi=\'${idx}\'][data-bs=\''+s+'\']');if(el)el.value=this.value;});calcBarOrder()">
+            <span style="font-size:11px;color:var(--text2)">${i.unit}</span>
+          </div>
+          <div style="text-align:right;min-width:70px;flex-shrink:0">
+            <div style="font-weight:600;font-size:13px;color:var(--g)" id="brc-${idx}">—</div>
+          </div>
+        </div>
+        ${['OW','BT'].map(s=>`<input type="hidden" class="qty" data-bi="${idx}" data-bs="${s}">`).join('')}
+        <div id="brt-${idx}" style="display:none"></div>
+      </td></tr>`).join('');
+  } else {
+    document.getElementById('bar-order-tb').innerHTML=all.map((i,idx)=>`
+      <tr>
+      <td style="font-weight:600;font-size:12px">${i.ingredient_name}</td>
+      <td><span class="bk bbl" style="font-size:9px">${(i.category||'').slice(0,4).toUpperCase()}</span></td>
+      ${['BM','OW','BT'].map(s=>`<td style="text-align:center"><input class="qty" data-bi="${idx}" data-bs="${s}" type="number" min="0" step="0.1" placeholder="—"></td>`).join('')}
+      <td style="text-align:right;font-size:11px;color:var(--text2)" id="brt-${idx}">—</td>
+      <td style="text-align:right;font-size:11px">${fmt(i.current_price)}</td>
+      <td style="text-align:right;font-weight:600" id="brc-${idx}">—</td>
+      </tr>`).join('');
+  }
 }
 function calcBarOrder(){
   if(!window._barOrderData)return;
@@ -1665,7 +1748,7 @@ async function loadRecipe(){
   if(!id){document.getElementById('rec-card').style.display='none';return;}
   const [recipe,rows]=await Promise.all([
     api(`/recipes?id=eq.${id}&select=*`),
-    api(`/recipe_ingredients?recipe_id=eq.${id}&order=sort_order&select=quantity,unit,yield_pct,ingredients(name),supplier_prices(current_price)`)
+    api(`/recipe_ingredients?recipe_id=eq.${id}&order=sort_order&select=quantity,unit,yield_pct,ingredients(name),supplier_prices(id,current_price)`)
   ]);
   if(!recipe)return;const r=recipe[0];
   document.getElementById('rec-card').style.display='block';
@@ -1680,11 +1763,15 @@ async function loadRecipe(){
       const pricePerUnit=(isGram||isMl)?pricePerKg/1000:pricePerKg;
       const cost=(ri.quantity*pricePerUnit)/(ri.yield_pct/100);
       total+=cost;
+      const spId=ri.supplier_prices?.id||'';
       return`<tr>
       <td>${ri.ingredients?.name||'—'}</td>
       <td style="text-align:right">${ri.quantity}</td>
       <td>${ri.unit}</td>
-      <td style="text-align:right;font-size:12px">${fmt(pricePerUnit)}<span style="font-size:10px;color:var(--text2)">/${ri.unit}</span></td>
+      <td style="text-align:right;font-size:12px">
+        ${fmt(pricePerUnit)}<span style="font-size:10px;color:var(--text2)">/${ri.unit}</span>
+        ${spId?`<button class="btn no-print" style="font-size:9px;padding:2px 6px;margin-left:4px" onclick="openPriceEdit('${spId}','${ri.ingredients?.name||''}','','${ri.unit}',${pricePerKg})">✏</button>`:''}
+      </td>
       <td style="text-align:right">${ri.yield_pct}%</td>
       <td style="text-align:right;font-weight:700">${fmt(cost)}</td>
       </tr>`;
