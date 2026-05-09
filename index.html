@@ -968,6 +968,11 @@ const TENANT_NAMES={
 let TENANT='central_office';
 let SESSION_TOKEN=null;
 
+async function refreshToken(){
+  // Always get fresh token before API calls
+  const {data:{session}}=await supabaseClient.auth.getSession();
+  if(session)SESSION_TOKEN=session.access_token;
+}
 function getHeaders(){
   return{
     'apikey':SUPA_KEY,
@@ -1082,7 +1087,8 @@ function go(id,btn){
   if(mobTab)mobTab.classList.add('on');
   if(id==='ingpricing')loadIngredients();
   if(id==='costing'){loadRecipeList();} // preload recipes list
-  if(id==='barorders'){if(!window._barOrderData)loadBarOrderSheet();document.getElementById('bar-order-date').value=new Date().toISOString().split('T')[0];}
+  if(id==='barorders'){loadBarOrderSheet();document.getElementById('bar-order-date').value=new Date().toISOString().split('T')[0];}
+  if(id==='orders'){loadOrderSheet();document.getElementById('order-date').value=new Date().toISOString().split('T')[0];}
   if(id==='monthly')loadMonthly();
   if(id==='recipes')loadRecipeList();
   if(id==='dishes')loadDishList();
@@ -1118,9 +1124,10 @@ let _priceEditSpId=null;
 
 function initApp(){
   document.getElementById('order-date').value=new Date().toISOString().split('T')[0];
-  loadSuppliers().then(()=>{loadOrderSheet();loadBarOrderSheet();});
   document.getElementById('bar-order-date').value=new Date().toISOString().split('T')[0];
-  // Ingredients load fresh when the tab is opened
+  loadSuppliers();
+  loadOrderSheet();
+  // Bar orders and ingredients load when tab is opened
 }
 
 // ── SUPPLIERS ──
@@ -1159,6 +1166,7 @@ async function addSupplier(){
 let allPricesRaw=[];
 
 async function loadIngredients(){
+  await refreshToken();
   document.getElementById('ing-tb').innerHTML='<tr><td colspan="8" class="loader"><span class="spinner"></span>Loading all ingredients...</td></tr>';
   // Fetch preferred prices (one row per ingredient = best price)
   let preferred=[];
@@ -1647,6 +1655,7 @@ function renderBarOrderHighlight(){
 
 // ── KITCHEN ORDERS ──
 async function loadOrderSheet(){
+  await refreshToken();
   // Fetch all ingredients in chunks to bypass 1000-row limit
   let orderAll=[];
   for(let off=0;off<10000;off+=1000){
@@ -1745,6 +1754,53 @@ function calcBarOrder(){
   document.getElementById('bm-cost').textContent=fmt(total);
   document.getElementById('bar-order-grand').textContent=fmt(total);
 }
+async function loadBarOrderSheet(){
+  await refreshToken();
+  document.getElementById('bar-order-tb').innerHTML='<tr><td colspan="8" class="loader"><span class="spinner"></span>Loading...</td></tr>';
+  let all=[];
+  for(let off=0;off<10000;off+=1000){
+    const d=await api('/v_ingredient_prices?is_preferred=eq.true&order=category,ingredient_name&select=ingredient_id,supplier_price_id,ingredient_name,category,unit,current_price,supplier_name&limit=1000&offset='+off);
+    if(!d||d.length===0)break;
+    all=all.concat(d);
+    if(d.length<1000)break;
+  }
+  window._barOrderData=all;
+  const isBarMob=window.innerWidth<=768;
+  if(isBarMob){
+    document.getElementById('bar-order-tb').innerHTML=all.map((i,idx)=>`
+      <tr><td colspan="8" style="padding:0">
+        <div style="display:flex;align-items:center;padding:14px 12px;border-bottom:0.5px solid var(--border);gap:12px">
+          <div style="flex:1;min-width:0">
+            <div style="font-weight:600;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${i.ingredient_name}</div>
+            <div style="font-size:12px;color:var(--text2);margin-top:3px">${fmt(i.current_price)} / ${i.unit}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+            <input class="qty" data-bi="${idx}" data-bs="${activeBarSection}" type="number" min="0" step="0.1" placeholder="0"
+              style="width:75px;padding:10px;font-size:18px;text-align:center;border-radius:8px"
+              oninput="syncBarSection(${idx},this.value);calcBarOrder()">
+            <span style="font-size:13px;color:var(--text2);min-width:24px">${i.unit}</span>
+          </div>
+          <div style="text-align:right;min-width:74px;flex-shrink:0">
+            <div style="font-weight:700;font-size:14px;color:var(--g)" id="brc-${idx}">—</div>
+          </div>
+        </div>
+        ${['BM','OW','BT'].filter(s=>s!==activeBarSection).map(s=>`<input type="hidden" class="qty" data-bi="${idx}" data-bs="${s}" value="0">`).join('')}
+        <div id="brt-${idx}" style="display:none"></div>
+      </td></tr>`).join('');
+  } else {
+    document.getElementById('bar-order-tb').innerHTML=all.map((i,idx)=>`
+      <tr>
+      <td style="font-weight:600;font-size:12px">${i.ingredient_name}</td>
+      <td><span class="bk bbl" style="font-size:9px">${(i.category||'').slice(0,4).toUpperCase()}</span></td>
+      ${['BM','OW','BT'].map(s=>`<td style="text-align:center"><input class="qty" data-bi="${idx}" data-bs="${s}" type="number" min="0" step="0.1" placeholder="—"></td>`).join('')}
+      <td style="text-align:right;font-size:11px;color:var(--text2)" id="brt-${idx}">—</td>
+      <td style="text-align:right;font-size:11px">${fmt(i.current_price)}</td>
+      <td style="text-align:right;font-weight:600" id="brc-${idx}">—</td>
+      </tr>`).join('');
+    renderBarOrderHighlight();
+  }
+}
+
 async function saveBarOrder(){
   if(!window._barOrderData){toast('No data',true);return;}
   const orderDate=document.getElementById('bar-order-date').value;
