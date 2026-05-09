@@ -311,9 +311,11 @@ tr:hover td{background:var(--bg)}
       <div class="login-brand">KitchenOps</div>
     </div>
     <div class="login-sub">Central Kitchen &middot; Bali &middot; Culinary Purchasing</div>
-    <label class="login-lbl">Access Code</label>
-    <input class="login-inp" type="password" id="pw-input" placeholder="Enter access code" onkeydown="if(event.key==='Enter')doLogin()" autofocus>
-    <button class="login-btn" onclick="doLogin()">Enter</button>
+    <label class="login-lbl">Email</label>
+    <input class="login-inp" type="email" id="email-input" placeholder="your@email.com" onkeydown="if(event.key==='Enter')document.getElementById('pw-input').focus()">
+    <label class="login-lbl">Password</label>
+    <input class="login-inp" type="password" id="pw-input" placeholder="Enter password" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">Sign in</button>
     <div class="login-err" id="login-err"></div>
     <div class="login-footer">Authorised personnel only &middot; 2026</div>
   </div>
@@ -814,22 +816,15 @@ tr:hover td{background:var(--bg)}
 
 <div class="toast" id="toast"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
-const SB='https://flhsqerpikhihtirfutu.supabase.co/rest/v1';
-const SK='sb_publishable_vzvJV73AoLe_isJ3PhXplw_zke7NG_F';
-const H={'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json'};
-const TENANT_MAP={
-  'Kitchen2026!':'central_office',
-  'Chef@Bali':'central_office',
-  'Purch4sing@bali!':'central_office',
-  '4peritif26':'aperitif',
-  'Aperitif@chef!':'aperitif',
-  'Home2026!':'home',
-  'RestA2026!':'restaurant_a',
-  'RestB2026!':'restaurant_b'
-};
-const CODES=Object.keys(TENANT_MAP);
+// ── SUPABASE AUTH ──
+const SUPA_URL='https://flhsqerpikhihtirfutu.supabase.co';
+const SUPA_KEY='sb_publishable_vzvJV73AoLe_isJ3PhXplw_zke7NG_F';
+const supabaseClient=window.supabase.createClient(SUPA_URL,SUPA_KEY);
+
+const SB=SUPA_URL+'/rest/v1';
 const TENANT_NAMES={
   'central_office':'Central Office',
   'aperitif':'Aperitif',
@@ -838,12 +833,21 @@ const TENANT_NAMES={
   'restaurant_b':'Restaurant B'
 };
 let TENANT='central_office';
+let SESSION_TOKEN=null;
+
+function getHeaders(){
+  return{
+    'apikey':SUPA_KEY,
+    'Authorization':'Bearer '+(SESSION_TOKEN||SUPA_KEY),
+    'Content-Type':'application/json'
+  };
+}
 const fmt=n=>'IDR '+Math.round(n||0).toLocaleString('id-ID');
 const fmtShort=n=>{if(!n)return'—';if(n>=1000000)return'IDR '+(n/1000000).toFixed(1)+'M';if(n>=1000)return'IDR '+(n/1000).toFixed(0)+'K';return fmt(n);};
 
 async function api(path,method='GET',body=null){
   try{
-    const heads={...H};
+    const heads=getHeaders();
     if(method==='POST')heads['Prefer']='return=representation';
     if(method==='PATCH')heads['Prefer']='return=minimal';
     const r=await fetch(SB+path,{method,headers:heads,body:body?JSON.stringify(body):null});
@@ -863,37 +867,74 @@ function openModal(id){document.getElementById('modal-'+id).classList.add('open'
 function closeModal(id){document.getElementById('modal-'+id).classList.remove('open')}
 
 // ── AUTH ──
-function doLogin(){
+async function doLogin(){
+  const email=document.getElementById('email-input').value.trim();
   const pw=document.getElementById('pw-input').value;
-  if(CODES.includes(pw)){
-    TENANT=TENANT_MAP[pw];
-    sessionStorage.setItem('ko_auth','1');
-    sessionStorage.setItem('ko_tenant',TENANT);
-    document.getElementById('login-screen').style.display='none';
-    document.getElementById('app').style.display='block';
-    // Show tenant name in header
-    const tl=document.getElementById('tenant-label');
-    if(tl)tl.textContent=TENANT_NAMES[TENANT]||TENANT;
-    initApp();
-  }else{
-    document.getElementById('login-err').textContent='Incorrect access code.';
+  const errEl=document.getElementById('login-err');
+  errEl.textContent='';
+  if(!email||!pw){errEl.textContent='Please enter email and password.';return;}
+  
+  const btn=document.querySelector('.login-btn');
+  btn.textContent='Signing in...';btn.disabled=true;
+
+  const {data,error}=await supabaseClient.auth.signInWithPassword({email,password:pw});
+  
+  btn.textContent='Sign in';btn.disabled=false;
+  
+  if(error){
+    errEl.textContent='Incorrect email or password.';
     document.getElementById('pw-input').value='';
-    document.getElementById('pw-input').focus();
+    return;
   }
-}
-function doLogout(){
-  sessionStorage.removeItem('ko_auth');
-  document.getElementById('app').style.display='none';
-  document.getElementById('login-screen').style.display='flex';
-  document.getElementById('pw-input').value='';
-}
-if(sessionStorage.getItem('ko_auth')==='1'){
-  TENANT=sessionStorage.getItem('ko_tenant')||'central_office';
-  document.getElementById('login-screen').style.display='none';
-  document.getElementById('app').style.display='block';
+
+  SESSION_TOKEN=data.session.access_token;
+  
+  // Get tenant from user_profiles
+  const {data:profile}=await supabaseClient
+    .from('user_profiles')
+    .select('tenant_id,full_name,role')
+    .eq('id',data.user.id)
+    .single();
+
+  if(!profile){errEl.textContent='Account not configured. Contact admin.';await supabaseClient.auth.signOut();return;}
+  
+  TENANT=profile.tenant_id;
   const tl=document.getElementById('tenant-label');
   if(tl)tl.textContent=TENANT_NAMES[TENANT]||TENANT;
+  
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').style.display='block';
+  initApp();
 }
+
+async function doLogout(){
+  await supabaseClient.auth.signOut();
+  SESSION_TOKEN=null;TENANT='central_office';
+  document.getElementById('app').style.display='none';
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('email-input').value='';
+  document.getElementById('pw-input').value='';
+}
+
+// ── AUTO LOGIN (restore session) ──
+supabaseClient.auth.getSession().then(async({data:{session}})=>{
+  if(session){
+    SESSION_TOKEN=session.access_token;
+    const {data:profile}=await supabaseClient
+      .from('user_profiles')
+      .select('tenant_id,full_name,role')
+      .eq('id',session.user.id)
+      .single();
+    if(profile){
+      TENANT=profile.tenant_id;
+      const tl=document.getElementById('tenant-label');
+      if(tl)tl.textContent=TENANT_NAMES[TENANT]||TENANT;
+      document.getElementById('login-screen').style.display='none';
+      document.getElementById('app').style.display='block';
+      initApp();
+    }
+  }
+});
 
 // ── NAV ──
 function go(id,btn){
@@ -1752,7 +1793,7 @@ function exportCSV(type){
   toast('CSV exported');
 }
 
-if(sessionStorage.getItem('ko_auth')==='1')initApp();
+// Auth handled by supabaseClient.auth.getSession() above
 </script>
 </body>
 </html>
