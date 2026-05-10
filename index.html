@@ -415,6 +415,13 @@ tr:hover td{background:var(--bg)}
   </div>
   <div class="hdr-r">
     <span class="db-dot" id="db-dot"></span><span class="db-lbl" id="db-lbl">Connecting...</span>
+    <select id="tenant-switcher" style="display:none;padding:4px 8px;border:0.5px solid var(--border);border-radius:6px;font-size:11px;background:var(--gbg);color:var(--g);font-weight:600;cursor:pointer" onchange="switchTenant(this.value)">
+      <option value="central_office">Central Office</option>
+      <option value="aperitif">Aperitif</option>
+      <option value="home">Home</option>
+      <option value="restaurant_a">Restaurant A</option>
+      <option value="restaurant_b">Restaurant B</option>
+    </select>
     <button class="logout-btn" onclick="doLogout()">Sign out</button>
   </div>
 </header>
@@ -1039,6 +1046,12 @@ async function doLogin(){
   TENANT=profile.tenant_id;
   const tl=document.getElementById('tenant-label');
   if(tl)tl.textContent=TENANT_NAMES[TENANT]||TENANT;
+  // Show tenant switcher for admin
+  const sw=document.getElementById('tenant-switcher');
+  if(sw){
+    sw.style.display=profile.role==='admin'?'block':'none';
+    sw.value=TENANT;
+  }
   
   document.getElementById('login-screen').style.display='none';
   document.getElementById('app').style.display='block';
@@ -1067,12 +1080,32 @@ supabaseClient.auth.getSession().then(async({data:{session}})=>{
       TENANT=profile.tenant_id;
       const tl=document.getElementById('tenant-label');
       if(tl)tl.textContent=TENANT_NAMES[TENANT]||TENANT;
+      const sw=document.getElementById('tenant-switcher');
+      if(sw){sw.style.display=profile.role==='admin'?'block':'none';sw.value=TENANT;}
       document.getElementById('login-screen').style.display='none';
       document.getElementById('app').style.display='block';
       initApp();
     }
   }
 });
+
+// ── TENANT SWITCHER (admin only) ──
+function switchTenant(newTenant){
+  TENANT=newTenant;
+  const tl=document.getElementById('tenant-label');
+  if(tl)tl.textContent=TENANT_NAMES[TENANT]||TENANT;
+  // Reload all tenant-specific data
+  allIng=[];allPrices=[];allDishes=[];
+  window._orderData=null;window._barOrderData=null;
+  // Refresh current page
+  const activePg=document.querySelector('.pg.on');
+  if(activePg){
+    const id=activePg.id.replace('pg-','');
+    const btn=document.querySelector('.nb.on')||document.querySelector('.mob-tab.on');
+    go(id,btn);
+  }
+  toast('Switched to '+TENANT_NAMES[TENANT]);
+}
 
 // ── NAV ──
 function go(id,btn){
