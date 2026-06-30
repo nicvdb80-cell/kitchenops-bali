@@ -577,6 +577,7 @@ tr:hover td{background:var(--bg)}
     <input type="date" id="bar-order-date">
     <button class="btn" onclick="calcBarOrder()">Calculate totals</button>
     <button class="btn btng" onclick="saveBarOrder()">Save order</button>
+    <button class="btn btng" style="background:#25D366;border-color:#25D366" onclick="sendBarOrderToWA()">&#x1F4F2; Send to Purchasing</button>
     <button class="btn" onclick="printPage('barorders')">&#x1F5A8; Print</button>
   </div>
   <div class="metrics no-print">
@@ -619,14 +620,15 @@ tr:hover td{background:var(--bg)}
     <button class="section-btn" data-section="P" onclick="selectSection('P',this)">
       <span style="font-size:18px">🥐</span><br>Pastry
     </button>
-    <button class="section-btn" data-section="O" onclick="selectSection('O',this)">
-      <span style="font-size:18px">👔</span><br>Owner
+    <button class="section-btn" data-section="T" onclick="selectSection('T',this)">
+      <span style="font-size:18px">🍽️</span><br>Team Dining
     </button>
   </div>
   <div class="bar no-print">
     <input type="date" id="order-date">
     <button class="btn" onclick="calcOrder()">Calculate totals</button>
     <button class="btn btng" onclick="saveOrder()">Save order</button>
+    <button class="btn btng" style="background:#25D366;border-color:#25D366" onclick="sendKitchenOrderToWA()">&#x1F4F2; Send to Purchasing</button>
     <button class="btn" onclick="printPage('orders')">&#x1F5A8; Print</button>
   </div>
   <div class="metrics no-print">
@@ -973,6 +975,8 @@ const TENANT_NAMES={
   'restaurant_b':'Restaurant B'
 };
 let TENANT='central_office';
+// Purchasing WhatsApp number — international format, no +, no spaces (e.g. 6281234567890)
+const PURCHASING_WA_NUMBER='';
 let SESSION_TOKEN=null;
 
 async function refreshToken(){
@@ -1641,7 +1645,7 @@ async function loadPlHistory(){
 let activeSection='C';
 let activeBarSection='BM';
 
-const SECTION_NAMES={C:'Cold Kitchen',F:'Fish',M:'Main Kitchen',P:'Pastry',O:'Owner'};
+const SECTION_NAMES={C:'Cold Kitchen',F:'Fish',M:'Main Kitchen',P:'Pastry',T:'Team Dining'};
 const BAR_SECTION_NAMES={BM:'Bar Manager',OW:'Owner',BT:'Bar Team'};
 
 function selectSection(sec,btn){
@@ -1667,7 +1671,7 @@ function renderOrderHighlight(){
   // On desktop highlight the active section column
   if(window.innerWidth>768){
     document.querySelectorAll('#order-tb tr').forEach(row=>{
-      const secs=['C','F','M','P','O'];
+      const secs=['C','F','M','P','T'];
       row.querySelectorAll('td').forEach((td,i)=>{
         if(i>=2&&i<=6) td.style.background=secs[i-2]===activeSection?'var(--gbg)':'';
       });
@@ -1718,7 +1722,7 @@ async function loadOrderSheet(){
             <div style="font-weight:700;font-size:14px;color:var(--g)" id="rc-${idx}">—</div>
           </div>
         </div>
-        ${['C','F','M','P','O'].filter(s=>s!==activeSection).map(s=>`<input type="hidden" class="qty" data-i="${idx}" data-s="${s}" value="0">`).join('')}
+        ${['C','F','M','P','T'].filter(s=>s!==activeSection).map(s=>`<input type="hidden" class="qty" data-i="${idx}" data-s="${s}" value="0">`).join('')}
         <div id="rt-${idx}" style="display:none"></div>
       </td></tr>`).join('');
   } else {
@@ -1727,7 +1731,7 @@ async function loadOrderSheet(){
       <tr>
       <td style="font-weight:600;font-size:12px">${i.ingredient_name}</td>
       <td><span class="bk bbl" style="font-size:9px">${(i.category||'').slice(0,4).toUpperCase()}</span></td>
-      ${['C','F','M','P','O'].map(s=>`<td style="text-align:center"><input class="qty" data-i="${idx}" data-s="${s}" type="number" min="0" step="0.1" placeholder="—"></td>`).join('')}
+      ${['C','F','M','P','T'].map(s=>`<td style="text-align:center"><input class="qty" data-i="${idx}" data-s="${s}" type="number" min="0" step="0.1" placeholder="—"></td>`).join('')}
       <td style="text-align:right;font-size:11px;color:var(--text2)" id="rt-${idx}">—</td>
       <td style="text-align:right;font-size:11px">${fmt(i.current_price)}/kg</td>
       <td style="text-align:right;font-weight:600" id="rc-${idx}">—</td>
@@ -1768,6 +1772,108 @@ async function loadOrderSheet(){
       </tr>`).join('');
     renderBarOrderHighlight();
   }
+}
+function syncOrderSection(idx,val){
+  // Hidden inputs for inactive sections stay at 0 — the visible input already carries the live value.
+}
+function calcOrder(){
+  if(!window._orderData)return;
+  let total=0,items=0;const supSet=new Set();
+  window._orderData.forEach((ing,idx)=>{
+    let qty=0;
+    ['C','F','M','P','T'].forEach(s=>{
+      const el=document.querySelector(`input[data-i="${idx}"][data-s="${s}"]`);
+      qty+=parseFloat(el?.value||0);
+    });
+    const cost=qty*(ing.current_price||0);
+    const rt=document.getElementById(`rt-${idx}`);if(rt)rt.textContent=qty>0?qty.toFixed(2)+' '+ing.unit:'—';
+    const rc=document.getElementById(`rc-${idx}`);if(rc)rc.textContent=qty>0?fmt(cost):'—';
+    if(qty>0){total+=cost;items++;if(ing.supplier_name)supSet.add(ing.supplier_name);}
+  });
+  document.getElementById('m-items').textContent=items;
+  document.getElementById('m-cost').textContent=fmt(total);
+  document.getElementById('m-sups').textContent=supSet.size;
+  document.getElementById('order-grand').textContent=fmt(total);
+}
+let _sectionIdMap=null;
+async function getSectionIdMap(){
+  if(_sectionIdMap)return _sectionIdMap;
+  const secs=await api('/sections?select=code,id');
+  _sectionIdMap={};
+  (secs||[]).forEach(s=>_sectionIdMap[s.code]=s.id);
+  return _sectionIdMap;
+}
+async function saveOrder(){
+  if(!window._orderData){toast('No data',true);return;}
+  const orderDate=document.getElementById('order-date').value;
+  if(!orderDate){toast('Pick a date first',true);return;}
+  const secMap=await getSectionIdMap();
+  const res=await api('/daily_orders','POST',{order_date:orderDate,status:'submitted',tenant_id:TENANT});
+  if(!res||!res[0])return;
+  const orderId=res[0].id;
+  const lines=[];
+  window._orderData.forEach((ing,idx)=>{
+    ['C','F','M','P','T'].forEach(s=>{
+      const el=document.querySelector(`input[data-i="${idx}"][data-s="${s}"]`);
+      const qty=parseFloat(el?.value||0);
+      if(qty>0){
+        lines.push({order_id:orderId,ingredient_id:ing.ingredient_id,supplier_price_id:ing.supplier_price_id,section_id:secMap[s]||null,quantity:qty,unit_price:ing.current_price});
+      }
+    });
+  });
+  if(lines.length){
+    const r=await api('/daily_order_lines','POST',lines);
+    if(r)toast(`Kitchen order saved — ${lines.length} lines · ${orderDate}`);
+  } else toast('Enter at least one quantity',true);
+  calcOrder();
+}
+// ── WHATSAPP — ORDERS GROUPED BY SUPPLIER ──
+function buildSupplierGroups(data,idxKey,sectionKey,sections){
+  const bySupplier={};
+  data.forEach((ing,idx)=>{
+    let qty=0;
+    sections.forEach(s=>{
+      const el=document.querySelector(`input[data-${idxKey}="${idx}"][data-${sectionKey}="${s}"]`);
+      qty+=parseFloat(el?.value||0);
+    });
+    if(qty>0){
+      const sup=ing.supplier_name||'No supplier set';
+      if(!bySupplier[sup])bySupplier[sup]=[];
+      bySupplier[sup].push({name:ing.ingredient_name,qty,unit:ing.unit,cost:qty*(ing.current_price||0)});
+    }
+  });
+  return bySupplier;
+}
+function sendOrderWA(label,orderDate,bySupplier){
+  const suppliers=Object.keys(bySupplier).sort();
+  if(!suppliers.length){toast('Enter quantities first',true);return;}
+  if(!PURCHASING_WA_NUMBER){toast('Purchasing WhatsApp number not set yet — ask your admin to add it',true);return;}
+  let grand=0;
+  let txt=`*${label} — ${orderDate}*\n`;
+  suppliers.forEach(sup=>{
+    txt+=`\n*${sup}*\n`;
+    bySupplier[sup].forEach(it=>{
+      txt+=`• ${it.name} — ${it.qty} ${it.unit}\n`;
+      grand+=it.cost;
+    });
+  });
+  txt+=`\n*Total: ${fmt(grand)}*`;
+  window.open(`https://wa.me/${PURCHASING_WA_NUMBER}?text=${encodeURIComponent(txt)}`,'_blank');
+}
+function sendKitchenOrderToWA(){
+  if(!window._orderData){toast('Calculate totals first',true);return;}
+  const orderDate=document.getElementById('order-date').value||new Date().toISOString().slice(0,10);
+  const groups=buildSupplierGroups(window._orderData,'i','s',['C','F','M','P','T']);
+  sendOrderWA('Kitchen order',orderDate,groups);
+}
+function sendBarOrderToWA(){
+  if(!window._barOrderData){toast('Calculate totals first',true);return;}
+  const orderDate=document.getElementById('bar-order-date').value||new Date().toISOString().slice(0,10);
+  const groups=buildSupplierGroups(window._barOrderData,'bi','bs',['BM','OW','BT']);
+  sendOrderWA('Bar order',orderDate,groups);
+}
+function syncBarSection(idx,val){
+  // Hidden inputs for inactive sections stay at 0 — the visible input already carries the live value.
 }
 function calcBarOrder(){
   if(!window._barOrderData)return;
