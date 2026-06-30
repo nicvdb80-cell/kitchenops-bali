@@ -697,9 +697,9 @@ tr:hover td{background:var(--bg)}
       <div style="text-align:right"><div style="font-size:22px;font-weight:700;color:var(--g)" id="rec-total">IDR 0</div><div style="font-size:10px;color:var(--text2)">total recipe cost</div></div>
     </div>
     <div class="tbl-wrap"><table>
-      <thead><tr><th>Ingredient</th><th style="text-align:right">Qty</th><th>Unit</th><th style="text-align:right">Price/unit</th><th style="text-align:right">Yield %</th><th style="text-align:right">Line cost</th></tr></thead>
+      <thead><tr><th>Ingredient</th><th class="mob-hide">Supplier</th><th style="text-align:right">Qty</th><th>Unit</th><th style="text-align:right">Price/unit</th><th style="text-align:right">Yield %</th><th style="text-align:right">Line cost</th></tr></thead>
       <tbody id="rec-tb"></tbody>
-      <tfoot><tr class="total-row"><td colspan="5">Total recipe cost</td><td style="text-align:right" id="rec-foot">IDR 0</td></tr></tfoot>
+      <tfoot><tr class="total-row"><td colspan="6">Total recipe cost</td><td style="text-align:right" id="rec-foot">IDR 0</td></tr></tfoot>
     </table></div>
     <div class="fc-row">
       <div class="fcf"><label>Portions</label><div style="font-size:14px;font-weight:700;padding:5px 0" id="rec-portions">&mdash;</div></div>
@@ -1909,7 +1909,7 @@ async function loadRecipe(){
   if(!id){document.getElementById('rec-card').style.display='none';return;}
   const [recipe,rows]=await Promise.all([
     api(`/recipes?id=eq.${id}&select=*`),
-    api(`/recipe_ingredients?recipe_id=eq.${id}&order=sort_order&select=quantity,unit,yield_pct,ingredients(name),supplier_prices(id,current_price)`)
+    api(`/recipe_ingredients?recipe_id=eq.${id}&order=sort_order&select=quantity,unit,yield_pct,ingredients(name),supplier_prices(id,current_price,is_preferred,suppliers(name))`)
   ]);
   if(!recipe)return;const r=recipe[0];
   document.getElementById('rec-card').style.display='block';
@@ -1925,8 +1925,17 @@ async function loadRecipe(){
       const cost=(ri.quantity*pricePerUnit)/(ri.yield_pct/100);
       total+=cost;
       const spId=ri.supplier_prices?.id||'';
+      const supName=ri.supplier_prices?.suppliers?.name;
+      const isPreferred=ri.supplier_prices?.is_preferred;
+      let supCell;
+      if(supName){
+        supCell=isPreferred?`<span class="bk bg">${supName}</span>`:`<span class="bk bam" title="Not this ingredient's preferred/cheapest supplier">${supName} ⚠</span>`;
+      }else{
+        supCell=`<span class="bk brd">No supplier linked</span>`;
+      }
       return`<tr>
       <td>${ri.ingredients?.name||'—'}</td>
+      <td class="mob-hide">${supCell}</td>
       <td style="text-align:right">${ri.quantity}</td>
       <td>${ri.unit}</td>
       <td style="text-align:right;font-size:12px">
@@ -1938,7 +1947,7 @@ async function loadRecipe(){
       </tr>`;
     }).join('');
   }else{
-    document.getElementById('rec-tb').innerHTML='<tr><td colspan="6" class="loader">No ingredients linked yet</td></tr>';
+    document.getElementById('rec-tb').innerHTML='<tr><td colspan="7" class="loader">No ingredients linked yet</td></tr>';
   }
   document.getElementById('rec-total').textContent=fmt(total);
   document.getElementById('rec-foot').textContent=fmt(total);
