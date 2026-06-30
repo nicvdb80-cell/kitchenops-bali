@@ -956,6 +956,20 @@ tr:hover td{background:var(--bg)}
   </div>
 </div>
 
+<div class="modal-overlay" id="modal-supprods">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-title" id="sp-title">Supplier products</div>
+    <div style="font-size:11px;color:var(--text2);margin-bottom:12px" id="sp-sub">&mdash;</div>
+    <div class="tbl-wrap" style="max-height:60vh;overflow-y:auto">
+      <table><thead><tr><th>Ingredient</th><th style="text-align:right">Price</th><th>Pref</th></tr></thead>
+      <tbody id="sp-tb"><tr><td colspan="3" class="loader">Loading...</td></tr></tbody></table>
+    </div>
+    <div class="fa" style="margin-top:14px">
+      <button class="btn" onclick="closeModal('supprods')">Close</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -1177,14 +1191,29 @@ async function loadSuppliers(){
 }
 function renderSup(list){
   document.getElementById('sup-tb').innerHTML=list.length?list.map(s=>`
-    <tr>
+    <tr style="cursor:pointer" onclick="openSupplierProducts('${s.id}','${(s.name||'').replace(/'/g,'')}')">
     <td style="font-weight:600">${s.name}</td>
     <td class="mob-hide"><span class="bk btl">${s.category}</span></td>
-    <td><a href="tel:${s.phone}" style="color:var(--blm);text-decoration:none;font-weight:600">${s.phone||'—'}</a></td>
+    <td><a href="tel:${s.phone}" style="color:var(--blm);text-decoration:none;font-weight:600" onclick="event.stopPropagation()">${s.phone||'—'}</a></td>
     <td class="mob-hide" style="color:var(--text2);font-size:12px">${s.delivery_days||'—'}</td>
     <td class="mob-hide" style="color:var(--text2);font-size:12px">${s.payment_terms||'—'}</td>
     <td><span class="bk ${s.is_active?'bg':'brd'}">${s.is_active?'Active':'Inactive'}</span></td>
     </tr>`).join(''):'<tr><td colspan="6" class="empty">No suppliers found</td></tr>';
+}
+async function openSupplierProducts(supplierId,supplierName){
+  document.getElementById('sp-title').textContent=supplierName;
+  document.getElementById('sp-sub').textContent='Loading products…';
+  document.getElementById('sp-tb').innerHTML='<tr><td colspan="3" class="loader">Loading...</td></tr>';
+  openModal('supprods');
+  const d=await api(`/supplier_prices?supplier_id=eq.${supplierId}&select=current_price,is_preferred,ingredients(name,unit)&order=ingredients(name)`);
+  if(!d){document.getElementById('sp-tb').innerHTML='<tr><td colspan="3" class="empty">Could not load products</td></tr>';return;}
+  document.getElementById('sp-sub').textContent=`${d.length} product${d.length===1?'':'s'} from this supplier`;
+  document.getElementById('sp-tb').innerHTML=d.length?d.map(r=>`
+    <tr>
+    <td>${r.ingredients?.name||'—'}</td>
+    <td style="text-align:right">${fmt(r.current_price)}<span style="font-size:10px;color:var(--text2)"> /${r.ingredients?.unit||''}</span></td>
+    <td>${r.is_preferred?'<span class="bk bg">★</span>':''}</td>
+    </tr>`).join(''):'<tr><td colspan="3" class="empty">No products linked to this supplier yet</td></tr>';
 }
 function filterSup(){
   const q=document.getElementById('ss').value.toLowerCase();
