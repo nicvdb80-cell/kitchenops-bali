@@ -568,7 +568,7 @@ tr:hover td{background:var(--bg)}
   <!-- EVENTS LIST VIEW -->
   <div id="ev-view-list">
     <div class="bar">
-      <button class="btn btng" onclick="openModal('event')">+ New Event</button>
+      <button class="btn btng" onclick="openModal_event_new()">+ New Event</button>
     </div>
     <div id="ev-cards" class="loader">Loading events...</div>
 
@@ -1980,20 +1980,6 @@ async function loadCombinedPurchase(){
   document.getElementById('comb-total').textContent=fmt(grandTotal);
 }
 
-// Override openModal for event to handle new vs edit
-const _openModal_orig=openModal;
-function openModal(id){
-  if(id==='event'&&!document.getElementById('ev-name').dataset.editId&&document.getElementById('modal-event-title').textContent!=='Edit Event'){
-    // Fresh open — clear fields
-    document.getElementById('modal-event-title').textContent='New Event';
-    document.getElementById('ev-name').value='';
-    document.getElementById('ev-date').value='';
-    document.getElementById('ev-pax').value='';
-    document.getElementById('ev-notes').value='';
-    document.getElementById('ev-name').dataset.editId='';
-  }
-  _openModal_orig(id);
-}
 
 // ── MONTHLY ──
 async function loadMonthly(){
