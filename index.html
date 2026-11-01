@@ -431,8 +431,7 @@ tr:hover td{background:var(--bg)}
     <button class="nb on" onclick="go('suppliers',this)">Suppliers</button>
     <button class="nb" onclick="go('pricelists',this)">Pricelists</button>
     <button class="nb" onclick="go('ingpricing',this)">Ingredients &amp; Pricing</button>
-    <button class="nb" onclick="go('orders',this)">Kitchen Orders</button>
-    <button class="nb" onclick="go('barorders',this)">Bar Orders</button>
+    <button class="nb" onclick="go('events',this)">&#x1F4C5; Events / Ordering</button>
     <button class="nb" onclick="go('monthly',this)">Monthly</button>
     <button class="nb" onclick="go('recipes',this)">Recipe Costing</button>
     <button class="nb" onclick="go('dishes',this)">Dish Costing</button>
@@ -557,93 +556,71 @@ tr:hover td{background:var(--bg)}
   </div>
 </div>
 
-<!-- BAR ORDERS -->
-<div id="pg-barorders" class="pg">
-  <div class="page-title">Bar order sheet</div>
-  <div class="page-sub">Select your section, enter quantities</div>
-  <!-- Bar section selector -->
-  <div class="section-selector no-print" style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
-    <button class="section-btn on" data-section="BM" onclick="selectBarSection('BM',this)">
-      <span style="font-size:18px">🍸</span><br>Bar Manager
-    </button>
-    <button class="section-btn" data-section="OW" onclick="selectBarSection('OW',this)">
-      <span style="font-size:18px">👔</span><br>Owner
-    </button>
-    <button class="section-btn" data-section="BT" onclick="selectBarSection('BT',this)">
-      <span style="font-size:18px">🍹</span><br>Bar Team
-    </button>
+<!-- EVENTS / ORDERING -->
+<div id="pg-events" class="pg">
+  <div class="page-title">Events &amp; Ordering</div>
+  <div class="page-sub">Create events, add order lines — combined purchase list grouped by supplier</div>
+  <div class="tabs">
+    <div class="tab on" id="ev-tab-list" onclick="evSetTab('list')">My Events</div>
+    <div class="tab" id="ev-tab-combined" onclick="evSetTab('combined')">&#x1F4CB; Combined Purchase List</div>
   </div>
-  <div class="bar no-print">
-    <input type="date" id="bar-order-date">
-    <button class="btn" onclick="calcBarOrder()">Calculate totals</button>
-    <button class="btn btng" onclick="saveBarOrder()">Save order</button>
-    <button class="btn btng" style="background:#25D366;border-color:#25D366" onclick="sendBarOrderToWA()">&#x1F4F2; Send to Purchasing</button>
-    <button class="btn" onclick="printPage('barorders')">&#x1F5A8; Print</button>
-  </div>
-  <div class="metrics no-print">
-    <div class="mc"><div class="mcl">Items ordered</div><div class="mcv" id="bm-items">0</div></div>
-    <div class="mc"><div class="mcl">Total value</div><div class="mcv" id="bm-cost" style="font-size:15px">IDR 0</div></div>
-    <div class="mc"><div class="mcl">Section</div><div class="mcv" id="bm-section" style="font-size:14px">Bar Manager</div></div>
-  </div>
-  <div class="card"><div class="tbl-wrap">
-    <table style="min-width:680px">
-      <thead><tr>
-        <th>Ingredient</th><th class="col-hide-mob">Cat</th>
-        <th style="text-align:center" class="col-hide-mob">BM</th>
-        <th style="text-align:center" class="col-hide-mob">OW</th>
-        <th style="text-align:center" class="col-hide-mob">BT</th>
-        <th style="text-align:center">Qty</th>
-        <th style="text-align:right" class="col-hide-mob">Price/unit</th>
-        <th style="text-align:right">Cost</th>
-      </tr></thead>
-      <tbody id="bar-order-tb"><tr><td colspan="8" class="loader">Loading...</td></tr></tbody>
-      <tfoot><tr class="total-row"><td colspan="5">Grand total</td><td></td><td></td><td style="text-align:right" id="bar-order-grand">IDR 0</td></tr></tfoot>
-    </table>
-  </div></div>
-</div>
 
-<!-- KITCHEN ORDERS -->
-<div id="pg-orders" class="pg">
-  <div class="page-title">Kitchen order sheet</div>
-  <div class="page-sub">Select your section, enter quantities</div>
-  <!-- Section selector -->
-  <div class="section-selector no-print" style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
-    <button class="section-btn on" data-section="C" onclick="selectSection('C',this)">
-      <span style="font-size:18px">🥩</span><br>Cold Kitchen
-    </button>
-    <button class="section-btn" data-section="F" onclick="selectSection('F',this)">
-      <span style="font-size:18px">🐟</span><br>Fish
-    </button>
-    <button class="section-btn" data-section="M" onclick="selectSection('M',this)">
-      <span style="font-size:18px">🍳</span><br>Main Kitchen
-    </button>
-    <button class="section-btn" data-section="P" onclick="selectSection('P',this)">
-      <span style="font-size:18px">🥐</span><br>Pastry
-    </button>
-    <button class="section-btn" data-section="T" onclick="selectSection('T',this)">
-      <span style="font-size:18px">🍽️</span><br>Team Dining
-    </button>
+  <!-- EVENTS LIST VIEW -->
+  <div id="ev-view-list">
+    <div class="bar">
+      <button class="btn btng" onclick="openModal('event')">+ New Event</button>
+    </div>
+    <div id="ev-cards" class="loader">Loading events...</div>
+
+    <!-- ORDER LINES for selected event -->
+    <div id="ev-order-panel" style="display:none;margin-top:12px">
+      <div class="card">
+        <div class="ch" style="background:var(--gbg)">
+          <div>
+            <div class="ct" id="ev-order-title">Event order lines</div>
+            <div class="cs" id="ev-order-meta">&mdash;</div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btng" onclick="openAddOrderLine()">+ Add ingredient</button>
+            <button class="btn btng" style="background:#25D366;border-color:#25D366" onclick="sendEventOrderToWA()">&#x1F4F2; Send to Purchasing</button>
+            <button class="btn" onclick="document.getElementById('ev-order-panel').style.display='none';window._activeEventId=null">Close</button>
+          </div>
+        </div>
+        <div class="metrics" style="padding:12px 16px;background:var(--bg);border-bottom:0.5px solid var(--border)">
+          <div class="mc"><div class="mcl">Items</div><div class="mcv" id="ev-metric-items">0</div></div>
+          <div class="mc"><div class="mcl">Total value</div><div class="mcv" id="ev-metric-cost" style="font-size:15px">IDR 0</div></div>
+          <div class="mc"><div class="mcl">Suppliers</div><div class="mcv" id="ev-metric-sups">0</div></div>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr>
+              <th>Ingredient</th><th>Supplier</th>
+              <th style="text-align:right">Qty</th><th>Unit</th>
+              <th style="text-align:right">Price/unit</th>
+              <th style="text-align:right">Line cost</th>
+              <th>Notes</th><th class="no-print"></th>
+            </tr></thead>
+            <tbody id="ev-lines-tb"><tr><td colspan="8" class="loader">Loading...</td></tr></tbody>
+            <tfoot><tr class="total-row"><td colspan="5">Total</td><td style="text-align:right" id="ev-lines-total">IDR 0</td><td colspan="2"></td></tr></tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="bar no-print">
-    <input type="date" id="order-date">
-    <button class="btn" onclick="calcOrder()">Calculate totals</button>
-    <button class="btn btng" onclick="saveOrder()">Save order</button>
-    <button class="btn btng" style="background:#25D366;border-color:#25D366" onclick="sendKitchenOrderToWA()">&#x1F4F2; Send to Purchasing</button>
-    <button class="btn" onclick="printPage('orders')">&#x1F5A8; Print</button>
+
+  <!-- COMBINED PURCHASE LIST VIEW -->
+  <div id="ev-view-combined" style="display:none">
+    <div class="bar">
+      <button class="btn btng" onclick="loadCombinedPurchase()">&#x21BB; Refresh</button>
+      <button class="btn" onclick="printPage('events')">&#x1F5A8; Print</button>
+    </div>
+    <div class="metrics">
+      <div class="mc"><div class="mcl">Active events</div><div class="mcv" id="comb-ev-count">0</div></div>
+      <div class="mc"><div class="mcl">Total items</div><div class="mcv" id="comb-item-count">0</div></div>
+      <div class="mc"><div class="mcl">Total value</div><div class="mcv" id="comb-total" style="font-size:15px">IDR 0</div></div>
+    </div>
+    <div id="comb-list" class="loader">Click Refresh to load combined purchase list...</div>
   </div>
-  <div class="metrics no-print">
-    <div class="mc"><div class="mcl">Items ordered</div><div class="mcv" id="m-items">0</div></div>
-    <div class="mc"><div class="mcl">Total value</div><div class="mcv" id="m-cost" style="font-size:15px">IDR 0</div></div>
-    <div class="mc"><div class="mcl">Suppliers</div><div class="mcv" id="m-sups">0</div></div>
-    <div class="mc"><div class="mcl">Section</div><div class="mcv" id="m-section" style="font-size:14px">Cold Kitchen</div></div>
-  </div>
-  <div class="card"><div class="tbl-wrap">
-    <table style="min-width:720px">
-      <thead><tr><th>Ingredient</th><th class="col-hide-mob">Cat</th><th style="text-align:center" class="col-hide-mob">C</th><th style="text-align:center" class="col-hide-mob">F</th><th style="text-align:center" class="col-hide-mob">M</th><th style="text-align:center" class="col-hide-mob">P</th><th style="text-align:center" class="col-hide-mob">T</th><th style="text-align:center">Qty</th><th style="text-align:right" class="col-hide-mob">Price/kg</th><th style="text-align:right">Cost</th></tr></thead>
-      <tbody id="order-tb"><tr><td colspan="10" class="loader">Loading...</td></tr></tbody>
-      <tfoot><tr class="total-row"><td colspan="7">Grand total</td><td></td><td></td><td style="text-align:right" id="order-grand">IDR 0</td></tr></tfoot>
-    </table>
-  </div></div>
 </div>
 
 <!-- MONTHLY (unchanged) -->
@@ -844,13 +821,9 @@ tr:hover td{background:var(--bg)}
     <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
     Prices
   </button>
-  <button class="mob-tab" onclick="go('orders',this)" id="mobt-orders">
-    <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2"/><polyline points="9 11 12 14 22 4"/></svg>
-    Kitchen
-  </button>
-  <button class="mob-tab" onclick="go('barorders',this)" id="mobt-barorders">
-    <svg viewBox="0 0 24 24"><path d="M8 22V12m0 0V2l8 5-8 5z"/><path d="M16 22v-5a4 4 0 00-4-4H8"/></svg>
-    Bar
+  <button class="mob-tab" onclick="go('events',this)" id="mobt-events">
+    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    Events
   </button>
   <button class="mob-tab" onclick="go('costing',this)" id="mobt-costing">
     <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
@@ -967,6 +940,36 @@ tr:hover td{background:var(--bg)}
     <div class="fa" style="margin-top:14px">
       <button class="btn" onclick="closeModal('supprods')">Close</button>
     </div>
+  </div>
+</div>
+
+<!-- EVENT MODALS -->
+<div class="modal-overlay" id="modal-event">
+  <div class="modal">
+    <div class="modal-title" id="modal-event-title">New Event</div>
+    <div class="fr"><label>Event name *</label><input type="text" id="ev-name" placeholder="e.g. Wedding Gala, Staff Party, Event A"></div>
+    <div class="fr"><label>Event date</label><input type="date" id="ev-date"></div>
+    <div class="fr"><label>PAX (covers)</label><input type="number" id="ev-pax" min="1" placeholder="e.g. 80"></div>
+    <div class="fr"><label>Notes</label><textarea id="ev-notes" placeholder="Menu style, special requirements..."></textarea></div>
+    <div class="fa"><button class="btn" onclick="closeModal('event')">Cancel</button><button class="btn btng" onclick="saveEvent()">Save event</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-event-line">
+  <div class="modal">
+    <div class="modal-title">Add ingredient to order</div>
+    <div class="fr">
+      <label>Search ingredient *</label>
+      <input type="text" id="evl-search" placeholder="Type ingredient name..." oninput="searchEvIngredients(this.value)">
+      <div id="evl-search-results" style="max-height:160px;overflow-y:auto;border:1px solid var(--border);border-radius:6px;display:none;margin-top:4px"></div>
+      <input type="hidden" id="evl-ing-id">
+      <input type="hidden" id="evl-sp-id">
+      <div id="evl-ing-label" style="font-size:12px;color:var(--green);margin-top:4px;font-weight:600"></div>
+    </div>
+    <div class="fr"><label>Quantity *</label><input type="number" id="evl-qty" min="0.01" step="0.01" placeholder="e.g. 5"></div>
+    <div class="fr"><label>Unit</label><input type="text" id="evl-unit" placeholder="e.g. kg, pcs, liter"></div>
+    <div class="fr"><label>Notes</label><input type="text" id="evl-notes" placeholder="Optional note"></div>
+    <div class="fa"><button class="btn" onclick="closeModal('event-line')">Cancel</button><button class="btn btng" onclick="saveEventOrderLine()">Add to order</button></div>
   </div>
 </div>
 
@@ -1114,7 +1117,6 @@ function switchTenant(newTenant){
   if(tl)tl.textContent=TENANT_NAMES[TENANT]||TENANT;
   // Reload all tenant-specific data
   allIng=[];allPrices=[];allDishes=[];
-  window._orderData=null;window._barOrderData=null;
   // Refresh current page
   const activePg=document.querySelector('.pg.on');
   if(activePg){
@@ -1138,8 +1140,7 @@ function go(id,btn){
   if(mobTab)mobTab.classList.add('on');
   if(id==='ingpricing')loadIngredients();
   if(id==='costing'){loadRecipeList();} // preload recipes list
-  if(id==='barorders'){loadBarOrderSheet();document.getElementById('bar-order-date').value=new Date().toISOString().split('T')[0];}
-  if(id==='orders'){loadOrderSheet();document.getElementById('order-date').value=new Date().toISOString().split('T')[0];}
+  if(id==='events')loadEvents();
   if(id==='monthly')loadMonthly();
   if(id==='recipes')loadRecipeList();
   if(id==='dishes')loadDishList();
@@ -1174,11 +1175,8 @@ let allSup=[],allIng=[],allPrices=[],allDishes=[];
 let _priceEditSpId=null;
 
 function initApp(){
-  document.getElementById('order-date').value=new Date().toISOString().split('T')[0];
-  document.getElementById('bar-order-date').value=new Date().toISOString().split('T')[0];
   loadSuppliers();
-  loadOrderSheet();
-  // Bar orders and ingredients load when tab is opened
+  // Other tabs load on demand
 }
 
 // ── SUPPLIERS ──
@@ -1670,337 +1668,331 @@ async function loadPlHistory(){
     </div>`).join('');
 }
 
-// ── SECTION SELECTION ──
-let activeSection='C';
-let activeBarSection='BM';
+// ── EVENTS / ORDERING ──
 
-const SECTION_NAMES={C:'Cold Kitchen',F:'Fish',M:'Main Kitchen',P:'Pastry',T:'Team Dining'};
-const BAR_SECTION_NAMES={BM:'Bar Manager',OW:'Owner',BT:'Bar Team'};
+let _evIngCache=null;
+window._activeEventId=null;
 
-function selectSection(sec,btn){
-  activeSection=sec;
-  document.querySelectorAll('.section-selector .section-btn').forEach(b=>b.classList.remove('on'));
-  if(btn)btn.classList.add('on');
-  const nameEl=document.getElementById('m-section');
-  if(nameEl)nameEl.textContent=SECTION_NAMES[sec]||sec;
-  // Highlight active section column in table (desktop) or show active on mobile
-  renderOrderHighlight();
+function evSetTab(name){
+  ['list','combined'].forEach(t=>{
+    document.getElementById('ev-tab-'+t).classList.toggle('on',t===name);
+    document.getElementById('ev-view-'+t).style.display=t===name?'block':'none';
+  });
+  if(name==='combined')loadCombinedPurchase();
 }
 
-function selectBarSection(sec,btn){
-  activeBarSection=sec;
-  document.querySelectorAll('#pg-barorders .section-btn').forEach(b=>b.classList.remove('on'));
-  if(btn)btn.classList.add('on');
-  const nameEl=document.getElementById('bm-section');
-  if(nameEl)nameEl.textContent=BAR_SECTION_NAMES[sec]||sec;
-  renderBarOrderHighlight();
-}
-
-function renderOrderHighlight(){
-  // On desktop highlight the active section column
-  if(window.innerWidth>768){
-    document.querySelectorAll('#order-tb tr').forEach(row=>{
-      const secs=['C','F','M','P','T'];
-      row.querySelectorAll('td').forEach((td,i)=>{
-        if(i>=2&&i<=6) td.style.background=secs[i-2]===activeSection?'var(--gbg)':'';
-      });
-    });
-  }
-}
-
-function renderBarOrderHighlight(){
-  if(window.innerWidth>768){
-    document.querySelectorAll('#bar-order-tb tr').forEach(row=>{
-      const secs=['BM','OW','BT'];
-      row.querySelectorAll('td').forEach((td,i)=>{
-        if(i>=2&&i<=4) td.style.background=secs[i-2]===activeBarSection?'var(--gbg)':'';
-      });
-    });
-  }
-}
-
-// ── KITCHEN ORDERS ──
-async function loadOrderSheet(){
+async function loadEvents(){
   await refreshToken();
-  // Fetch all ingredients in chunks to bypass 1000-row limit
-  let orderAll=[];
-  for(let off=0;off<10000;off+=1000){
-    const d=await api('/v_ingredient_prices?is_preferred=eq.true&order=category,ingredient_name&select=ingredient_id,supplier_price_id,ingredient_name,category,unit,current_price,supplier_name&limit=1000&offset='+off);
-    if(!d||d.length===0)break;
-    orderAll=orderAll.concat(d);
-    if(d.length<1000)break;
+  const el=document.getElementById('ev-cards');
+  el.innerHTML='<div class="loader">Loading events...</div>';
+  const data=await api('/events?tenant_id=eq.'+TENANT+'&order=event_date.desc.nullslast,created_at.desc&select=*');
+  if(!data){return;}
+  if(!data.length){
+    el.innerHTML='<div style="text-align:center;padding:40px;color:var(--text2)">No events yet. Click <strong>+ New Event</strong> to create one.</div>';
+    return;
   }
-  window._orderData=orderAll;
-  const isMob=window.innerWidth<=768;
-  if(isMob){
-    // Mobile: card layout — enter qty for your active section only
-    document.getElementById('order-tb').innerHTML=orderAll.map((i,idx)=>`
-      <tr><td colspan="10" style="padding:0">
-        <div style="display:flex;align-items:center;padding:14px 12px;border-bottom:0.5px solid var(--border);gap:12px">
-          <div style="flex:1;min-width:0">
-            <div style="font-weight:600;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${i.ingredient_name}</div>
-            <div style="font-size:12px;color:var(--text2);margin-top:3px">${fmt(i.current_price)} / ${i.unit}</div>
+  el.innerHTML=data.map(ev=>`
+    <div class="card" style="padding:16px;margin-bottom:10px;cursor:pointer" onclick="openEventDetail('${ev.id}')">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:700;font-size:16px">${ev.name}</div>
+          <div style="font-size:12px;color:var(--text2);margin-top:4px">
+            ${ev.event_date?'📅 '+ev.event_date:'No date set'}
+            ${ev.pax?' &nbsp;·&nbsp; 👥 '+ev.pax+' pax':''}
           </div>
-          <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
-            <input class="qty" data-i="${idx}" data-s="${activeSection}" type="number" min="0" step="0.1" placeholder="0"
-              style="width:75px;padding:10px;font-size:18px;text-align:center;border-radius:8px"
-              oninput="syncOrderSection(${idx},this.value);calcOrder()">
-            <span style="font-size:13px;color:var(--text2);min-width:24px">${i.unit}</span>
-          </div>
-          <div style="text-align:right;min-width:74px;flex-shrink:0">
-            <div style="font-weight:700;font-size:14px;color:var(--g)" id="rc-${idx}">—</div>
+          ${ev.notes?`<div style="font-size:12px;color:var(--text2);margin-top:4px">${ev.notes}</div>`:''}
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0">
+          <span class="bk ${ev.status==='complete'?'bg':ev.status==='ordered'?'bam':'bbl'}">${ev.status||'draft'}</span>
+          <div style="display:flex;gap:6px">
+            <button class="btn" style="padding:4px 8px;font-size:11px" onclick="event.stopPropagation();editEvent('${ev.id}','${ev.name.replace(/'/g,"\\'")}','${ev.event_date||''}','${ev.pax||''}','${(ev.notes||'').replace(/'/g,"\\'")}')">Edit</button>
+            <button class="btn" style="padding:4px 8px;font-size:11px;background:var(--red);border-color:var(--red);color:#fff" onclick="event.stopPropagation();deleteEvent('${ev.id}')">Del</button>
           </div>
         </div>
-        ${['C','F','M','P','T'].filter(s=>s!==activeSection).map(s=>`<input type="hidden" class="qty" data-i="${idx}" data-s="${s}" value="0">`).join('')}
-        <div id="rt-${idx}" style="display:none"></div>
-      </td></tr>`).join('');
-  } else {
-    // Desktop: full table with all sections
-    document.getElementById('order-tb').innerHTML=orderAll.map((i,idx)=>`
-      <tr>
-      <td style="font-weight:600;font-size:12px">${i.ingredient_name}</td>
-      <td><span class="bk bbl" style="font-size:9px">${(i.category||'').slice(0,4).toUpperCase()}</span></td>
-      ${['C','F','M','P','T'].map(s=>`<td style="text-align:center"><input class="qty" data-i="${idx}" data-s="${s}" type="number" min="0" step="0.1" placeholder="—"></td>`).join('')}
-      <td style="text-align:right;font-size:11px;color:var(--text2)" id="rt-${idx}">—</td>
-      <td style="text-align:right;font-size:11px">${fmt(i.current_price)}/kg</td>
-      <td style="text-align:right;font-weight:600" id="rc-${idx}">—</td>
-      </tr>`).join('');
-    renderOrderHighlight();
-  }
+      </div>
+    </div>`).join('');
+}
 
-  if(isBarMob){
-    document.getElementById('bar-order-tb').innerHTML=all.map((i,idx)=>`
-      <tr><td colspan="8" style="padding:0">
-        <div style="display:flex;align-items:center;padding:14px 12px;border-bottom:0.5px solid var(--border);gap:12px">
-          <div style="flex:1;min-width:0">
-            <div style="font-weight:600;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${i.ingredient_name}</div>
-            <div style="font-size:12px;color:var(--text2);margin-top:3px">${fmt(i.current_price)} / ${i.unit}</div>
-          </div>
-          <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
-            <input class="qty" data-bi="${idx}" data-bs="${activeBarSection}" type="number" min="0" step="0.1" placeholder="0"
-              style="width:75px;padding:10px;font-size:18px;text-align:center;border-radius:8px"
-              oninput="syncBarSection(${idx},this.value);calcBarOrder()">
-            <span style="font-size:13px;color:var(--text2);min-width:24px">${i.unit}</span>
-          </div>
-          <div style="text-align:right;min-width:74px;flex-shrink:0">
-            <div style="font-weight:700;font-size:14px;color:var(--g)" id="brc-${idx}">—</div>
-          </div>
-        </div>
-        ${['BM','OW','BT'].filter(s=>s!==activeBarSection).map(s=>`<input type="hidden" class="qty" data-bi="${idx}" data-bs="${s}" value="0">`).join('')}
-        <div id="brt-${idx}" style="display:none"></div>
-      </td></tr>`).join('');
-  } else {
-    document.getElementById('bar-order-tb').innerHTML=all.map((i,idx)=>`
-      <tr>
-      <td style="font-weight:600;font-size:12px">${i.ingredient_name}</td>
-      <td><span class="bk bbl" style="font-size:9px">${(i.category||'').slice(0,4).toUpperCase()}</span></td>
-      ${['BM','OW','BT'].map(s=>`<td style="text-align:center"><input class="qty" data-bi="${idx}" data-bs="${s}" type="number" min="0" step="0.1" placeholder="—"></td>`).join('')}
-      <td style="text-align:right;font-size:11px;color:var(--text2)" id="brt-${idx}">—</td>
-      <td style="text-align:right;font-size:11px">${fmt(i.current_price)}</td>
-      <td style="text-align:right;font-weight:600" id="brc-${idx}">—</td>
-      </tr>`).join('');
-    renderBarOrderHighlight();
+async function openEventDetail(evId){
+  window._activeEventId=evId;
+  const panel=document.getElementById('ev-order-panel');
+  panel.style.display='block';
+  const data=await api('/events?id=eq.'+evId+'&select=*');
+  const ev=data&&data[0];
+  if(ev){
+    document.getElementById('ev-order-title').textContent=ev.name;
+    document.getElementById('ev-order-meta').textContent=[ev.event_date?'📅 '+ev.event_date:'',ev.pax?'👥 '+ev.pax+' pax':'',ev.status||'draft'].filter(Boolean).join(' · ');
+  }
+  panel.scrollIntoView({behavior:'smooth',block:'start'});
+  await loadEventOrderLines(evId);
+}
+
+async function loadEventOrderLines(evId){
+  const tb=document.getElementById('ev-lines-tb');
+  tb.innerHTML='<tr><td colspan="8" class="loader">Loading...</td></tr>';
+  const data=await api('/event_order_lines?event_id=eq.'+evId+'&select=*,ingredients(name,category),supplier_prices(current_price,suppliers(name))&order=created_at');
+  if(!data){return;}
+  if(!data.length){
+    tb.innerHTML='<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--text2)">No order lines yet. Click <strong>+ Add ingredient</strong>.</td></tr>';
+    document.getElementById('ev-metric-items').textContent='0';
+    document.getElementById('ev-metric-cost').textContent='IDR 0';
+    document.getElementById('ev-metric-sups').textContent='0';
+    document.getElementById('ev-lines-total').textContent='IDR 0';
+    return;
+  }
+  let total=0;const supSet=new Set();
+  tb.innerHTML=data.map(line=>{
+    const ingName=(line.ingredients&&line.ingredients.name)||line.unit||'—';
+    const supName=(line.supplier_prices&&line.supplier_prices.suppliers&&line.supplier_prices.suppliers.name)||'—';
+    const price=parseFloat((line.supplier_prices&&line.supplier_prices.current_price)||line.unit_price||0);
+    const lineCost=(line.quantity||0)*price;
+    total+=lineCost;
+    if(supName!=='—')supSet.add(supName);
+    return`<tr>
+      <td style="font-weight:600;font-size:12px">${ingName}</td>
+      <td style="font-size:12px;color:var(--text2)">${supName}</td>
+      <td style="text-align:right"><input type="number" value="${line.quantity}" min="0.01" step="0.01" style="width:70px;text-align:right" onchange="updateLineQty('${line.id}',this.value,'${evId}')"></td>
+      <td style="font-size:12px">${line.unit||''}</td>
+      <td style="text-align:right;font-size:12px">${fmt(price)}</td>
+      <td style="text-align:right;font-weight:600;font-size:12px">${fmt(lineCost)}</td>
+      <td style="font-size:12px;color:var(--text2)">${line.notes||''}</td>
+      <td><button class="btn" style="padding:3px 8px;font-size:11px;background:var(--red);border-color:var(--red);color:#fff" onclick="deleteOrderLine('${line.id}','${evId}')">✕</button></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('ev-metric-items').textContent=data.length;
+  document.getElementById('ev-metric-cost').textContent=fmt(total);
+  document.getElementById('ev-metric-sups').textContent=supSet.size;
+  document.getElementById('ev-lines-total').textContent=fmt(total);
+}
+
+async function updateLineQty(lineId,newQty,evId){
+  await api('/event_order_lines?id=eq.'+lineId,'PATCH',{quantity:parseFloat(newQty)||0});
+  await loadEventOrderLines(evId);
+}
+
+async function deleteOrderLine(lineId,evId){
+  if(!confirm('Remove this line?'))return;
+  await api('/event_order_lines?id=eq.'+lineId,'DELETE');
+  await loadEventOrderLines(evId);
+}
+
+function openAddOrderLine(){
+  if(!window._activeEventId){toast('Open an event first',true);return;}
+  document.getElementById('evl-search').value='';
+  document.getElementById('evl-ing-id').value='';
+  document.getElementById('evl-sp-id').value='';
+  document.getElementById('evl-ing-label').textContent='';
+  document.getElementById('evl-qty').value='';
+  document.getElementById('evl-unit').value='';
+  document.getElementById('evl-notes').value='';
+  document.getElementById('evl-search-results').style.display='none';
+  openModal('event-line');
+}
+
+async function searchEvIngredients(q){
+  if(q.length<2){document.getElementById('evl-search-results').style.display='none';return;}
+  if(!_evIngCache){
+    const d=await api('/v_ingredient_prices?is_preferred=eq.true&select=ingredient_id,supplier_price_id,ingredient_name,unit,current_price,supplier_name&order=ingredient_name&limit=2000');
+    _evIngCache=d||[];
+  }
+  const lq=q.toLowerCase();
+  const matches=_evIngCache.filter(i=>i.ingredient_name.toLowerCase().includes(lq)).slice(0,10);
+  const res=document.getElementById('evl-search-results');
+  if(!matches.length){res.style.display='none';return;}
+  res.style.display='block';
+  res.innerHTML=matches.map(i=>`
+    <div style="padding:8px 12px;cursor:pointer;border-bottom:0.5px solid var(--border);font-size:13px"
+      onclick="selectEvIngredient('${i.ingredient_id}','${i.supplier_price_id}','${i.ingredient_name.replace(/'/g,"\\'")}','${i.unit||''}','${i.supplier_name||''}')">
+      <strong>${i.ingredient_name}</strong>
+      <span style="color:var(--text2);font-size:11px"> · ${i.supplier_name||'no supplier'} · ${fmt(i.current_price)}/${i.unit}</span>
+    </div>`).join('');
+}
+
+function selectEvIngredient(ingId,spId,name,unit,sup){
+  document.getElementById('evl-ing-id').value=ingId;
+  document.getElementById('evl-sp-id').value=spId;
+  document.getElementById('evl-search').value=name;
+  document.getElementById('evl-unit').value=unit;
+  document.getElementById('evl-ing-label').textContent='✓ '+name+(sup?' ('+sup+')':'');
+  document.getElementById('evl-search-results').style.display='none';
+}
+
+async function saveEventOrderLine(){
+  const ingId=document.getElementById('evl-ing-id').value;
+  const spId=document.getElementById('evl-sp-id').value;
+  const qty=parseFloat(document.getElementById('evl-qty').value);
+  const unit=document.getElementById('evl-unit').value.trim();
+  const notes=document.getElementById('evl-notes').value.trim();
+  if(!ingId){toast('Select an ingredient first',true);return;}
+  if(!qty||qty<=0){toast('Enter a quantity',true);return;}
+  // Get price for cost tracking
+  let unitPrice=0;
+  if(_evIngCache){
+    const found=_evIngCache.find(i=>i.ingredient_id===ingId);
+    if(found)unitPrice=found.current_price||0;
+  }
+  const r=await api('/event_order_lines','POST',{
+    event_id:window._activeEventId,
+    ingredient_id:ingId,
+    supplier_price_id:spId||null,
+    quantity:qty,unit:unit||null,
+    unit_price:unitPrice,
+    notes:notes||null
+  });
+  if(r){
+    closeModal('event-line');
+    await loadEventOrderLines(window._activeEventId);
   }
 }
-function syncOrderSection(idx,val){
-  // Hidden inputs for inactive sections stay at 0 — the visible input already carries the live value.
-}
-function calcOrder(){
-  if(!window._orderData)return;
-  let total=0,items=0;const supSet=new Set();
-  window._orderData.forEach((ing,idx)=>{
-    let qty=0;
-    ['C','F','M','P','T'].forEach(s=>{
-      const el=document.querySelector(`input[data-i="${idx}"][data-s="${s}"]`);
-      qty+=parseFloat(el?.value||0);
-    });
-    const cost=qty*(ing.current_price||0);
-    const rt=document.getElementById(`rt-${idx}`);if(rt)rt.textContent=qty>0?qty.toFixed(2)+' '+ing.unit:'—';
-    const rc=document.getElementById(`rc-${idx}`);if(rc)rc.textContent=qty>0?fmt(cost):'—';
-    if(qty>0){total+=cost;items++;if(ing.supplier_name)supSet.add(ing.supplier_name);}
-  });
-  document.getElementById('m-items').textContent=items;
-  document.getElementById('m-cost').textContent=fmt(total);
-  document.getElementById('m-sups').textContent=supSet.size;
-  document.getElementById('order-grand').textContent=fmt(total);
-}
-let _sectionIdMap=null;
-async function getSectionIdMap(){
-  if(_sectionIdMap)return _sectionIdMap;
-  const secs=await api('/sections?select=code,id');
-  _sectionIdMap={};
-  (secs||[]).forEach(s=>_sectionIdMap[s.code]=s.id);
-  return _sectionIdMap;
-}
-async function saveOrder(){
-  if(!window._orderData){toast('No data',true);return;}
-  const orderDate=document.getElementById('order-date').value;
-  if(!orderDate){toast('Pick a date first',true);return;}
-  const secMap=await getSectionIdMap();
-  const res=await api('/daily_orders','POST',{order_date:orderDate,status:'submitted',tenant_id:TENANT});
-  if(!res||!res[0])return;
-  const orderId=res[0].id;
-  const lines=[];
-  window._orderData.forEach((ing,idx)=>{
-    ['C','F','M','P','T'].forEach(s=>{
-      const el=document.querySelector(`input[data-i="${idx}"][data-s="${s}"]`);
-      const qty=parseFloat(el?.value||0);
-      if(qty>0){
-        lines.push({order_id:orderId,ingredient_id:ing.ingredient_id,supplier_price_id:ing.supplier_price_id,section_id:secMap[s]||null,quantity:qty,unit_price:ing.current_price});
-      }
-    });
-  });
-  if(lines.length){
-    const r=await api('/daily_order_lines','POST',lines);
-    if(r)toast(`Kitchen order saved — ${lines.length} lines · ${orderDate}`);
-  } else toast('Enter at least one quantity',true);
-  calcOrder();
-}
-// ── WHATSAPP — ORDERS GROUPED BY SUPPLIER ──
-function buildSupplierGroups(data,idxKey,sectionKey,sections){
+
+async function sendEventOrderToWA(){
+  if(!window._activeEventId){toast('Open an event first',true);return;}
+  if(!PURCHASING_WA_NUMBER){toast('Purchasing WhatsApp number not set — ask your admin',true);return;}
+  const data=await api('/event_order_lines?event_id=eq.'+window._activeEventId+'&select=*,ingredients(name),supplier_prices(current_price,suppliers(name))');
+  const evData=await api('/events?id=eq.'+window._activeEventId+'&select=name,event_date');
+  const ev=evData&&evData[0];
+  if(!data||!data.length){toast('No order lines',true);return;}
   const bySupplier={};
-  data.forEach((ing,idx)=>{
-    let qty=0;
-    sections.forEach(s=>{
-      const el=document.querySelector(`input[data-${idxKey}="${idx}"][data-${sectionKey}="${s}"]`);
-      qty+=parseFloat(el?.value||0);
-    });
-    if(qty>0){
-      const sup=ing.supplier_name||'No supplier set';
-      if(!bySupplier[sup])bySupplier[sup]=[];
-      bySupplier[sup].push({name:ing.ingredient_name,qty,unit:ing.unit,cost:qty*(ing.current_price||0)});
-    }
+  data.forEach(line=>{
+    const sup=(line.supplier_prices&&line.supplier_prices.suppliers&&line.supplier_prices.suppliers.name)||'No supplier';
+    const name=(line.ingredients&&line.ingredients.name)||'—';
+    const price=parseFloat((line.supplier_prices&&line.supplier_prices.current_price)||line.unit_price||0);
+    if(!bySupplier[sup])bySupplier[sup]=[];
+    bySupplier[sup].push({name,qty:line.quantity,unit:line.unit||'',cost:line.quantity*price});
   });
-  return bySupplier;
-}
-function sendOrderWA(label,orderDate,bySupplier){
-  const suppliers=Object.keys(bySupplier).sort();
-  if(!suppliers.length){toast('Enter quantities first',true);return;}
-  if(!PURCHASING_WA_NUMBER){toast('Purchasing WhatsApp number not set yet — ask your admin to add it',true);return;}
+  let txt=`*${ev?ev.name:'Event'} — ${ev&&ev.event_date?ev.event_date:new Date().toISOString().slice(0,10)}*\n`;
   let grand=0;
-  let txt=`*${label} — ${orderDate}*\n`;
-  suppliers.forEach(sup=>{
+  Object.keys(bySupplier).sort().forEach(sup=>{
     txt+=`\n*${sup}*\n`;
-    bySupplier[sup].forEach(it=>{
-      txt+=`• ${it.name} — ${it.qty} ${it.unit}\n`;
-      grand+=it.cost;
-    });
+    bySupplier[sup].forEach(it=>{txt+=`• ${it.name} — ${it.qty} ${it.unit}\n`;grand+=it.cost;});
   });
   txt+=`\n*Total: ${fmt(grand)}*`;
   window.open(`https://wa.me/${PURCHASING_WA_NUMBER}?text=${encodeURIComponent(txt)}`,'_blank');
 }
-function sendKitchenOrderToWA(){
-  if(!window._orderData){toast('Calculate totals first',true);return;}
-  const orderDate=document.getElementById('order-date').value||new Date().toISOString().slice(0,10);
-  const groups=buildSupplierGroups(window._orderData,'i','s',['C','F','M','P','T']);
-  sendOrderWA('Kitchen order',orderDate,groups);
-}
-function sendBarOrderToWA(){
-  if(!window._barOrderData){toast('Calculate totals first',true);return;}
-  const orderDate=document.getElementById('bar-order-date').value||new Date().toISOString().slice(0,10);
-  const groups=buildSupplierGroups(window._barOrderData,'bi','bs',['BM','OW','BT']);
-  sendOrderWA('Bar order',orderDate,groups);
-}
-function syncBarSection(idx,val){
-  // Hidden inputs for inactive sections stay at 0 — the visible input already carries the live value.
-}
-function calcBarOrder(){
-  if(!window._barOrderData)return;
-  let total=0,items=0;
-  window._barOrderData.forEach((ing,idx)=>{
-    let qty=0;
-    ['BM','OW','BT'].forEach(s=>{
-      const el=document.querySelector(`input[data-bi="${idx}"][data-bs="${s}"]`);
-      qty+=parseFloat(el?.value||0);
-    });
-    const cost=qty*ing.current_price;
-    document.getElementById(`brt-${idx}`).textContent=qty>0?qty.toFixed(2)+' '+ing.unit:'—';
-    document.getElementById(`brc-${idx}`).textContent=qty>0?fmt(cost):'—';
-    if(qty>0){total+=cost;items++;}
-  });
-  document.getElementById('bm-items').textContent=items;
-  document.getElementById('bm-cost').textContent=fmt(total);
-  document.getElementById('bar-order-grand').textContent=fmt(total);
-}
-async function loadBarOrderSheet(){
-  await refreshToken();
-  document.getElementById('bar-order-tb').innerHTML='<tr><td colspan="8" class="loader"><span class="spinner"></span>Loading...</td></tr>';
-  let all=[];
-  for(let off=0;off<10000;off+=1000){
-    const d=await api('/v_ingredient_prices?is_preferred=eq.true&order=category,ingredient_name&select=ingredient_id,supplier_price_id,ingredient_name,category,unit,current_price,supplier_name&limit=1000&offset='+off);
-    if(!d||d.length===0)break;
-    all=all.concat(d);
-    if(d.length<1000)break;
-  }
-  window._barOrderData=all;
-  const isBarMob=window.innerWidth<=768;
-  if(isBarMob){
-    document.getElementById('bar-order-tb').innerHTML=all.map((i,idx)=>`
-      <tr><td colspan="8" style="padding:0">
-        <div style="display:flex;align-items:center;padding:14px 12px;border-bottom:0.5px solid var(--border);gap:12px">
-          <div style="flex:1;min-width:0">
-            <div style="font-weight:600;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${i.ingredient_name}</div>
-            <div style="font-size:12px;color:var(--text2);margin-top:3px">${fmt(i.current_price)} / ${i.unit}</div>
-          </div>
-          <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
-            <input class="qty" data-bi="${idx}" data-bs="${activeBarSection}" type="number" min="0" step="0.1" placeholder="0"
-              style="width:75px;padding:10px;font-size:18px;text-align:center;border-radius:8px"
-              oninput="syncBarSection(${idx},this.value);calcBarOrder()">
-            <span style="font-size:13px;color:var(--text2);min-width:24px">${i.unit}</span>
-          </div>
-          <div style="text-align:right;min-width:74px;flex-shrink:0">
-            <div style="font-weight:700;font-size:14px;color:var(--g)" id="brc-${idx}">—</div>
-          </div>
-        </div>
-        ${['BM','OW','BT'].filter(s=>s!==activeBarSection).map(s=>`<input type="hidden" class="qty" data-bi="${idx}" data-bs="${s}" value="0">`).join('')}
-        <div id="brt-${idx}" style="display:none"></div>
-      </td></tr>`).join('');
-  } else {
-    document.getElementById('bar-order-tb').innerHTML=all.map((i,idx)=>`
-      <tr>
-      <td style="font-weight:600;font-size:12px">${i.ingredient_name}</td>
-      <td><span class="bk bbl" style="font-size:9px">${(i.category||'').slice(0,4).toUpperCase()}</span></td>
-      ${['BM','OW','BT'].map(s=>`<td style="text-align:center"><input class="qty" data-bi="${idx}" data-bs="${s}" type="number" min="0" step="0.1" placeholder="—"></td>`).join('')}
-      <td style="text-align:right;font-size:11px;color:var(--text2)" id="brt-${idx}">—</td>
-      <td style="text-align:right;font-size:11px">${fmt(i.current_price)}</td>
-      <td style="text-align:right;font-weight:600" id="brc-${idx}">—</td>
-      </tr>`).join('');
-    renderBarOrderHighlight();
-  }
+
+// ── EVENT CRUD ──
+function openModal_event_new(){
+  document.getElementById('modal-event-title').textContent='New Event';
+  document.getElementById('ev-name').value='';
+  document.getElementById('ev-date').value='';
+  document.getElementById('ev-pax').value='';
+  document.getElementById('ev-notes').value='';
+  document.getElementById('ev-name').dataset.editId='';
+  openModal('event');
 }
 
-async function saveBarOrder(){
-  if(!window._barOrderData){toast('No data',true);return;}
-  const orderDate=document.getElementById('bar-order-date').value;
-  const res=await api('/bar_orders','POST',{order_date:orderDate,status:'submitted',tenant_id:TENANT});
-  if(!res||!res[0])return;
-  const orderId=res[0].id;
-  const lines=window._barOrderData.flatMap((ing,idx)=>{
-    const qtys={};
-    ['BM','OW','BT'].forEach(s=>{
-      const el=document.querySelector(`input[data-bi="${idx}"][data-bs="${s}"]`);
-      qtys[s]=parseFloat(el?.value||0);
-    });
-    const totalQty=Object.values(qtys).reduce((a,b)=>a+b,0);
-    if(totalQty<=0)return[];
-    return[{
-      order_id:orderId,
-      ingredient_id:ing.ingredient_id,
-      supplier_price_id:ing.supplier_price_id,
-      ingredient_name:ing.ingredient_name,
-      unit:ing.unit,
-      unit_price:ing.current_price,
-      qty_bar_manager:qtys['BM'],
-      qty_owner:qtys['OW'],
-      qty_bar_team:qtys['BT'],
-      total_cost:(qtys['BM']+qtys['OW']+qtys['BT'])*ing.current_price
-    }];
+function editEvent(id,name,date,pax,notes){
+  document.getElementById('modal-event-title').textContent='Edit Event';
+  document.getElementById('ev-name').value=name;
+  document.getElementById('ev-date').value=date;
+  document.getElementById('ev-pax').value=pax;
+  document.getElementById('ev-notes').value=notes;
+  document.getElementById('ev-name').dataset.editId=id;
+  openModal('event');
+}
+
+async function saveEvent(){
+  const name=document.getElementById('ev-name').value.trim();
+  if(!name){toast('Event name required',true);return;}
+  const date=document.getElementById('ev-date').value||null;
+  const pax=parseInt(document.getElementById('ev-pax').value)||null;
+  const notes=document.getElementById('ev-notes').value.trim()||null;
+  const editId=document.getElementById('ev-name').dataset.editId;
+  if(editId){
+    await api('/events?id=eq.'+editId,'PATCH',{name,event_date:date,pax,notes});
+  } else {
+    await api('/events','POST',{name,event_date:date,pax,notes,tenant_id:TENANT,status:'draft'});
+  }
+  closeModal('event');
+  loadEvents();
+}
+
+async function deleteEvent(id){
+  if(!confirm('Delete this event and all its order lines?'))return;
+  await api('/events?id=eq.'+id,'DELETE');
+  if(window._activeEventId===id){
+    window._activeEventId=null;
+    document.getElementById('ev-order-panel').style.display='none';
+  }
+  loadEvents();
+}
+
+// ── COMBINED PURCHASE LIST ──
+async function loadCombinedPurchase(){
+  const el=document.getElementById('comb-list');
+  el.innerHTML='<div class="loader">Loading...</div>';
+  // Load all draft/ordered events for this tenant
+  const events=await api('/events?tenant_id=eq.'+TENANT+'&status=not.eq.complete&select=id,name,event_date');
+  if(!events||!events.length){
+    el.innerHTML='<div style="text-align:center;padding:40px;color:var(--text2)">No active events found.</div>';
+    document.getElementById('comb-ev-count').textContent='0';
+    document.getElementById('comb-item-count').textContent='0';
+    document.getElementById('comb-total').textContent='IDR 0';
+    return;
+  }
+  const evIds=events.map(e=>e.id);
+  // Fetch all order lines for these events in one call
+  const lines=await api('/event_order_lines?event_id=in.('+evIds.join(',')+')'+'&select=*,ingredients(name,category),supplier_prices(current_price,suppliers(name))&order=created_at');
+  if(!lines||!lines.length){
+    el.innerHTML='<div style="text-align:center;padding:40px;color:var(--text2)">No order lines in active events yet.</div>';
+    document.getElementById('comb-ev-count').textContent=events.length;
+    document.getElementById('comb-item-count').textContent='0';
+    document.getElementById('comb-total').textContent='IDR 0';
+    return;
+  }
+  // Aggregate by supplier → ingredient
+  const bySupplier={};
+  lines.forEach(line=>{
+    const sup=(line.supplier_prices&&line.supplier_prices.suppliers&&line.supplier_prices.suppliers.name)||'No supplier';
+    const ingName=(line.ingredients&&line.ingredients.name)||'—';
+    const unit=line.unit||'';
+    const price=parseFloat((line.supplier_prices&&line.supplier_prices.current_price)||line.unit_price||0);
+    const key=ingName+'||'+unit;
+    if(!bySupplier[sup])bySupplier[sup]={};
+    if(!bySupplier[sup][key])bySupplier[sup][key]={name:ingName,unit,price,qty:0,cost:0};
+    bySupplier[sup][key].qty+=parseFloat(line.quantity||0);
+    bySupplier[sup][key].cost+=parseFloat(line.quantity||0)*price;
   });
-  if(lines.length){
-    const r=await api('/bar_order_lines','POST',lines);
-    if(r)toast(`Bar order saved — ${lines.length} lines · ${orderDate}`);
-  } else toast('Enter at least one quantity',true);
-  calcBarOrder();
+  let grandTotal=0,totalItems=0;
+  const html=Object.keys(bySupplier).sort().map(sup=>{
+    const items=Object.values(bySupplier[sup]);
+    const supTotal=items.reduce((a,i)=>a+i.cost,0);
+    grandTotal+=supTotal;totalItems+=items.length;
+    return`<div class="card" style="margin-bottom:14px">
+      <div class="ch"><div><div class="ct">${sup}</div><div class="cs">${items.length} items · ${fmt(supTotal)}</div></div></div>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Ingredient</th><th style="text-align:right">Total qty</th><th>Unit</th><th style="text-align:right">Price/unit</th><th style="text-align:right">Total cost</th></tr></thead>
+        <tbody>${items.sort((a,b)=>a.name.localeCompare(b.name)).map(i=>`
+          <tr>
+            <td style="font-weight:600;font-size:12px">${i.name}</td>
+            <td style="text-align:right;font-weight:700">${i.qty%1===0?i.qty:i.qty.toFixed(2)}</td>
+            <td style="font-size:12px">${i.unit}</td>
+            <td style="text-align:right;font-size:12px">${fmt(i.price)}</td>
+            <td style="text-align:right;font-weight:600">${fmt(i.cost)}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table></div>
+    </div>`;
+  }).join('');
+  el.innerHTML=html;
+  document.getElementById('comb-ev-count').textContent=events.length;
+  document.getElementById('comb-item-count').textContent=totalItems;
+  document.getElementById('comb-total').textContent=fmt(grandTotal);
+}
+
+// Override openModal for event to handle new vs edit
+const _openModal_orig=openModal;
+function openModal(id){
+  if(id==='event'&&!document.getElementById('ev-name').dataset.editId&&document.getElementById('modal-event-title').textContent!=='Edit Event'){
+    // Fresh open — clear fields
+    document.getElementById('modal-event-title').textContent='New Event';
+    document.getElementById('ev-name').value='';
+    document.getElementById('ev-date').value='';
+    document.getElementById('ev-pax').value='';
+    document.getElementById('ev-notes').value='';
+    document.getElementById('ev-name').dataset.editId='';
+  }
+  _openModal_orig(id);
 }
 
 // ── MONTHLY ──
